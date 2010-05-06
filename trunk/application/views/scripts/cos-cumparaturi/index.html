@@ -1,0 +1,109 @@
+<h1 class="section-title">Coş de cumpărături</h1>
+
+{if !$basket|@count}
+<div style="padding-left: 20px; margin-bottom: 50px;" class="table-header2">
+    <img height="17" width="17" alt="" class="valign-middle" src="/img/icons/info_little.png" />
+    Cosul dvs. de cumparaturi este gol!
+</div>
+{else}
+<form name="basket" method="post" action="/cos-cumparaturi/actualizeaza" id="cart">
+    <div align="left">
+        <div align="center" style="width: 90px; padding: 3px; border-bottom: 0px none;" class="table-border">
+            <a class="lnk-red" href="/cos-cumparaturi/goleste-cosul">
+                <img height="20" border="0" width="20" alt="" class="valignMiddle" src="/img/icons/empty-basket.png"> Goleşte coşul
+            </a>
+        </div>
+    </div>
+    <table cellspacing="0" cellpadding="5" border="0" width="100%" class="table-border highlight-row">
+        <colgroup>
+            <col align="center" width="50" />
+            <col align="center" />
+            <col align="center" width="55" />
+            <col align="right" width="80" />
+            <col align="right" width="80" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="table-header" align="center">Şterge</th>
+                <th class="table-header" align="center"></th>
+                <th class="table-header" align="center">Cantitate</th>
+                <th class="table-header" align="right">Preţ unitar <br />(RON fără TVA)</th>
+                <th class="table-header" align="right">Preţ total <br />(RON cu TVA) </th>
+            </tr>
+        </thead>
+        <tbody>
+            {foreach from=$basket item=product}
+            <tr class="hover">
+                <td align="center">
+                    <input type="checkbox" value="{$product.id}" name="remove[]" class="highlight-marker" />
+                </td>
+                <td align="left">
+                    <table cellspacing="0" cellpadding="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td width="55">
+                                    <a href="">
+                                        <img height="50" width="50" src="/thumbs/small/{$product.foto}" alt="{$product.denumire}" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <a class="lnk-red" href="">
+                                        {$product.denumire} {if $product.cod_produs}<span>[{$product.cod_produs}]</span>{/if}
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td align="center" width="55">
+                    <input type="text" class="align-center" size="2" value="{$product.quantity}" name="quantity[{$product.id}]" />
+                </td>
+                <td align="right" width="80">
+                    {$basket->valueWithoutVat($product.price)|number_format:2:',':'.'}
+                </td>
+                <td align="right" width="80">
+                    {math equation="x * y" x=$product.price y=$product.quantity assign=itemValue}
+                    {$itemValue|number_format:2:',':'.'}
+                </td>
+            </tr>
+            {/foreach}
+        </tbody>
+    </table>
+</form>
+<br />
+<table cellspacing="0" cellpadding="3" border="0" align="right" width="225" class="table-border" style="margin-bottom: 50px;">
+    <tbody>
+        <tr>
+            <td width="100" class="table-header">Total cumpărături:</td>
+            <td align="right">
+                <strong>{$basket->total()|number_format:2:',':'.'} RON </strong>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{/if}
+
+<hr class="fancy-spacer" />
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="500px" class="bottom-nav">
+    <tbody>
+        <tr>
+            <td align="center" width="33%">
+                <a class="lnk-button" href="{$backUrl}" style="width: 85px">
+                    <img height="20" border="0" width="20" alt="" class="valignMiddle" src="/img/icons/back.png" /> <span>Înapoi</span>
+                </a>
+            </td>
+            {if $basket|@count}
+            <td align="center" width="33%">
+                <a class="lnk-button" href="javascript://" style="width: 85px" onclick="$('cart').submit()">
+                    <img height="20" border="0" width="20" alt="" class="valignMiddle" src="/img/icons/update.png" /> Actualizează
+                </a>
+            </td>
+            <td align="center" width="33%">
+                <a class="lnk-button" href="/comanda" style="width: 85px">
+                    Continuă <img height="20" border="0" width="20" alt="" src="/img/icons/forward.png" />
+                </a>
+            </td>
+            {/if}
+        </tr>
+    </tbody>
+</table>

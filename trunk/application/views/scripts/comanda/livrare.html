@@ -1,0 +1,211 @@
+<h1 class="section-title">Trimite comanda</h1>
+
+<ul class="steps">
+    <li class="first">
+        <a href="/cos-cumparaturi">Coş de cumpărături</a>
+    </li>
+    <li>
+        <a href="/comanda/mod-facturare">Mod de facturare</a>
+        <p></p>
+    </li>
+    <li class="current">
+        <p>Modalitate de livrare</p>
+    </li>
+    <li>
+        <p>Confirmă</p>
+    </li>
+</ul>
+
+<form class="formular" name="shipping" method="post" action="/comanda/confirma" style="margin: 25px 0 40px;">
+    <input type="hidden" value="{$billType}" name="billType">
+
+    {if $billType == 'fizica'}
+    <table cellspacing="0" cellpadding="5" border="0" align="center" width="100%" class="table-border">
+        <thead>
+            <tr>
+                <td align="left" class="table-header2" colspan="2">Cumpărător</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td align="left" colspan="2">
+                    <table cellspacing="0" cellpadding="5" border="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td align="left" width="120">Nume: * </td>
+                                <td align="left">
+                                    <input type="text" value="{$data->nume}" size="45" class="realname" name="bill[nume]" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="left" width="120">Prenume: * </td>
+                                <td align="left">
+                                    <input type="text" value="{$data->prenume}" size="45" class="realname" name="bill[prenume]" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="left" width="120">Telefon: * </td>
+                                <td align="left">
+                                    <input type="text" value="{$data->telefon}" size="20" class="required" name="bill[telefon]" title="Introduceţi numărul de telefon" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="left" width="120">Fax:</td>
+                                <td align="left">
+                                    <input type="text" value="{$data->fax}" size="20" name="bill[fax]" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="left" width="120">Email: *</td>
+                                <td align="left">
+                                    <input type="text" value="{$data->email}" size="20" class="required validate-email" name="bill[email]" title="Introduceţi adresa de email" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <br />
+    <table cellspacing="0" cellpadding="5" border="0" align="center" width="100%" class="table-border selectable-sub-section">
+        <thead>
+            <tr>
+                <td align="left" class="table-header2">
+                    Adresa de facturare
+                    <input type="hidden" value="" name="bill[address]" class="selected-sub-section required" title="Selectaţi o adresă de facturare" />
+                </td>
+                <td align="right" class="table-header2">
+                    <a style="color: gray; font-size: 11px" href="javascript://" class="do-action" rel="add-address">
+                        <img height="16" width="16" class="valignMiddle" alt="" src="/img/icons/add.png" /> Adaugă adresă
+                    </a>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            {include file='comanda/livrare-lista-adrese.html'}
+        </tbody>
+    </table>
+    {else}
+    <table cellspacing="0" cellpadding="5" border="0" align="center" width="100%" class="table-border selectable-sub-section">
+        <thead>
+            <tr>
+                <td align="left" class="table-header2">
+                    Cumpărător
+                    <input type="hidden" value="" name="bill[company]" class="selected-sub-section required" title="Selectaţi o companie dintre cele înregistrare" />
+                </td>
+                <td align="right" class="table-header2">
+                    <a style="color: gray; font-size: 11px" href="javascript://" class="do-action" rel="add-company">
+                        <img height="16" width="16" class="valignMiddle" alt="" src="/img/icons/add.png" /> Adaugă companie
+                    </a>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            {include file='comanda/livrare-lista-companii.html'}
+        </tbody>
+    </table>
+    {/if}
+    <br />
+
+    <table cellspacing="0" cellpadding="5" border="0" align="center" width="100%" class="table-border">
+        <thead>
+            <tr>
+                <td align="left" class="table-header2">Destinatar</td>
+                <td align="right" class="table-header2">
+                    <table cellspacing="0" cellpadding="0" border="0" class="no-padding">
+                        <tbody>
+                            <tr>
+                                <td width="20">
+                                    <input type="checkbox" checked="checked" value="1" id="destinatar" name="receiver[cumparator]" class="show-hide-next" />
+                                </td>
+                                <td style="color: gray; font-size: 11px;">
+                                    <label for="destinatar">Adresa de facturare este aceeaşi cu adresa de livrare.</label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td align="center" style="padding: 0px;" colspan="2">
+                    <div style="display: none;" class="toggle-target">
+                        <table cellspacing="0" cellpadding="5" border="0" width="100%">
+                            <tbody>
+                                <tr style="background-color: #F3F7FC;">
+                                    <td align="left">&nbsp;Nume: * </td>
+                                    <td align="left">
+                                        <input type="text" value="" size="45" class="realname" name="receiver[nume]" />
+                                    </td>
+                                </tr>
+                                <tr style="background-color: #F3F7FC;">
+                                    <td align="left">&nbsp;Prenume: * </td>
+                                    <td align="left">
+                                        <input type="text" value="" size="45" class="realname" name="receiver[prenume]" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left" width="120">&nbsp;Adresa: *</td>
+                                    <td align="left">
+                                        <textarea style="overflow: auto;" class="required" cols="62" rows="3" name="receiver[adresa]" title="Introduceţi adresa destinatarului"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left" width="120">&nbsp;Localitate: *</td>
+                                    <td align="left">
+                                        <input type="text" value="" size="50" class="required" name="receiver[localitate]" title="Introduceţi localitatea destinatarului" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left" width="120">&nbsp;Judeţ / Sector: * </td>
+                                    <td align="left">
+                                        <select id="judet_destinatar" class="required" name="receiver[judet]" title="Selectaţi judeţul destinatarului">
+                                            <option value="">...</option>
+                                            {foreach from=$regions item=name key=groupName}
+                                            {if $name|@is_array}
+                                            <optgroup label="{$groupName}">
+                                                {foreach from=$name item=sub}
+                                                <option value="{$sub}">{$sub}</option>
+                                                {/foreach}
+                                            </optgroup>
+                                            {else}
+                                            <option value="{$name}">{$name}</option>
+                                            {/if}
+                                            {/foreach}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left" width="120">&nbsp;Cod poştal: </td>
+                                    <td align="left">
+                                        <input type="text" value="" size="10" name="receiver[cod_postal]" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+
+<hr class="fancy-spacer" />
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="500px" class="bottom-nav">
+    <tbody>
+        <tr>
+            <td align="center" width="50%">
+                <a class="lnk-button" href="/comanda/mod-facturare" style="width: 85px">
+                    <img height="20" border="0" width="20" alt="" class="valignMiddle" src="/img/icons/back.png" /> Înapoi
+                </a>
+            </td>
+            <td align="center" width="50%">
+                <a class="lnk-button next" href="javascript://" style="width: 85px">
+                    Continuă <img height="20" border="0" width="20" alt="" src="/img/icons/forward.png" />
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>

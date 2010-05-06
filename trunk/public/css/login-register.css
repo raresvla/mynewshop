@@ -1,0 +1,5 @@
+form.login-form .left { width: 75px; }
+form.login-form label.right { display:block; margin-top:4px; float:left; }
+form.register-form .left { width: 110px; text-align: left; }
+form.register-form input { margin-top:5px; }
+form.register-form label { padding:5px; }

@@ -1,0 +1,55 @@
+<form action="/administrare-cont/detalii-personale" method="post" class="register-form">
+    <ul>
+        <li>
+            <label class="left" for="adresare">Adresare: *</label>
+            <label>
+                <input type="radio" name="data[adresare]" value="Doamna"
+                       class="inline-label" {if $data.adresare == 'Doamna'}checked="checked"{/if} />Doamna
+            </label>
+            <label>
+                <input type="radio" name="data[adresare]" value="Domnul"
+                       class="inline-label this-or-previous" {if $data.adresare == 'Domnul'}checked="checked"{/if} />Domnul
+            </label>
+        </li>
+        <li>
+            <label class="left" for="nume">Nume: *</label>
+            <input type="text" name="data[nume]" id="nume" size="50"
+                   value="{$data.nume}" class="realname" title="Introduceti un nume valid" />
+        </li>
+        <li>
+            <label class="left" for="prenume">Prenume: *</label>
+            <input type="text" name="data[prenume]" id="prenume" size="50"
+                   value="{$data.prenume}" class="realname" title="Introduceti un nume valid" />
+        </li>
+        <li>
+            <label class="left" for="email">Email: *</label>
+            <input type="text" name="data[email]" id="email" size="50"
+                   value="{$data.email}" class="required validate-email" title="Introduceti adresa de email" />
+        </li>
+        <li>
+            <label class="left" for="telefon">Telefon 1: *</label>
+            <input type="text" name="data[telefon]" id="telefon" size="40"
+                   value="{$data.telefon}" class="required" title="Introduceti numarul de telefon" />
+        </li>
+        <li>
+            <label class="left" for="telefon2">Telefon 2:</label>
+            <input type="text" name="data[telefon2]" id="telefon2" size="40"
+                   value="{$data.telefon2}" />
+        </li>
+        <li>
+            <label class="left" for="fax">Fax:</label>
+            <input type="text" name="data[fax]" id="fax" size="40"
+                   value="{$data.fax}" />
+        </li>
+        <li>
+            <hr size="1" noshade="noshade" class="single-line">
+        </li>
+        <li>
+            <label class="left" for="checkbox">Newsletter:</label>
+            <input type="checkbox" name="data[newsletter]" id="checkbox" value="1" {if $data.newsletter}checked="checked"{/if} />
+        </li>
+    </ul>
+    <p align="center">
+        <input type="submit" name="save" value="Salvează" class="win-button" />
+    </p>
+</form>

@@ -1,0 +1,67 @@
+<p class="blue-box">
+    Companii:
+    <a href="javascript://" class="action inner-action add" rel="add-company">Adauga</a>
+</p>
+
+<form action="/administrare-cont/companii" class="do-not-attach-observers">
+    {foreach from=$companies item=company}
+    <table cellspacing="0" cellpadding="5" border="0" width="100%" class="table-border">
+        <tbody>
+            <tr>
+                <td align="center" width="50" valign="middle" rowspan="11">
+                    <input type="radio" value="{$company.id}" name="companie">
+                </td>
+                <td align="left" width="120">Denumire:</td>
+                <td align="left">
+                    <strong>{$company.denumire}</strong>
+                </td>
+            </tr>
+            <tr>
+                <td align="left" width="120">Persoana de contact:</td>
+                <td align="left">{$company.persoana_contact}</td>
+            </tr>
+            <tr>
+                <td align="left" width="120">C.U.I:</td>
+                <td align="left">{$company.cod_fiscal}</td>
+            </tr>
+            <tr>
+                <td align="left" width="120">Nr. Reg. Com: </td>
+                <td align="left">{$company.reg_com}</td>
+            </tr>
+            <tr>
+                <td align="left" width="120">Cont bacar:</td>
+                <td align="left">{$company.cont}</td>
+            </tr>
+            <tr>
+                <td align="left" width="120">Banca:</td>
+                <td align="left">{$company.banca}</td>
+            </tr>
+            <tr>
+                <td align="left" width="120">E-mail:</td>
+                <td align="left">{$company.email_sediu}</td>
+            </tr>
+            <tr>
+                <td align="left" width="120">Adresa:</td>
+                <td align="left">{$company.adresa_sediu}</td>
+            </tr>
+            <tr>
+                <td align="left" width="120">Judeţ / Sector:</td>
+                <td align="left">{$company.judet_sediu}</td>
+            </tr>
+            <tr>
+                <td align="left" width="120">Localitate:</td>
+                <td align="left">{$company.oras_sediu}</td>
+            </tr>
+            <tr>
+                <td align="left" width="120">Cod poştal:</td>
+                <td align="left">{$company.cod_postal_sediu}</td>
+            </tr>
+        </tbody>
+    </table>
+    {/foreach}
+    <p style="padding-left: 20px;">
+        <img src="/img/misc/arrow_ltr.png" alt="" />
+        <a href="javascript://" class="action" rel="edit-company">Editează</a> &nbsp;|&nbsp;
+        <a href="javascript://" class="action" rel="delete-company">Şterge</a>
+    </p>
+</form>

@@ -1,0 +1,31 @@
+<div class="paginator">
+    {if $pagesListed.first > 1}
+    <a href="{$paginator->generateRequestLink(1)}" title='_("Salt la pagina %d", 1)'>1</a>
+        {if $pagesListed.first > 2}
+        <span class="dots">...</span>
+        {/if}
+    {/if}
+
+    {foreach from=$paginator->getInterSections(1, $pagesListed.first) item=section name=preSection}
+    {if !$smarty.foreach.preSection.first || $pagesListed.first < 2}
+    <span class="dots">.</span>
+    {/if}
+    <a href="{$paginator->generateRequestLink($section)}" class="section" title="Salt la pagina {$section}">{$section}</a>
+    {/foreach}
+
+    {foreach from=$pagesListed.list item=page}
+    <a href="{$paginator->generateRequestLink($page)}" class="{if $paginator->getPage() == $page}current{/if}" title="Salt la pagina {$page}">{$page}</a>
+    {/foreach}
+
+    {foreach from=$paginator->getInterSections($pagesListed.last, $totalPages) item=section}
+    <span class="dots">.</span>
+    <a href="{$paginator->generateRequestLink($section)}" class="section" title="Salt la pagina {$section}">{$section}</a>
+    {/foreach}
+
+    {if $pagesListed.last < $totalPages}
+        {if $pagesListed.last && ($pagesListed.last < ($totalPages - 1))}
+        <span class="dots">...</span>
+        {/if}
+    <a href="{$paginator->generateRequestLink($totalPages)}" title="Salt la pagina {$totalPages}">{$totalPages}</a>
+    {/if}
+</div>

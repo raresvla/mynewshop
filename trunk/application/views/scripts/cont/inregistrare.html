@@ -1,0 +1,110 @@
+<h1 class="section-title">{$title}</h1>
+
+{if $message}
+<div align="center" class="error niftyable">
+    {$message}
+</div>
+{/if}
+
+<form action="/cont/salveaza" method="post" class="register-form" id="registerFrom">
+    <div class="gray-box niftyable">
+        <p class="title with-border"><strong>Cont nou</strong> (câmpurile marcate cu * sunt obligatorii)</p>
+        <ul>
+            <li>
+                <p>
+                    <label class="left" for="username">Nume de utilizator:</label>
+                    <input type="text" name="account[username]" id="username" size="25"
+                       value="{$account.username}" class="username" title="Numele de utilizator poate contine doar caractere alfanumerice sau _" />
+                    <span class="validation-result" style="display: none;"></span>
+                </p>
+                <p>
+                    <input type="button" value="Verifică disponibilitate" class="little" id="verify-username" />
+                </p>
+            </li>
+            <li>
+                <label class="left" for="password">Parola:</label>
+                <input type="password" name="account[password]" id="password" size="30"
+                       value="" class="length6" title="Parola trebuie sa contina minim 6 caractere" />
+            </li>
+            <li>
+                <label class="left" for="password">Reintroduceţi parola:</label>
+                <input type="password" name="account[rePassword]" id="rePassword" size="30"
+                       value="" class="length6" title="ReIntroduceţi parola" />
+            </li>
+        </ul>
+    </div>
+
+    <div class="gray-box niftyable">
+        <p class="title with-border"><strong>Detalii personale</strong></p>
+        <ul>
+            <li>
+                <label class="left" for="adresare">Adresare:</label>
+                <label>
+                    <input type="radio" name="account[adresare]" value="Doamna"
+                              class="inline-label" {if $account.adresare == 'Doamna'}checked="checked"{/if} />Doamna
+                </label>
+                <label>
+                    <input type="radio" name="account[adresare]" value="Domnul"
+                              class="inline-label this-or-previous" {if $account.adresare == 'Domnul'}checked="checked"{/if} />Domnul
+                </label>
+            </li>
+            <li>
+                <label class="left" for="nume">Nume:</label>
+                <input type="text" name="account[nume]" id="nume" size="50"
+                       value="{$account.nume}" class="realname" title="Introduceţi un nume valid" />
+            </li>
+            <li>
+                <label class="left" for="prenume">Prenume:</label>
+                <input type="text" name="account[prenume]" id="prenume" size="50"
+                       value="{$account.prenume}" class="realname" title="Introduceţi un nume valid" />
+            </li>
+            <li>
+                <label class="left" for="adresa">Adresa:</label>
+                <textarea name="account[adresa]" id="adresa" rows="3" cols="46" class="required" title="Introduceţi adresa">{$account.adresa}</textarea>
+            </li>
+            <li>
+                <label class="left" for="oras">Localitate:</label>
+                <input type="text" name="account[oras]" id="oras" size="50"
+                       value="{$account.oras}" class="required" title="Introduceţi localitatea" />
+            </li>
+            <li>
+                <label class="left" for="judet">Judeţ/Sector:</label>
+                <select name="account[judet]" id="judet" class="required" title="Alegeţi judetul">
+                    <option value="">selectati...</option>
+                    {foreach from=$regions item=name key=groupName}
+                    {if $name|@is_array}
+                    <optgroup label="{$groupName}">
+                        {foreach from=$name item=sub}
+                        <option value="{$sub}">{$sub}</option>
+                        {/foreach}
+                    </optgroup>
+                    {else}
+                    <option value="{$name}">{$name}</option>
+                    {/if}
+                    {/foreach}
+                </select>
+            </li>
+            <li>
+                <label class="left" for="cod_postal">Cod poştal:</label>
+                <input type="text" name="account[cod_postal]" id="cod_postal" size="15"
+                       value="{$account.cod_postal}" class="validate-number" title="Introduceţi codul postal" />
+            </li>
+            <li>
+                <label class="left" for="email">Email:</label>
+                <input type="text" name="account[email]" id="email" size="50"
+                       value="{$account.email}" class="required validate-email" title="Introduceţi adresa de email" />
+            </li>
+            <li>
+                <label class="left" for="telefon">Telefon</label>
+                <input type="text" name="account[telefon]" id="telefon" size="40"
+                       value="{$account.telefon}" class="required" title="Introduceţi numarul de telefon" />
+            </li>
+        </ul>
+    </div>
+
+    <div class="blue-box niftyable">
+        <p align="center">
+            <input type="submit" name="save" value="Salvează" class="big" />
+        </p>
+    </div>
+</form>
