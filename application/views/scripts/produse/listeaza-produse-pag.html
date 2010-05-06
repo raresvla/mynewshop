@@ -1,0 +1,64 @@
+{foreach from=$paginator->getResults() item=product name=pLoop}
+<table cellspacing="0" cellpadding="0" border="0" width="100%" class="products {if $smarty.foreach.pLoop.last}last{/if}">
+    <colgroup>
+        <col width="150">
+        <col>
+        <col width="150">
+    </colgroup>
+    <tbody>
+        <tr>
+            <td align="center">
+                <a title="Click pentru detalii" href="/{$product.Categorie.denumire|url_escape}/{$product.denumire|url_escape}-{$cPath}-{$product.id}.html">
+                    <img height="100" width="100" alt="{$product.denumire}" class="img_produs" src="/thumbs/medium/{$product.MainPhoto.foto}">
+                </a>
+            </td>
+            <td>
+                <h2>
+                    <a title="Click pentru detalii" href="/{$product.Categorie.denumire|url_escape}/{$product.denumire|url_escape}-{$cPath}-{$product.id}.html">
+                        {$product.denumire}
+                    </a>
+                </h2>
+                <ul class="product-specs">
+                    {foreach from=$product.ProduseCaracteristici item=spec}
+                    <li>
+                        <strong>{$spec.Caracteristici.caracteristica}:</strong> {$spec.valoare}
+                    </li>
+                    {/foreach}
+                    {if $product.rating}
+                    <li class="clear-fix">
+                        <p class="float-left">
+                            <strong>Rating: </strong>
+                        </p>
+                        <ul class="rating {$product.rating|stars_format}star float-left">
+                            <li class="one">1</li>
+                            <li class="two">2</li>
+                            <li class="three">3</li>
+                            <li class="four">4</li>
+                            <li class="five">5</li>
+                        </ul>
+                    </li>
+                    {/if}
+                </ul>
+            </td>
+            <td align="right">
+                <p>
+                    <strong>Preţ (cu TVA):<br />{$product.pret|@number_format:2:',':'.'} RON</strong>
+                </p>
+                <p class="aviability {if !$product.stoc_disponibil}un{/if}available">
+                    {if $product.stoc_disponibil}Disponibil{else}Indisponibil{/if}
+                </p>
+                {if $product.stoc_disponibil}
+                <p>
+                    <a href="/cos-cumparaturi/adauga?pid={$product.id}" 
+                       class="lnk-button add-to-cart float-right"
+                       title="Click pentru adaugare produs în coş">Adaugă în coş</a>
+                </p>
+                {/if}
+            </td>
+        </tr>
+        <tr>
+            <td align="center" colspan="3"><hr class="fancy-spacer" /></td>
+        </tr>
+    </tbody>
+</table>
+{/foreach}

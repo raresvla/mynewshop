@@ -1,0 +1,26 @@
+<form action="/administrare-cont/modifica-parola" method="post" class="register-form">
+    <ul>
+        <li>
+            <label class="left">Nume de utilizator:</label>
+            <strong style="display:block; padding-top:5px;">{$smarty.session.profile.username}</strong>
+        </li>
+        <li>
+            <label class="left" for="password">Parola curentă: *</label>
+            <input type="password" name="data[password]" id="password" size="50"
+                   class="required" title="Introduceţi parola curentă" />
+        </li>
+        <li>
+            <label class="left" for="newPassword">Noua parolă: *</label>
+            <input type="password" name="data[newPassword]" id="newPassword" size="50"
+                   class="required length6" title="Introduceţi noua parolă" />
+        </li>
+        <li>
+            <label class="left" for="rePassword">Reintroduceţi parola: *</label>
+            <input type="password" name="data[rePassword]" id="rePassword" size="50"
+                   class="required length6 eq-previous" title="Reintroduceţi noua parolă" />
+        </li>
+    </ul>
+    <p align="center">
+        <input type="submit" name="save" value="Salvează" class="win-button" />
+    </p>
+</form>

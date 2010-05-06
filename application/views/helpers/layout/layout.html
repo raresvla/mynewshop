@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>{if $title}MyShop 2 - Magazin Online | {$title}{else}MyNewShop - Magazin Online{/if}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="content-language" content="" />
+        <meta name="resource-type" content="document" />
+        <meta name="Description" content="" />
+        <meta name="Keywords" content="" />
+        <meta name="author" content="Rareş Vlăsceanu | rares@net.ase.ro" />
+        <meta name="owner" content="Rareş Vlăsceanu | rares@net.ase.ro" />
+        <meta name="title" content="{if $title}MyShop 2 - Magazin Online | {$title}{else}MyShop 2 - Magazin Online{/if}" />
+
+        <link rel="stylesheet" href="/css/reset.css" type="text/css" />
+        <link rel="stylesheet" href="/css/default.css" type="text/css" />
+        {$styles}
+    </head>
+    <body>
+        <div style="display: none;" id="loadingAjax">
+            <img height="24" width="5" alt="" src="/img/layout/loading_msg_right.png" class="float-right" />
+            <img height="24" width="5" alt="" src="/img/layout/loading_msg_left.png" class="float-left" />
+            <div class="message-container">
+                <img src="/img/layout/ajax-loader.gif" alt="" /> Încărcare...
+            </div>
+        </div>
+        <div id="wrap">
+
+            <!-- HEADER -->
+            <div id="header">
+                {$header.body}
+            </div>
+            <!-- //HEADER -->
+
+            <!-- CONTENT -->
+            <div id="content-wrap">
+                <ul id="breadcrumb">
+                    <li>
+                        <a title="Home" href="/"><img class="home" alt="Home" src="/img/layout/house.png"/></a>
+                    </li>
+                    {foreach from=$breadcrumbs item=page name=breadcrumbs}
+                    <li>
+                        {if $smarty.foreach.breadcrumbs.last}
+                            {$page.title}
+                        {else}
+                        <a title="{$page.title}" href="{$page.href}">{$page.title}</a>
+                        {/if}
+                    </li>
+                    {/foreach}
+                </ul>
+
+                <div id="sidebar" >
+                    {$sidebar.body}
+                </div>
+                <div id="main">
+                    <div id="content">
+                        {$content.body}
+                    </div>
+                </div>
+            </div>
+            <!-- //CONTENT -->
+            
+            <!-- FOOTER -->
+            <div id="footer">
+                {$footer.body}
+            </div>
+            <!-- //FOOTER -->
+
+        </div>
+
+        <script type="text/javascript" src="/js/lib/prototype.js"></script>
+        <script type="text/javascript" src="/js/lib/delegate.js"></script>
+        <script type="text/javascript" src="/js/lib/scriptaculous/scriptaculous.js"></script>
+        <script type="text/javascript" src="/js/lib/scriptaculous/effects.js"></script>
+        <script type="text/javascript" src="/js/lib/cube/niftycube.js"></script>
+        <script type="text/javascript" src="/js/general.js"></script>
+        {$scripts}
+
+        <script type="text/javascript">
+            {$injectedJS}
+        </script>
+    </body>
+</html>

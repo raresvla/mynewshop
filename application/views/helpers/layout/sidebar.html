@@ -1,0 +1,23 @@
+<div class="menu-top">
+    Produse
+</div>
+
+<ul class="sidemenu" id="site-menu">
+    {foreach from=$categories item=categ key=categId name=mainLoop}
+    <li class="{if $categId == $topCategoryId}active{/if}">
+        {assign var=subCount value=$categ.subcategories|@count}
+        <a href="/{$categ.denumire|url_escape}/c-{$categId}" class="top {if $subCount}has-subcategories{/if}">{$categ.denumire}</a>
+        {if $subCount}
+        <ul class="submenu" style="{if $categId != $topCategoryId}display: none{/if}">
+            {foreach from=$categ.subcategories item=subcateg key=subcategId}
+            <li>
+                <a href="/{$categ.denumire|url_escape}/{$subcateg.denumire|url_escape}/c-{$categId}_{$subcategId}-pagina-1/" class="{if $subcategId == $categoryId}active{/if}">
+                    {$subcateg.denumire}
+                </a>
+            </li>
+            {/foreach}
+        </ul>
+        {/if}
+    </li>
+    {/foreach}
+</ul>

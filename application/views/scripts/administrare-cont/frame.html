@@ -1,0 +1,22 @@
+<h1 class="section-title">Administrare cont</h1>
+
+<ul class="tab-nav" id="sectionsTabs">
+    <li>
+        <a href="javascript://" class="{if !$selectedTab || $selectedTab == 1}active{/if}" rel="/administrare-cont/detalii-personale">Detalii personale</a>
+    </li>
+    <li>
+        <a href="javascript://" class="{if $selectedTab == 2}active{/if}" rel="/administrare-cont/modifica-parola">Modifică parola</a>
+    </li>
+    <li>
+        <a href="javascript://" class="{if $selectedTab == 3}active{/if}" rel="/administrare-cont/management-adrese">Management adrese</a>
+    </li>
+    <li>
+        <a href="javascript://" class="{if $selectedTab == 4}active{/if}" rel="/administrare-cont/companii">Companii</a>
+    </li>
+    <li class="right">
+        <a href="javascript://" class="{if $selectedTab == 5}active{/if}" rel="/administrare-cont/istoric-comenzi">Istoric comenzi</a>
+    </li>
+</ul>
+<div class="tab-nav-box" id="sectionContent">
+    {$sectionContent}
+</div>

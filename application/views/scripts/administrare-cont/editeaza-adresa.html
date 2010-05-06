@@ -1,0 +1,41 @@
+<form action="/administrare-cont/salveaza-adresa" method="post" class="register-form">
+    <ul>
+        <li>
+            <label class="left" for="adresa">Adresa: *</label>
+            <textarea name="data[adresa]" id="adresa" rows="3" cols="46" class="required" title="Introduceţi adresa">{$data.adresa}</textarea>
+        </li>
+        <li>
+            <label class="left" for="oras">Localitate: *</label>
+            <input type="text" name="data[oras]" id="oras" size="50"
+                   value="{$data.oras}" class="required" title="Introduceţi localitatea" />
+        </li>
+        <li>
+            <label class="left" for="judet">Judeţ/Sector: *</label>
+            <select name="data[judet]" id="judet" class="required" title="Alegeţi judetul">
+                <option value="">selectati...</option>
+                {foreach from=$regions item=name key=groupName}
+                {if $name|@is_array}
+                <optgroup label="{$groupName}">
+                    {foreach from=$name item=sub}
+                    <option value="{$sub}" {if $data.judet == $sub}selected="selected"{/if}>{$sub}</option>
+                    {/foreach}
+                </optgroup>
+                {else}
+                <option value="{$name}" {if $data.judet == $name}selected="selected"{/if}>{$name}</option>
+                {/if}
+                {/foreach}
+            </select>
+        </li>
+        <li>
+            <label class="left" for="cod_postal">Cod poştal:</label>
+            <input type="text" name="data[cod_postal]" id="cod_postal" size="15"
+                   value="{$data.cod_postal}" class="validate-number" title="Introduceţi codul postal" />
+        </li>
+    </ul>
+    <p align="center">
+        <input type="hidden" name="data[id]" value="{$data.id}" />
+        <input type="hidden" name="forward" value="{$forward}" />
+        <input type="submit" name="save" value="Salvează" class="win-button" />
+        <input type="button" name="close" value="Renunţ" class="win-button" style="margin-left: 70px" onclick="{$jsHandler}.dialogWindow.close()" />
+    </p>
+</form>

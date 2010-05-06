@@ -1,0 +1,29 @@
+<h1 class="section-title">{$category.denumire}</h1>
+
+<div class="niftyable categories light-blue-box">
+    <table cellspacing="5" cellpadding="0" border="0" width="100%">
+        <tbody>
+            {foreach from=$category.Categorii item=subcateg name=categ}
+            {if $smarty.foreach.categ.iteration %3 == 1}
+            <tr>
+            {/if}
+                <td align="center" width="33%">
+                    <a class="category-link" href="/{$category.denumire|url_escape}/{$subcateg.denumire|url_escape}/c-{$category.id}_{$subcateg.id}-pagina-1/">
+                        <img height="100" width="100" alt="" class="valignMiddle" src="/imagini/categorii/{$subcateg.icon}"><br />
+                        {$subcateg.denumire}
+                    </a>
+                </td>
+            {if $smarty.foreach.categ.iteration %3 == 0}
+            </tr>
+            {if !$smarty.foreach.categ.last}
+            <tr valign="middle">
+                <td colspan="3">
+                    <hr size="1" noshade="noshade" class="blue-line">
+                </td>
+            </tr>
+            {/if}
+            {/if}
+            {/foreach}
+        </tbody>
+    </table>
+</div>

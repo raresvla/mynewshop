@@ -1,0 +1,74 @@
+<form action="/administrare-cont/salveaza-companie" method="post" class="register-form companies">
+    <ul>
+        <li>
+            <label class="left" for="denumire">Denumire: *</label>
+            <input type="text" name="data[denumire]" id="denumire" size="50"
+                   value="{$data.denumire}" class="required" title="Introduceţi denumirea companiei" />
+        </li>
+        <li>
+            <label class="left" for="contact">Persoana de contact: *</label>
+            <input type="text" name="data[persoana_contact]" id="contact" size="50"
+                   value="{$data.persoana_contact}" class="required" title="Introduceţi persoana de contact" />
+        </li>
+        <li>
+            <label class="left" for="cui">C.U.I: *</label>
+            <input type="text" name="data[cod_fiscal]" id="cui" size="20"
+                   value="{$data.cod_fiscal}" class="required" title="Introduceţi CUI" />
+        </li>
+        <li>
+            <label class="left" for="regCom">Nr. Reg. Com: *</label>
+            <input type="text" name="data[reg_com]" id="regCom" size="20"
+                   value="{$data.reg_com}" class="required" title="Introduceţi Nr. Reg. Com." />
+        </li>
+        <li>
+            <label class="left" for="cont">Cont bancar:</label>
+            <input type="text" name="data[cont]" id="cont" size="40" value="{$data.cont}" />
+        </li>
+        <li>
+            <label class="left" for="banca">Banca:</label>
+            <input type="text" name="data[banca]" id="cont" size="40" value="{$data.banca}" />
+        </li>
+        <li>
+            <label class="left" for="email">Email: *</label>
+            <input type="text" name="data[email_sediu]" id="email" size="30"
+                   value="{$data.email_sediu}" class="required email" title="Introduceţi adresa de email" />
+        </li>
+        <li>
+            <label class="left" for="adresa">Adresa: *</label>
+            <textarea name="data[adresa_sediu]" id="adresa" rows="3" cols="46" class="required" title="Introduceţi adresa">{$data.adresa_sediu}</textarea>
+        </li>
+        <li>
+            <label class="left" for="oras">Localitate: *</label>
+            <input type="text" name="data[oras_sediu]" id="oras" size="25"
+                   value="{$data.oras_sediu}" class="required" title="Introduceţi localitatea" />
+        </li>
+        <li>
+            <label class="left" for="judet">Judeţ/Sector: *</label>
+            <select name="data[judet_sediu]" id="judet" class="required" title="Alegeţi judetul">
+                <option value="">selectati...</option>
+                {foreach from=$regions item=name key=groupName}
+                {if $name|@is_array}
+                <optgroup label="{$groupName}">
+                    {foreach from=$name item=sub}
+                    <option value="{$sub}" {if $data.judet_sediu == $sub}selected="selected"{/if}>{$sub}</option>
+                    {/foreach}
+                </optgroup>
+                {else}
+                <option value="{$name}" {if $data.judet_sediu == $name}selected="selected"{/if}>{$name}</option>
+                {/if}
+                {/foreach}
+            </select>
+        </li>
+        <li>
+            <label class="left" for="cod_postal">Cod poştal:</label>
+            <input type="text" name="data[cod_postal_sediu]" id="cod_postal" size="15"
+                   value="{$data.cod_postal_sediu}" class="validate-number" title="Introduceţi codul postal" />
+        </li>
+    </ul>
+    <p align="center">
+        <input type="hidden" name="data[id]" value="{$data.id}" />
+        <input type="hidden" name="forward" value="{$forward}" />
+        <input type="submit" name="save" value="Salvează" class="win-button" />
+        <input type="button" name="close" value="Renunţ" class="win-button" style="margin-left: 70px" onclick="{$jsHandler}.dialogWindow.close()" />
+    </p>
+</form>

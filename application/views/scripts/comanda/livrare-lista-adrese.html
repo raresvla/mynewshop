@@ -1,0 +1,29 @@
+{foreach from=$data->Adrese item=address name=addresses}
+<tr>
+    <td align="left" style="padding: 0px;" colspan="2">
+        <table cellspacing="0" cellpadding="5" border="0" width="100%" class="sub-section" {if !$smarty.foreach.addresses.first}style="border-top: 1px solid #E6E6E6"{/if}>
+            <tbody>
+                <tr>
+                    <td align="center" width="50" valign="middle" rowspan="4">
+                        <input type="radio" value="{$address->id}" name="adresa" />
+                    </td>
+                    <td align="left" width="90">Adresa:</td>
+                    <td align="left">{$address->adresa}</td>
+                </tr>
+                <tr>
+                    <td align="left" width="90">Localitate:</td>
+                    <td align="left">{$address->oras}</td>
+                </tr>
+                <tr>
+                    <td align="left" width="90">Judeţ / Sector: </td>
+                    <td align="left">{$address->judet}</td>
+                </tr>
+                <tr>
+                    <td align="left" width="90">Cod poştal: </td>
+                    <td align="left">{$address->cod_postal}</td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+{/foreach}

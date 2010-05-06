@@ -1,0 +1,53 @@
+<h1 class="section-title">Autentificare</h1>
+
+{if $message}
+<div align="center" class="error niftyable">
+    {$message}
+</div>
+{/if}
+
+<div class="clear-fix">
+    <div class="gray-box niftyable left">
+        <p class="title" align="center">Sunt deja client:</p>
+        <form action="/cont/valideaza-autentificare" method="post" class="login-form">
+            <ul>
+                <li>
+                    <label class="left" for="username">Utilizator:</label>
+                    <input type="text" name="login[username]" id="username" size="34" value="{$login.username}" />
+                </li>
+                <li>
+                    <label class="left" for="password">Parola:</label>
+                    <input type="password" name="login[password]" id="password" size="34" />
+                </li>
+                <li>
+                    <span class="left">
+                        <input type="checkbox" name="login[keepMeLoggedIn]" id="keepMeLoggedIn" checked="checked" />
+                    </span>
+                    <label class="right" for="keepMeLoggedIn">Pastreaza-ma logat</label>
+                </li>
+                <li>
+                    <p align="center">
+                        <input type="submit" value="Login" class="win-button" />
+                    </p>
+                </li>
+            </ul>
+        </form>
+        <p class="subtitle">
+            <a href="/">&raquo; Aţi uitat parola? Click aici.</a>
+        </p>
+    </div>
+
+    <div class="gray-box niftyable right">
+        <p class="title" align="center">Sunt client nou:</p>
+        <form action="" method="get">
+            <p align="center" class="double-margin">
+                Crearea unui cont vă permite să cumpăraţi rapid,
+                să fiţi la curent în orice moment cu statusul comenzilor dumneavoastră
+                şi să urmăriţi comenzile deja făcute, până în momentul livrării.
+            </p>
+            <p align="center" style="margin-bottom: 20px ">
+                <input type="button" id="register" value="Continuă" class="win-button" onclick="window.location.replace('/cont/inregistrare')" />
+            </p>
+        </form>
+    </div>
+</div>

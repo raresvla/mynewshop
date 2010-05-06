@@ -1,0 +1,64 @@
+<div id="logo">
+    <a href="/">MyShop</a>
+</div>
+<div class="right-container">
+    <p class="user">
+    {if !$smarty.session.profile}
+        <span>Bun venit!</span>
+        [<a href="/cont/autentificare">Autentificare</a>]
+    {else}
+        <span>
+            <a href="/administrare-cont" class="black"><strong>{$smarty.session.profile.nume} {$smarty.session.profile.prenume}</strong></a>
+        </span>
+        [<a href="/cont/logout">Logout</a>]
+    {/if}
+    </p>
+
+    {if $smarty.session.profile && $basket|@count}
+    <p class="basket">
+        <a href="/cos-cumparaturi">
+            <strong>Coș de cumpărături ({$basket|@count})</strong>
+        </a>
+        |
+        <a href="/comanda">Trimite comanda</a>
+    </p>
+    {/if}
+</div>
+<form method="get" class="searchform" action="/cauta">
+    <div class="container">
+        <p class="float-left">Caută:</p>
+        <div class="float-left input-container">
+            <input type="text" name="q" />
+        </div>
+        <div class="float-left button-container">
+            <button type="submit" title="Click pentru căutare"></button>
+        </div>
+    </div>
+</form>
+<ul>
+    <li id="current">
+        <a href="/">
+            <span>Home</span>
+        </a>
+    </li>
+    <li>
+        <a href="/produse/noi">
+            <span>Produse noi</span>
+        </a>
+    </li>
+    <li>
+        <a href="/produse/recomandate">
+            <span>Produse recomandate</span>
+        </a>
+    </li>
+    <li>
+        <a href="/companie/informatii">
+            <span>Informatii</span>
+        </a>
+    </li>
+    <li>
+        <a href="/companie/contact">
+            <span>Contact</span>
+        </a>
+    </li>
+</ul>

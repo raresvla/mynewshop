@@ -1,0 +1,122 @@
+<h1 class="section-title">
+    {$product.denumire}
+    <span>[{$product.cod_produs}]</span>
+</h1>
+
+<div class="clear-fix product-top">
+    <div align="right" class="float-left photo-gallery">
+        {if $product.GalerieFoto|@count}
+        <div align="center" class="float-left">
+            Galerie foto
+            {foreach from=$product.GalerieFoto item=photo name=photoGallery}
+            <a title="{$product.denumire}" rel="lightbox[galerie]"
+               href="/imagini/produse/{$photo.foto}"
+               class="{if $smarty.foreach.photoGallery.iteration > 3}hidden{/if}">
+                <img height="50" width="50" alt="{$product.denumire}" src="/thumbs/small/{$photo.foto}" />
+            </a>
+            {/foreach}
+        </div>
+        {/if}
+        {if $product.MainPhoto.foto}
+        <a rel="lightbox" href="/imagini/produse/{$product.MainPhoto.foto}" title="{$product.denumire}" class="float-right">
+            <img height="200" width="200" src="/thumbs/big/{$product.MainPhoto.foto}" alt="{$product.denumire}" />
+        </a>
+        {else}
+        <img height="200" width="200" src="/img/misc/imagine_lipsa.png" alt="{$product.denumire}" />
+        {/if}
+    </div>
+
+    <div align="center" class="niftyable float-right buy-box">
+        <div class="niftyable inner">
+            <b class="price">{$product.pret|@number_format:2:',':'.'} (cu TVA)</b>
+            <p class="aviability {if !$product.stoc_disponibil}un{/if}available">
+                {if $product.stoc_disponibil}Disponibil{else}Indisponibil{/if}
+            </p>
+            {if $product.stoc_disponibil}
+            <p>
+                <a href="/cos-cumparaturi/adauga?pid={$product.id}"
+                   class="lnk-button add-to-cart"
+                   title="Click pentru adaugare produs în coş">Adaugă în coş</a>
+            </p>
+            {/if}
+        </div>
+        <hr />
+        <div class="clear-fix">
+            {if $product.rating}
+            <div class="float-left rating-container">
+                <p class="float-left">Notă:</p>
+                <ul class="rating {$product.rating|stars_format}star float-left">
+                    <li class="one">1</li>
+                    <li class="two">2</li>
+                    <li class="three">3</li>
+                    <li class="four">4</li>
+                    <li class="five">5</li>
+                </ul>
+            </div>
+            {/if}
+            <p class="float-right">
+                <a href="" class="add-to-fav">Adaugă la favorite</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="product-description">
+    {if $product.descriere}
+    <a href="javascript://" class="show-hide-next {if $smarty.cookies.hideSections.pDesc}closed{/if}" title="Click pentru a ascunde / afişa conţinutul" rel="pDesc">
+        <span>Descriere</span>
+    </a>
+    <div class="description-content {if $smarty.cookies.hideSections.pDesc}hidden{/if}">
+        <p>
+            {$product.descriere|replace:'<br /><br />':'</p><p>'}
+        </p>
+    </div>
+    {/if}
+
+    <a href="javascript://" class="show-hide-next {if $smarty.cookies.hideSections.pSpecs}closed{/if}" title="Click pentru a ascunde / afişa conţinutul" rel="pSpecs">
+        <span>Specificaţii tehnice</span>
+    </a>
+    <div class="description-content {if $smarty.cookies.hideSections.pSpecs}hidden{/if}">
+        {foreach from=$product.ProduseCaracteristici item=specifications key=sectionName}
+        <table cellspacing="0" cellpadding="4" border="0" width="100%" class="tableSpec">
+            <colgroup>
+                <col width="45%">
+                <col>
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td colspan="2" class="tableSpecTitle">{$sectionName}</td>
+                </tr>
+                {foreach from=$specifications item=spec name=sectionSpecs}
+                <tr bgcolor="{if $smarty.foreach.sectionSpecs.index %2 == 0}#f9f9f9{/if}">
+                    <td class="tableSpecLeft">{$spec.name}</td>
+                    <td class="tableSpecRight">{$spec.value|replace:'[YES]':'Da'|replace:'|':'<br />'}</td>
+                </tr>
+                {/foreach}
+            </tbody>
+        </table>
+        {/foreach}
+    </div>
+</div>
+
+<hr class="fancy-spacer" style="margin-top: 40px" />
+<table cellspacing="5" cellpadding="0" border="0" width="70%" class="bottom-nav">
+    <colgroup>
+        <col width="50%"/>
+        <col width="50%"/>
+    </colgroup>
+    <tbody>
+        <tr>
+            <td>
+                <a style="width: 146px;" class="lnk-button" href="{$lastCategory.href}">
+                    <img height="20" border="0" width="20" alt="" src="/img/icons/back.png" align="top" /> &nbsp;Înapoi la lista de produse
+                </a>
+            </td>
+            <td align="right">
+                <a style="width: 145px;" onclick="" class="lnk-button" href="javascript://">
+                    <img height="20" border="0" width="22" alt="" src="/img/icons/recommend.png" align="top" /> &nbsp;Recomandă unui prieten
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
