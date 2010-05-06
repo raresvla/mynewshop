@@ -1,0 +1,104 @@
+<h1 class="section-title">Confirmă comanda</h1>
+
+<ul class="steps">
+    <li class="first">
+        <a href="/cos-cumparaturi">Coş de cumpărături</a>
+    </li>
+    <li>
+        <a href="/comanda/mod-facturare">Mod de facturare</a>
+    </li>
+    <li>
+        <a href="/comanda/livrare?type={$billType}">Modalitate de livrare</a>
+    </li>
+    <li class="current">
+        <p>Confirmă</p>
+    </li>
+</ul>
+
+<form name="confirma" method="post" action="/comanda/trimite" style="margin: 25px 0pt 40px;">
+    <table cellspacing="0" cellpadding="8" border="0" align="center" width="100%" class="table-border">
+        <tbody>
+            <tr>
+                <td align="left" width="30%"><strong>Total cumpărături:</strong></td>
+                <td align="right" width="60%">5.688,96 RON </td>
+            </tr>
+            <tr>
+                <td align="left" width="30%" style="padding-bottom: 6px;"><strong>Taxe de transport:</strong></td>
+                <td align="right" width="60%" style="padding-bottom: 6px;">0,00 RON </td>
+            </tr>
+            <tr>
+                <td align="left" style="padding: 8px; border-top: 1px solid #999999;" class="table-header">
+                    <strong>TOTAL COMANDĂ:</strong>
+                </td>
+                <td align="right" style="padding: 8px; border-top: 1px solid #999999;" class="table-header">
+                    <strong>5.688,96 RON </strong>
+                </td>
+            </tr>
+            <tr>
+                <td align="left" width="30%" style="padding: 4px 8px 8px; border-bottom: 1px solid #999999;" class="table-header">
+                    <strong>MODALITATE DE PLATĂ: </strong>
+                </td>
+                <td align="right" width="60%" style="padding: 4px 8px 8px; border-bottom: 1px solid #999999;" class="table-header">
+                    <table cellspacing="0" cellpadding="1" border="0" align="center" width="320">
+                        <tbody>
+                            <tr>
+                                <td width="13" valign="middle">
+                                    <input type="radio" id="ramburs" value="ramburs" name="billPayment" />
+                                </td>
+                                <td valign="middle">
+                                    <label for="ramburs">Ramburs</label>
+                                </td>
+                                <td width="13" valign="middle">
+                                    <input type="radio" id="op" value="op" name="billPayment" />
+                                </td>
+                                <td width="100" valign="middle">
+                                    <label for="op">Ordin de plată (OP)</label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td align="left" width="30%" valign="top" style="padding-top: 6px;">
+                    <strong>Cumpărător (Destinatar):</strong>
+                </td>
+                <td align="right" style="padding-top: 6px;">
+                    <strong style="font-size: 13px;">Vlăsceanu Rareş</strong><br />
+                    Str. Victoria Socialismului, nr. 99<br />
+                    Leningradu' de Romania, Jud. Bistrita-Nasaud<br />0722.651.963
+                </td>
+            </tr>
+            <tr>
+                <td align="left" valign="top">Alte specificaţii: </td>
+                <td align="left">
+                    <textarea style="overflow: auto;" id="specificatii" class="inputcol" cols="89" rows="3" name="specificatii"></textarea>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div align="left" style="padding: 5px; color: rgb(102, 102, 102);">* Taxa pentru plata comenzii la livrare.</div>
+</form>
+
+<hr class="fancy-spacer" />
+<table cellspacing="0" cellpadding="0" border="0" align="center" width="550px" class="bottom-nav">
+    <tbody>
+        <tr>
+            <td align="center" width="33%">
+                <a class="lnk-button" href="/comanda/mod-facturare" style="width: 85px">
+                    <img height="20" border="0" width="20" alt="" class="valignMiddle" src="/img/icons/back.png" /> Înapoi
+                </a>
+            </td>
+            <td align="center" width="33%">
+                <a class="lnk-button" href="javascript://" style="width: 110px">
+                    <img height="20" border="0" width="20" alt="" class="valignMiddle" src="/img/icons/order_preview.png" /> Preview comandă
+                </a>
+            </td>
+            <td align="center" width="33%">
+                <a class="lnk-button next" href="javascript://" style="width: 85px">
+                    Continuă <img height="20" border="0" width="20" alt="" src="/img/icons/forward.png" />
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>

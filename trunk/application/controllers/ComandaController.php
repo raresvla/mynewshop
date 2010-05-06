@@ -41,6 +41,8 @@ class ComandaController extends Zend_Controller_Action
      */
     public function modFacturareAction()
     {
+        $invoice = MyShop_Invoice::getInstance(MyShop_Basket::getInstance());
+
         $this->_helper->Layout->addBreadCrumb('Mod de facturare');
         $this->_helper->Layout->includeJs('lib/validate.js');
         $this->_helper->Layout->includeJs('custom-validators.js');
@@ -77,5 +79,18 @@ class ComandaController extends Zend_Controller_Action
             $this->getFrontController()->setParam('noViewRenderer', true);
             $this->getResponse()->setBody($this->view->render("comanda/{$template}"));
         }
+    }
+
+    /**
+     * Third order processing step
+     */
+    public function confirmaAction()
+    {
+        $billType = $this->_getParam('billType');
+        $this->_helper->Layout->addBreadCrumb('Mod de facturare', '/comanda/mod-facturare');
+        $this->_helper->Layout->addBreadCrumb('Modalitate de livrare', "comanda/livrare?type={$billType}");
+        $this->_helper->Layout->addBreadCrumb('Confirmă');
+
+        $this->view->assign('billType', $billType);
     }
 }

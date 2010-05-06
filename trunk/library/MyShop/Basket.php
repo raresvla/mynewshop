@@ -14,7 +14,7 @@ class MyShop_Basket implements ArrayAccess, Iterator, Countable
     private $_userId;
     private $_sessionId;
     private $_index = 0;
-    private $_config;
+    public $config;
 
     const DATA_NAMESPACE = 'BASKET';
 
@@ -42,7 +42,7 @@ class MyShop_Basket implements ArrayAccess, Iterator, Countable
         }
         $this->_data = &$_SESSION[self::DATA_NAMESPACE];
         $this->_sessionId = session_id();
-        $this->_config = MyShop_Config::getInstance();
+        $this->config = MyShop_Config::getInstance();
     }
 
     /**
@@ -266,7 +266,7 @@ class MyShop_Basket implements ArrayAccess, Iterator, Countable
             return $value;
         }
 
-        return $value / (1 + ($this->_config->TVA / 100));
+        return $value / (1 + ($this->config->TVA / 100));
     }
 
     /**
@@ -408,4 +408,12 @@ class MyShop_Basket implements ArrayAccess, Iterator, Countable
     {
 		return $this->_index < sizeof($this->_data);
 	}
+
+    /**
+     * Generate basket identifier
+     */
+    public function  __toString()
+    {
+        return sprintf('MyShopBasket_%d_%s', $this->_userId, $this->_sessionId);
+    }
 }
