@@ -15,8 +15,8 @@ class MyShop_Invoice
     private $_data;
 
     const DATA_NAMESPACE = 'INVOICE';
-    const INVOICE_TYPE = 'type';
-    const INVOICE_SHIPPING = 'shipping';
+    const INVOICE_TYPE_DATA = 'type';
+    const SHIPPING_DATA = 'shipping';
 
     /**
      * Get Invoice instance
@@ -52,20 +52,55 @@ class MyShop_Invoice
     /**
      * Load submitted forms data
      *
+     * @param string $dataType
+     * @param mixed $data
+     * @param boolean $owerwrite
+     * @return MyShop_Invoice
+     */
+    public function load($dataType, $data, $overwrite = true)
+    {
+        if(isset($this->_data[$dataType]) && !$overwrite) {
+            throw new Zend_Exception("Data for {$dataType} already exists! Do you want to overwrite?");
+        }
+        
+        $this->_data[$dataType] = $data;
+        return $this;
+    }
+
+    /**
+     * Retreive saved information
+     *
+     * @param string $dataType
+     * @return mixed
+     */
+    public function get($dataType)
+    {
+        if(!isset($this->_data[$dataType])) {
+            return null;
+        }
+
+        return $this->_data[$dataType];
+    }
+
+    /**
+     * Load submitted forms data
+     *
      * @param string $name
      * @param array $value
      */
     public function  __set($name,  $value)
     {
-        $this->_data[$name] = $value;
-        return $this;
+        return $this->load($name, $value);
     }
 
     /**
      * Retreive submitted forms data
+     *
+     * @param string $name
+     * @return mixed
      */
     public function  __get($name)
     {
-        
+        return $this->get($name);
     }
 }
