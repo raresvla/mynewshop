@@ -15,9 +15,7 @@
     </li>
 </ul>
 
-<form class="formular" name="shipping" method="post" action="/comanda/confirma" style="margin: 25px 0 40px;">
-    <input type="hidden" value="{$billType}" name="billType">
-
+<form class="formular" name="shipping" method="post" action="/comanda/set-livrare" style="margin: 25px 0 40px;">
     {if $billType == 'fizica'}
     <table cellspacing="0" cellpadding="5" border="0" align="center" width="100%" class="table-border">
         <thead>
