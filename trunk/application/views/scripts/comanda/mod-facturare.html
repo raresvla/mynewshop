@@ -33,12 +33,15 @@
                 <td align="left" class="line-top">
                     <ul>
                         <li>
-                            <label><input type="radio" value="fizica" name="type" /> <span>Persoană fizică</span></label>
+                            <label>
+                                <input type="radio" value="fizica" name="type" {if !$invoice->tip || $invoice->tip == 'fizica'}checked="checked"{/if} />
+                                <span>Persoană fizică</span>
+                            </label>
                         </li>
                         <li style="margin-top: 5px">
                             <input type="hidden" value="{$companiesCount}" />
                             <label>
-                                <input type="radio" value="juridica" name="type" class="this-or-previous bill-type" />
+                                <input type="radio" value="juridica" name="type" class="this-or-previous bill-type" {if $invoice->tip == 'juridica'}checked="checked"{/if} />
                                 <input type="hidden" value="ul" /> <span>Persoană juridică</span>
                             </label>
                         </li>

@@ -1,4 +1,4 @@
-<h1 class="section-title">Confirmă comanda</h1>
+<h1 class="section-title">Trimite comanda</h1>
 
 <ul class="steps">
     <li class="first">
@@ -8,7 +8,7 @@
         <a href="/comanda/mod-facturare">Mod de facturare</a>
     </li>
     <li>
-        <a href="/comanda/livrare?type={$billType}">Modalitate de livrare</a>
+        <a href="/comanda/livrare">Modalitate de livrare</a>
     </li>
     <li class="current">
         <p>Confirmă</p>
@@ -19,65 +19,80 @@
     <table cellspacing="0" cellpadding="8" border="0" align="center" width="100%" class="table-border">
         <tbody>
             <tr>
-                <td align="left" width="30%"><strong>Total cumpărături:</strong></td>
-                <td align="right" width="60%">5.688,96 RON </td>
+                <td align="left" width="30%">
+                    <strong>Total cumpărături:</strong>
+                </td>
+                <td align="right" width="60%">{$basket->total()|number_format:2:',':'.'} RON</td>
             </tr>
             <tr>
-                <td align="left" width="30%" style="padding-bottom: 6px;"><strong>Taxe de transport:</strong></td>
-                <td align="right" width="60%" style="padding-bottom: 6px;">0,00 RON </td>
+                <td align="left" width="30%" class="pre-emphased">
+                    <strong>Taxe de transport:</strong>
+                </td>
+                <td align="right" width="60%" class="pre-emphased">{$invoice->getShippingCost()|number_format:2:',':'.'} RON </td>
             </tr>
             <tr>
-                <td align="left" style="padding: 8px; border-top: 1px solid #999999;" class="table-header">
+                <td align="left" class="table-header emphased-top">
                     <strong>TOTAL COMANDĂ:</strong>
                 </td>
-                <td align="right" style="padding: 8px; border-top: 1px solid #999999;" class="table-header">
-                    <strong>5.688,96 RON </strong>
+                <td align="right" class="table-header emphased-top">
+                    {math equation="x+y" x=$basket->total() y=$invoice->getShippingCost() assign=grandTotal}
+                    <strong>{$grandTotal|number_format:2:',':'.'} RON</strong>
                 </td>
             </tr>
             <tr>
-                <td align="left" width="30%" style="padding: 4px 8px 8px; border-bottom: 1px solid #999999;" class="table-header">
+                <td align="left" width="30%" class="table-header emphased-bottom">
                     <strong>MODALITATE DE PLATĂ: </strong>
                 </td>
-                <td align="right" width="60%" style="padding: 4px 8px 8px; border-bottom: 1px solid #999999;" class="table-header">
-                    <table cellspacing="0" cellpadding="1" border="0" align="center" width="320">
-                        <tbody>
-                            <tr>
-                                <td width="13" valign="middle">
-                                    <input type="radio" id="ramburs" value="ramburs" name="billPayment" />
-                                </td>
-                                <td valign="middle">
-                                    <label for="ramburs">Ramburs</label>
-                                </td>
-                                <td width="13" valign="middle">
-                                    <input type="radio" id="op" value="op" name="billPayment" />
-                                </td>
-                                <td width="100" valign="middle">
-                                    <label for="op">Ordin de plată (OP)</label>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <td align="right" width="60%" class="table-header emphased-bottom">
+                    <ul class="payment-options">
+                        <li>
+                            <label>
+                                <input type="radio" value="ramburs" name="plata" /> Ramburs
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" value="op" name="plata" class="this-or-previous" />
+                                <input type="hidden" value="ul" />
+                                Ordin de plată (OP)
+                            </label>
+                        </li>
+                    </ul>
                 </td>
             </tr>
             <tr>
                 <td align="left" width="30%" valign="top" style="padding-top: 6px;">
-                    <strong>Cumpărător (Destinatar):</strong>
+                    <strong>Cumpărător{if $invoice->buyerIsReceiver()} (Destinatar){/if}:</strong>
                 </td>
                 <td align="right" style="padding-top: 6px;">
-                    <strong style="font-size: 13px;">Vlăsceanu Rareş</strong><br />
-                    Str. Victoria Socialismului, nr. 99<br />
-                    Leningradu' de Romania, Jud. Bistrita-Nasaud<br />0722.651.963
+                    <strong style="font-size: 13px;">{$invoice->cumparator.nume} {$invoice->cumparator.prenume}</strong><br />
+                    {if $invoice->buyerIsReceiver()}
+                    {assign var=address value=$invoice->getShippingAddress()}
+                    {$address.adresa}<br />{$address.oras}, Jud. {$address.judet}<br />
+                    {/if}
+                    {$invoice->cumparator.telefon}, {$invoice->cumparator.email}
                 </td>
             </tr>
+            {if !$invoice->buyerIsReceiver()}
+            <tr>
+                <td align="left" width="30%" valign="top" style="padding-top: 6px;">
+                    <strong>Destinatar:</strong>
+                </td>
+                <td align="right" style="padding-top: 6px;">
+                    <strong style="font-size: 13px;">{$invoice->destinatar.nume} {$invoice->destinatar.prenume}</strong><br />
+                    {$invoice->destinatar.adresa}<br />
+                    {$invoice->destinatar.cod_postal} {$invoice->destinatar.oras}, Jud. {$invoice->destinatar.judet}<br />
+                </td>
+            </tr>
+            {/if}
             <tr>
                 <td align="left" valign="top">Alte specificaţii: </td>
                 <td align="left">
-                    <textarea style="overflow: auto;" id="specificatii" class="inputcol" cols="89" rows="3" name="specificatii"></textarea>
+                    <textarea style="overflow: auto;" id="specificatii" cols="89" rows="3" name="specificatii"></textarea>
                 </td>
             </tr>
         </tbody>
     </table>
-    <div align="left" style="padding: 5px; color: rgb(102, 102, 102);">* Taxa pentru plata comenzii la livrare.</div>
 </form>
 
 <hr class="fancy-spacer" />
@@ -85,7 +100,7 @@
     <tbody>
         <tr>
             <td align="center" width="33%">
-                <a class="lnk-button" href="/comanda/mod-facturare" style="width: 85px">
+                <a class="lnk-button" href="/comanda/livrare" style="width: 85px">
                     <img height="20" border="0" width="20" alt="" class="valignMiddle" src="/img/icons/back.png" /> Înapoi
                 </a>
             </td>

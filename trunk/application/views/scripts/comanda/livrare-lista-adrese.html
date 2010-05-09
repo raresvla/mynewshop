@@ -1,11 +1,14 @@
 {foreach from=$data->Adrese item=address name=addresses}
 <tr>
     <td align="left" style="padding: 0px;" colspan="2">
-        <table cellspacing="0" cellpadding="5" border="0" width="100%" class="sub-section" {if !$smarty.foreach.addresses.first}style="border-top: 1px solid #E6E6E6"{/if}>
+        <table cellspacing="0" cellpadding="5" border="0" width="100%"
+               class="sub-section {if $invoice->cumparator.adresa == $address->id}selected{/if}"
+               {if !$smarty.foreach.addresses.first}style="border-top: 1px solid #E6E6E6"{/if}>
             <tbody>
                 <tr>
                     <td align="center" width="50" valign="middle" rowspan="4">
-                        <input type="radio" value="{$address->id}" name="shippingAddress" />
+                        <input type="radio" value="{$address->id}" name="selected[address]"
+                               {if $invoice->cumparator.adresa == $address->id}checked="checked"{/if}/>
                     </td>
                     <td align="left" width="90">Adresa:</td>
                     <td align="left">{$address->adresa}</td>

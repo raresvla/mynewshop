@@ -15,8 +15,16 @@
     </li>
 </ul>
 
+{if $error}
+<br />
+<div align="center" class="error niftyable">
+    {$error}
+</div>
+{/if}
+
+{assign var=cumparator value=$invoice->cumparator|default:$data}
 <form class="formular" name="shipping" method="post" action="/comanda/set-livrare" style="margin: 25px 0 40px;">
-    {if $billType == 'fizica'}
+    {if $invoice->tip == 'fizica'}
     <table cellspacing="0" cellpadding="5" border="0" align="center" width="100%" class="table-border">
         <thead>
             <tr>
@@ -31,31 +39,31 @@
                             <tr>
                                 <td align="left" width="120">Nume: * </td>
                                 <td align="left">
-                                    <input type="text" value="{$data->nume}" size="45" class="realname" name="bill[nume]" />
+                                    <input type="text" value="{$cumparator.nume}" size="45" class="realname" name="cumparator[nume]" />
                                 </td>
                             </tr>
                             <tr>
                                 <td align="left" width="120">Prenume: * </td>
                                 <td align="left">
-                                    <input type="text" value="{$data->prenume}" size="45" class="realname" name="bill[prenume]" />
+                                    <input type="text" value="{$cumparator.prenume}" size="45" class="realname" name="cumparator[prenume]" />
                                 </td>
                             </tr>
                             <tr>
                                 <td align="left" width="120">Telefon: * </td>
                                 <td align="left">
-                                    <input type="text" value="{$data->telefon}" size="20" class="required" name="bill[telefon]" title="Introduceţi numărul de telefon" />
+                                    <input type="text" value="{$cumparator.telefon}" size="20" class="required" name="cumparator[telefon]" title="Introduceţi numărul de telefon" />
                                 </td>
                             </tr>
                             <tr>
                                 <td align="left" width="120">Fax:</td>
                                 <td align="left">
-                                    <input type="text" value="{$data->fax}" size="20" name="bill[fax]" />
+                                    <input type="text" value="{$cumparator.fax}" size="20" name="cumparator[fax]" />
                                 </td>
                             </tr>
                             <tr>
                                 <td align="left" width="120">Email: *</td>
                                 <td align="left">
-                                    <input type="text" value="{$data->email}" size="20" class="required validate-email" name="bill[email]" title="Introduceţi adresa de email" />
+                                    <input type="text" value="{$cumparator.email}" size="20" class="required validate-email" name="cumparator[email]" title="Introduceţi adresa de email" />
                                 </td>
                             </tr>
                         </tbody>
@@ -70,7 +78,8 @@
             <tr>
                 <td align="left" class="table-header2">
                     Adresa de facturare
-                    <input type="hidden" value="" name="bill[address]" class="selected-sub-section required" title="Selectaţi o adresă de facturare" />
+                    <input type="hidden" value="{$invoice->cumparator.adresa}" name="cumparator[adresa]"
+                           class="selected-sub-section required" title="Selectaţi o adresă de facturare" />
                 </td>
                 <td align="right" class="table-header2">
                     <a style="color: gray; font-size: 11px" href="javascript://" class="do-action" rel="add-address">
@@ -89,7 +98,8 @@
             <tr>
                 <td align="left" class="table-header2">
                     Cumpărător
-                    <input type="hidden" value="" name="bill[company]" class="selected-sub-section required" title="Selectaţi o companie dintre cele înregistrare" />
+                    <input type="hidden" value="{$invoice->cumparator.companie}" name="cumparator[companie]"
+                           class="selected-sub-section required" title="Selectaţi o companie dintre cele înregistrare" />
                 </td>
                 <td align="right" class="table-header2">
                     <a style="color: gray; font-size: 11px" href="javascript://" class="do-action" rel="add-company">
@@ -114,7 +124,8 @@
                         <tbody>
                             <tr>
                                 <td width="20">
-                                    <input type="checkbox" checked="checked" value="1" id="destinatar" name="receiver[cumparator]" class="show-hide-next" />
+                                    <input type="checkbox" id="destinatar" name="destinatar[cumparator]" value="1"
+                                           class="show-hide-next" {if !(!$invoice->buyerIsReceiver())}checked="checked"{/if} />
                                 </td>
                                 <td style="color: gray; font-size: 11px;">
                                     <label for="destinatar">Adresa de facturare este aceeaşi cu adresa de livrare.</label>
@@ -128,47 +139,47 @@
         <tbody>
             <tr>
                 <td align="center" style="padding: 0px;" colspan="2">
-                    <div style="display: none;" class="toggle-target">
+                    <div class="toggle-target" {if !(!$invoice->buyerIsReceiver())}style="display: none;"{/if}>
                         <table cellspacing="0" cellpadding="5" border="0" width="100%">
                             <tbody>
                                 <tr style="background-color: #F3F7FC;">
                                     <td align="left">&nbsp;Nume: * </td>
                                     <td align="left">
-                                        <input type="text" value="" size="45" class="realname" name="receiver[nume]" />
+                                        <input type="text" value="{$invoice->destinatar.nume}" size="45" class="realname" name="destinatar[nume]" />
                                     </td>
                                 </tr>
                                 <tr style="background-color: #F3F7FC;">
                                     <td align="left">&nbsp;Prenume: * </td>
                                     <td align="left">
-                                        <input type="text" value="" size="45" class="realname" name="receiver[prenume]" />
+                                        <input type="text" value="{$invoice->destinatar.prenume}" size="45" class="realname" name="destinatar[prenume]" />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td align="left" width="120">&nbsp;Adresa: *</td>
                                     <td align="left">
-                                        <textarea style="overflow: auto;" class="required" cols="62" rows="3" name="receiver[adresa]" title="Introduceţi adresa destinatarului"></textarea>
+                                        <textarea style="overflow: auto;" class="required" cols="62" rows="3" name="destinatar[adresa]" title="Introduceţi adresa destinatarului">{$invoice->destinatar.adresa}</textarea>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td align="left" width="120">&nbsp;Localitate: *</td>
                                     <td align="left">
-                                        <input type="text" value="" size="50" class="required" name="receiver[localitate]" title="Introduceţi localitatea destinatarului" />
+                                        <input type="text" value="{$invoice->destinatar.oras}" size="50" class="required" name="destinatar[oras]" title="Introduceţi localitatea destinatarului" />
                                     </td>
                                 </tr>
                                 <tr>
                                     <td align="left" width="120">&nbsp;Judeţ / Sector: * </td>
                                     <td align="left">
-                                        <select id="judet_destinatar" class="required" name="receiver[judet]" title="Selectaţi judeţul destinatarului">
+                                        <select id="judet_destinatar" class="required" name="destinatar[judet]" title="Selectaţi judeţul destinatarului">
                                             <option value="">...</option>
                                             {foreach from=$regions item=name key=groupName}
                                             {if $name|@is_array}
                                             <optgroup label="{$groupName}">
                                                 {foreach from=$name item=sub}
-                                                <option value="{$sub}">{$sub}</option>
+                                                <option value="{$sub}" {if $invoice->destinatar.judet == $sub}selected="selected"{/if}>{$sub}</option>
                                                 {/foreach}
                                             </optgroup>
                                             {else}
-                                            <option value="{$name}">{$name}</option>
+                                            <option value="{$name}" {if $invoice->destinatar.judet == $name}selected="selected"{/if}>{$name}</option>
                                             {/if}
                                             {/foreach}
                                         </select>
@@ -177,7 +188,7 @@
                                 <tr>
                                     <td align="left" width="120">&nbsp;Cod poştal: </td>
                                     <td align="left">
-                                        <input type="text" value="" size="10" name="receiver[cod_postal]" />
+                                        <input type="text" value="{$invoice->destinatar.cod_postal}" size="10" name="destinatar[cod_postal]" />
                                     </td>
                                 </tr>
                             </tbody>

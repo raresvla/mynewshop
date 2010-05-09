@@ -32,11 +32,14 @@ class IndexController extends Zend_Controller_Action
      */
     public function dumpAction()
     {
+        $response = $this->getResponse();
+        $response->setHeader('Content-Type', 'text/html; charset=utf-8', true);
         echo '<pre>';
         print_r($_SESSION);
         print_r($_SERVER);
         print_r($_COOKIE);
         echo '</pre>';
+        $response->sendHeaders();
         die();
     }
 

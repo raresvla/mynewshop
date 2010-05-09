@@ -374,3 +374,11 @@ ul.steps li a { display: block; width: 100%; background: url(/img/misc/step_done
 ul.steps li p { padding-top:22px; }
 ul.steps li.current { color: #000; font-weight: bold; }
 ul.steps li.first { margin-left: 65px; }
+
+/* order */
+.pre-emphased { padding-bottom: 6px; }
+.post-emphased { padding-top: 6px; }
+.emphased-top { padding: 8px !important; border-top: 1px solid #999999; }
+.emphased-bottom { padding: 8px !important; border-bottom: 1px solid #999999 !important; }
+.payment-options { height: 1%; overflow: auto; }
+.payment-options li { float: left; margin-left: 75px; text-align: left; }
