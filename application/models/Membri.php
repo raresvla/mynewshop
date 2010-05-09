@@ -23,7 +23,7 @@ class Membri extends BaseMembri
      */
     public function validData($update = false)
     {
-        $alnum = new Zend_Validate_Alnum(true);
+        $name = new Zend_Validate_Regex('/^[a-zA-ZăîâşţĂÎÂŞŢ-]+$/');
         $length3 = new Zend_Validate_StringLength(array('min' => 3));
         $length6 = new Zend_Validate_StringLength(array('min' => 6));
 
@@ -42,7 +42,7 @@ class Membri extends BaseMembri
 
         $vChainRealName = new Zend_Validate();
         $vChainRealName->addValidator($length3);
-        $vChainRealName->addValidator($alnum);
+        $vChainRealName->addValidator($name);
 
         $toValidate = array(
             'username' => $vChainUsername,

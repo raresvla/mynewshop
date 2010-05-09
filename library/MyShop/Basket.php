@@ -74,6 +74,16 @@ class MyShop_Basket implements ArrayAccess, Iterator, Countable
     }
 
     /**
+     * Get the id of current user
+     *
+     * @return integer
+     */
+    public function getUserId()
+    {
+        return $this->_userId;
+    }
+
+    /**
      * Load basket from shadow copy
      */
     private function _loadFromShadowCopy()

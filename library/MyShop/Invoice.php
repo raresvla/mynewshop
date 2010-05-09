@@ -11,12 +11,15 @@ class MyShop_Invoice
 {
     private static $_instances = array();
 
+    public $invalidFields = array();
     private $_basket;
     private $_data;
+    private $_cache;
+    
 
-    const DATA_NAMESPACE = 'INVOICE';
-    const INVOICE_TYPE_DATA = 'type';
-    const SHIPPING_DATA = 'shipping';
+    const DATA_NAMESPACE = 'INVOICE_%s';
+    const INVOICE_TYPE_PERSONAL = 'fizica';
+    const INVOICE_TYPE_BUSINESS = 'juridica';
 
     /**
      * Get Invoice instance
@@ -42,10 +45,11 @@ class MyShop_Invoice
      */
     protected function  __construct(MyShop_Basket $basket)
     {
-        if(!isset($_SESSION[self::DATA_NAMESPACE])) {
-            $_SESSION[self::DATA_NAMESPACE] = array();
+        $namespace = sprintf(self::DATA_NAMESPACE, (string) $basket);
+        if(!isset($_SESSION[$namespace])) {
+            $_SESSION[$namespace] = array();
         }
-        $this->_data = &$_SESSION[self::DATA_NAMESPACE];
+        $this->_data = &$_SESSION[$namespace];
         $this->_basket = $basket;
     }
 
@@ -102,5 +106,176 @@ class MyShop_Invoice
     public function  __get($name)
     {
         return $this->get($name);
+    }
+
+    /**
+     * Implemented for empty checks
+     *
+     * @return boolean
+     */
+    public function __isset($name)
+    {
+        return isset($this->_data[$name]);
+    }
+
+    /**
+     * Validate submitted information
+     *
+     * @return boolean
+     */
+    public function isValid()
+    {
+        $name = new Zend_Validate_Regex('/^[a-zA-ZăîâşţĂÎÂŞŢ-]+$/');
+        $length3 = new Zend_Validate_StringLength(array('min' => 3));
+        $length6 = new Zend_Validate_StringLength(array('min' => 6));
+        $email = new Zend_Validate_EmailAddress();
+        
+        $vChainRealName = new Zend_Validate();
+        $vChainRealName->addValidator($length3);
+        $vChainRealName->addValidator($name);
+
+        if($this->tip == self::INVOICE_TYPE_PERSONAL) {
+            $buyerValidator = array(
+                'nume' => $vChainRealName,
+                'prenume' => $vChainRealName,
+                'telefon' => $length6,
+                'email' => $email,
+                'adresa' => new Zend_Validate_InArray(array_keys($this->_getUserAddresses()))
+            );
+        }
+        else {
+            $buyerValidator = array(
+                'companie' => new Zend_Validate_InArray(array_keys($this->_getUserCompanies()))
+            );
+        }
+
+        $valid = true;
+        foreach($buyerValidator as $field => $validator) {
+            $test = $validator->isValid($this->cumparator[$field]);
+            if(!$test) {
+                $this->invalidFields['cumparator'][] = $field;
+            }
+            $valid = $valid && $test;
+        }
+
+        if(empty($this->destinatar['cumparator'])) {
+            $receiverValidator = array(
+                'nume' => $vChainRealName,
+                'prenume' => $vChainRealName,
+                'adresa' => $length3,
+                'oras' => $length3,
+                'judet' => $length3
+            );
+            foreach($receiverValidator as $field => $validator) {
+                $test = $validator->isValid($this->destinatar[$field]);
+                if(!$test) {
+                    $this->invalidFields['destinatar'][] = $field;
+                }
+                $valid = $valid && $test;
+            }
+        }
+
+        return $valid;
+    }
+
+    /**
+     * Get current user's saved addresess
+     *
+     * @return array
+     */
+    private function _getUserAddresses()
+    {
+        $userId = $this->_basket->getUserId();
+        if(empty($userId)) {
+            throw new Zend_Exception('Userid cannot be empty!');
+        }
+
+        if(empty($this->_cache['addresses'])) {
+            $sql = Doctrine_Query::create();
+            $sql->select('m.id, a.*');
+            $sql->from('Membri m');
+            $sql->leftJoin('m.Adrese a INDEXBY a.id');
+            $sql->where('m.id = ?', $userId);
+            $data = $sql->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
+            
+            $this->_cache['addresses'] = $data['Adrese'];
+        }
+
+        return $this->_cache['addresses'];
+    }
+
+    /**
+     * Get current user's saved companies
+     *
+     * @return array
+     */
+    private function _getUserCompanies()
+    {
+        $userId = $this->_basket->getUserId();
+        if(empty($userId)) {
+            throw new Zend_Exception('Userid cannot be empty!');
+        }
+
+        if(empty($this->_cache['companies'])) {
+            $sql = Doctrine_Query::create();
+            $sql->select('m.id, c.*');
+            $sql->from('Membri m');
+            $sql->leftJoin('m.Companii c INDEXBY c.id');
+            $sql->where('m.id = ?', $userId);
+            $data = $sql->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
+            
+            $this->_cache['companies'] = $data['Companii'];
+        }
+        
+        return $this->_cache['companies'];
+    }
+
+    /**
+     * Check if buyer is also the receiver
+     * 
+     * @return boolean
+     */
+    public function buyerIsReceiver()
+    {
+        return !empty($this->destinatar['cumparator']);
+    }
+
+    /**
+     * Returns order shipping address
+     *
+     * @return array
+     */
+    public function getShippingAddress()
+    {
+        if(empty($this->cumparator)) {
+            return false;
+        }
+        if(!$this->buyerIsReceiver()) {
+            return $this->destinatar;
+        }
+
+        $addresses = $this->_getUserAddresses();
+        return $addresses[$this->cumparator['adresa']];
+    }
+
+    /**
+     * Calculate shipping cost
+     *
+     * @return float
+     */
+    public function getShippingCost()
+    {
+        $value = 0;
+        if($this->_basket->total() < floatval($this->_basket->config->VALOARE_COST_TRANSPORT_ZERO)) {
+            $address = $this->getShippingAddress();
+            if(strpos($address['judet'], 'Sector') !== false) {
+                $value = $this->_basket->config->TAXA_TRANSPORT_BUCURESTI;
+            }
+            else {
+                $this->_basket->config->TAXA_TRANSPORT_PROVINCIE;
+            }
+        }
+
+        return $value;
     }
 }

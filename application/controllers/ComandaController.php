@@ -63,7 +63,7 @@ class ComandaController extends Zend_Controller_Action
             return;
         }
 
-        $this->view->invoice->type = $this->_getParam('type');
+        $this->view->invoice->tip = $this->_getParam('type');
         $this->_redirect('/comanda/livrare');
     }
 
@@ -84,13 +84,11 @@ class ComandaController extends Zend_Controller_Action
         $this->_helper->Layout->includeCss('window/default.css');
         $this->_helper->Layout->includeCss('window/lighting.css');
 
-        $billType = $this->view->invoice->type;
-        $this->view->assign('billType', $billType);
         $this->view->assign('data', Doctrine::getTable('Membri')->find($_SESSION['profile']['id']));
         $this->view->assign('regions', Doctrine::getTable('Judete')->fetchAll());
 
         if($this->getRequest()->isXmlHttpRequest()) {
-            $template = ($billType == 'fizica' ? 'livrare-lista-adrese.html' : 'livrare-lista-comanii.html');
+            $template = ($this->view->invoice->type == 'fizica' ? 'livrare-lista-adrese.html' : 'livrare-lista-comanii.html');
             $this->getFrontController()->setParam('noViewRenderer', true);
             $this->getResponse()->setBody($this->view->render("comanda/{$template}"));
         }
@@ -101,8 +99,21 @@ class ComandaController extends Zend_Controller_Action
      */
     public function setLivrareAction()
     {
-        print_r($this->_getAllParams());
-        die();
+        $this->view->invoice->cumparator = $this->_getParam('cumparator');
+        $this->view->invoice->destinatar = $this->_getParam('destinatar');
+
+        if(!$this->view->invoice->isValid()) {
+            $message = null;
+            $msgTpl = "'%s' (%s)";
+            foreach($this->view->invoice->invalidFields as $section => $fields) {
+                $message .= ($message ? ' şi ' : '') . sprintf($msgTpl, implode("', '", $fields), ucfirst($section));
+            }
+            $message = "Valorile introduse / selectate pentru {$message} nu sunt valide!";
+            $this->view->assign('error', $message);
+            $this->_forward('livrare');
+            return;
+        }
+        
         $this->_redirect('/comanda/confirma');
     }
 
@@ -111,11 +122,11 @@ class ComandaController extends Zend_Controller_Action
      */
     public function confirmaAction()
     {
-        $billType = $this->_getParam('billType');
         $this->_helper->Layout->addBreadCrumb('Mod de facturare', '/comanda/mod-facturare');
-        $this->_helper->Layout->addBreadCrumb('Modalitate de livrare', "comanda/livrare?type={$billType}");
-        $this->_helper->Layout->addBreadCrumb('Confirmă');
-
-        $this->view->assign('billType', $billType);
+        $this->_helper->Layout->addBreadCrumb('Modalitate de livrare', "/comanda/livrare");
+        $this->_helper->Layout->addBreadCrumb('Confirmă comanda');
+        $this->_helper->Layout->includeJs('lib/validate.js');
+        $this->_helper->Layout->includeJs('custom-validators.js');
+        $this->_helper->Layout->includeJs('order.js');
     }
 }
