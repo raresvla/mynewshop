@@ -65,12 +65,20 @@
                     <strong>Cumpărător{if $invoice->buyerIsReceiver()} (Destinatar){/if}:</strong>
                 </td>
                 <td align="right" style="padding-top: 6px;">
+                {if $invoice->tip == fizica}
                     <strong style="font-size: 13px;">{$invoice->cumparator.nume} {$invoice->cumparator.prenume}</strong><br />
                     {if $invoice->buyerIsReceiver()}
                     {assign var=address value=$invoice->getShippingAddress()}
-                    {$address.adresa}<br />{$address.oras}, Jud. {$address.judet}<br />
+                    {$address.adresa}<br />{$address.oras}, {if $invoice->isProvince($address.judet)}Jud. {/if}{$address.judet}<br />
                     {/if}
                     {$invoice->cumparator.telefon}, {$invoice->cumparator.email}
+                {else}
+                    <strong style="font-size: 13px;">{$invoice->cumparator.denumire}</strong><br />
+                    C.U.I.: {$invoice->cumparator.cod_fiscal}<br />
+                    Nr. Reg. Com.: {$invoice->cumparator.reg_com}<br />
+                    {$invoice->cumparator.adresa_sediu}<br />
+                    {$invoice->cumparator.oras_sediu}, {if $invoice->isProvince($invoice->cumparator.judet_sediu)}Jud. {/if}{$invoice->cumparator.judet_sediu}
+                {/if}
                 </td>
             </tr>
             {if !$invoice->buyerIsReceiver()}

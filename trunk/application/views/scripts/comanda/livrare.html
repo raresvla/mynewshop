@@ -78,8 +78,8 @@
             <tr>
                 <td align="left" class="table-header2">
                     Adresa de facturare
-                    <input type="hidden" value="{$invoice->cumparator.adresa}" name="cumparator[adresa]"
-                           class="selected-sub-section required" title="Selectaţi o adresă de facturare" />
+                    <input type="hidden" value="{if $data->Adrese|@count == 1}{$data->Adrese[0].id}{else}{$invoice->cumparator.adresa}{/if}"
+                           name="cumparator[adresa]" class="selected-sub-section required" title="Selectaţi o adresă de facturare" />
                 </td>
                 <td align="right" class="table-header2">
                     <a style="color: gray; font-size: 11px" href="javascript://" class="do-action" rel="add-address">
@@ -98,8 +98,8 @@
             <tr>
                 <td align="left" class="table-header2">
                     Cumpărător
-                    <input type="hidden" value="{$invoice->cumparator.companie}" name="cumparator[companie]"
-                           class="selected-sub-section required" title="Selectaţi o companie dintre cele înregistrare" />
+                    <input type="hidden" value="{if $data->Companii|@count == 1}{$data->Companii[0].id}{else}{$invoice->cumparator.id}{/if}"
+                       name="cumparator[companie]" class="selected-sub-section required" title="Selectaţi o companie dintre cele înregistrare" />
                 </td>
                 <td align="right" class="table-header2">
                     <a style="color: gray; font-size: 11px" href="javascript://" class="do-action" rel="add-company">
@@ -125,7 +125,7 @@
                             <tr>
                                 <td width="20">
                                     <input type="checkbox" id="destinatar" name="destinatar[cumparator]" value="1"
-                                           class="show-hide-next" {if !(!$invoice->buyerIsReceiver())}checked="checked"{/if} />
+                                           class="show-hide-next" {if !$invoice->cumparator || $invoice->buyerIsReceiver()}checked="checked"{/if} />
                                 </td>
                                 <td style="color: gray; font-size: 11px;">
                                     <label for="destinatar">Adresa de facturare este aceeaşi cu adresa de livrare.</label>
@@ -139,7 +139,7 @@
         <tbody>
             <tr>
                 <td align="center" style="padding: 0px;" colspan="2">
-                    <div class="toggle-target" {if !(!$invoice->buyerIsReceiver())}style="display: none;"{/if}>
+                    <div class="toggle-target" {if !$invoice->cumparator || $invoice->buyerIsReceiver()}style="display: none;"{/if}>
                         <table cellspacing="0" cellpadding="5" border="0" width="100%">
                             <tbody>
                                 <tr style="background-color: #F3F7FC;">

@@ -66,7 +66,11 @@ class MyShop_Invoice
         if(isset($this->_data[$dataType]) && !$overwrite) {
             throw new Zend_Exception("Data for {$dataType} already exists! Do you want to overwrite?");
         }
-        
+
+        //reset if setting type
+        if($dataType == 'tip' && (!isset($this->_data['tip']) || $this->_data['tip'] != $data)) {
+            $this->_data = array();
+        }
         $this->_data[$dataType] = $data;
         return $this;
     }
@@ -105,6 +109,10 @@ class MyShop_Invoice
      */
     public function  __get($name)
     {
+        if($name == 'cumparator' && $this->tip == self::INVOICE_TYPE_BUSINESS) {
+            $companies = $this->_getUserCompanies();
+            return $companies[$this->_data['cumparator']['companie']];
+        }
         return $this->get($name);
     }
 
@@ -151,7 +159,7 @@ class MyShop_Invoice
 
         $valid = true;
         foreach($buyerValidator as $field => $validator) {
-            $test = $validator->isValid($this->cumparator[$field]);
+            $test = $validator->isValid($this->_data['cumparator'][$field]);
             if(!$test) {
                 $this->invalidFields['cumparator'][] = $field;
             }
@@ -167,7 +175,7 @@ class MyShop_Invoice
                 'judet' => $length3
             );
             foreach($receiverValidator as $field => $validator) {
-                $test = $validator->isValid($this->destinatar[$field]);
+                $test = $validator->isValid($this->_data['destinatar'][$field]);
                 if(!$test) {
                     $this->invalidFields['destinatar'][] = $field;
                 }
@@ -268,7 +276,7 @@ class MyShop_Invoice
         $value = 0;
         if($this->_basket->total() < floatval($this->_basket->config->VALOARE_COST_TRANSPORT_ZERO)) {
             $address = $this->getShippingAddress();
-            if(strpos($address['judet'], 'Sector') !== false) {
+            if(!$this->isProvince($address['judet'])) {
                 $value = $this->_basket->config->TAXA_TRANSPORT_BUCURESTI;
             }
             else {
@@ -277,5 +285,16 @@ class MyShop_Invoice
         }
 
         return $value;
+    }
+
+    /**
+     * Check if region is in provice
+     *
+     * @param string $region
+     * @return boolean
+     */
+    public function isProvince($region)
+    {
+        return !(strpos($region, 'Sector') !== false);
     }
 }
