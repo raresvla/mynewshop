@@ -1,11 +1,15 @@
+{assign var=companiesCount value=$data->Companii|@count}
 {foreach from=$data->Companii item=company name=companies}
 <tr>
     <td align="left" style="padding: 0px;" colspan="2">
-        <table cellspacing="0" cellpadding="5" border="0" width="100%" class="sub-section" {if !$smarty.foreach.companies.first}style="border-top: 1px solid #E6E6E6"{/if}>
+        <table cellspacing="0" cellpadding="5" border="0" width="100%"
+               class="sub-section {if $companiesCount == 1 || $invoice->cumparator.id == $company->id}selected{/if}"
+               {if !$smarty.foreach.companies.first}style="border-top: 1px solid #E6E6E6"{/if}>
             <tbody>
                 <tr>
                     <td align="center" width="50" valign="middle" rowspan="11">
-                        <input type="radio" value="{$company->id}" name="selected[company]" />
+                        <input type="radio" value="{$company->id}" name="selected[company]"
+                            {if $companiesCount == 1 || $invoice->cumparator.id == $company->id}checked="checked"{/if}/>
                     </td>
                     <td align="left" width="120">Denumire:</td>
                     <td align="left"><strong>{$company->denumire}</strong></td>
