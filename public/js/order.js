@@ -1,15 +1,10 @@
 var Order = {
-    step: null,
-    steps: ['billType', 'shipping'],
     content: null,
     form: null,
     billType: null,
     
     init: function() {
         this.content = $('content');
-//        if(this.form) {
-//            this.step = this.steps.indexOf(this.form.getAttribute('name'));
-//        }
         this.content.delegate('click', {
             '.next': this.nextStep.bindAsEventListener(this),
             '.next *': this.nextStep.bindAsEventListener(this),
@@ -167,6 +162,12 @@ var Order = {
                 winDimensions = {width: 650, height: 380};
             }
             break;
+            case 'preview': {
+                url = '/comanda/preview';
+                title = 'Comanda MyShop';
+                winDimensions = {width: 750, height: 525};
+            }
+            break;
         }
 
         new Ajax.Request(url, {
@@ -206,8 +207,9 @@ var Order = {
 
     showWindow: function(content, options) {
         options = Object.extend({
-            className: 'bluelighting',
+            className: 'alphacube', //className: 'bluelighting'
             maximizable: false,
+            minimizable: false,
             resizable: false,
             hideEffect: Element.hide,
             showEffect: Element.show,

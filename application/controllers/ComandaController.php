@@ -128,5 +128,39 @@ class ComandaController extends Zend_Controller_Action
         $this->_helper->Layout->includeJs('lib/validate.js');
         $this->_helper->Layout->includeJs('custom-validators.js');
         $this->_helper->Layout->includeJs('order.js');
+
+        //window
+        $this->_helper->Layout->includeJs('lib/window/window.js');
+        $this->_helper->Layout->includeCss('window/default.css');
+        $this->_helper->Layout->includeCss('window/alphacube.css');
+    }
+
+    /**
+     * Preview order
+     */
+    public function previewAction()
+    {
+        $sql = Doctrine_Query::create();
+        $sql->select('MAX(id) + 1 as nextId');
+        $sql->from('Comenzi');
+        $data = $sql->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
+
+        $buyer = $this->view->invoice->cumparator;
+        $buyer['address'] = $this->view->invoice->getBillingAddress();
+        $receiver = $this->view->invoice->destinatar;
+        $receiver['address'] = $this->view->invoice->getShippingAddress();
+        $order = array(
+            'code' => "#{$data['nextId']}-" . date('dm') . (date('Y') - 2000),
+            'date' => date('d-m-Y\, H:i:s'),
+            'buyer' => $buyer,
+            'receiver' => $receiver,
+            'type' => $this->view->invoice->tip,
+            'products' => $this->view->basket,
+            'totalValue' => $this->view->basket->total(),
+            'shippingCost' => $this->view->invoice->getShippingCost()
+        );
+
+        $this->view->assign('cfg', $this->view->basket->config);
+        $this->view->assign('order', $order);
     }
 }
