@@ -343,7 +343,7 @@ table .table-header { background-color:#E1EFF5; border-bottom:1px solid #E6ECF9;
 
 
 /* windows styles */
-.bluelighting_content { font-family: Tahoma !important; text-align: left; padding: 10px 0; }
+.bluelighting_content, .alphacube_content { font-family: Tahoma !important; text-align: left; padding: 10px 0; }
 
 /* paginator */
 .paginator-table { background-color:#F3F7FC; border-bottom:1px solid #D3D3D3; border-top:1px solid #D3D3D3; color:#555555; }

@@ -249,6 +249,30 @@ class MyShop_Invoice
     }
 
     /**
+     * Returns order billing address
+     *
+     * @return array
+     */
+    public function getBillingAddress()
+    {
+        if(empty($this->cumparator)) {
+            return false;
+        }
+
+        if($this->tip == self::INVOICE_TYPE_PERSONAL) {
+            $addresses = $this->_getUserAddresses();
+            $address = $addresses[$this->cumparator['adresa']];
+        }
+        else {
+            $companies = $this->_getUserCompanies();
+            //print_r($companies); die();
+            //die();
+        }
+
+        return $address;
+    }
+
+    /**
      * Returns order shipping address
      *
      * @return array
