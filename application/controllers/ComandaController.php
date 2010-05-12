@@ -140,27 +140,53 @@ class ComandaController extends Zend_Controller_Action
      */
     public function previewAction()
     {
-        $sql = Doctrine_Query::create();
-        $sql->select('MAX(id) + 1 as nextId');
-        $sql->from('Comenzi');
-        $data = $sql->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
-
-        $buyer = $this->view->invoice->cumparator;
-        $buyer['address'] = $this->view->invoice->getBillingAddress();
-        $receiver = $this->view->invoice->destinatar;
-        $receiver['address'] = $this->view->invoice->getShippingAddress();
-        $order = array(
-            'code' => "#{$data['nextId']}-" . date('dm') . (date('Y') - 2000),
-            'date' => date('d-m-Y\, H:i:s'),
-            'buyer' => $buyer,
-            'receiver' => $receiver,
-            'type' => $this->view->invoice->tip,
-            'products' => $this->view->basket,
-            'totalValue' => $this->view->basket->total(),
-            'shippingCost' => $this->view->invoice->getShippingCost()
-        );
+        $order = $this->view->invoice->fetchAllData();
+        $order['paymentMethod'] = $this->_getParam('paymentMethod');
 
         $this->view->assign('cfg', $this->view->basket->config);
         $this->view->assign('order', $order);
+    }
+
+    /**
+     * Save order in database
+     */
+    public function trimiteAction()
+    {
+        $this->view->invoice->modalitatePlata = $this->_getParam('plata');
+
+        try {
+            $this->view->invoice->save();
+            $this->view->assign('order', $this->view->invoice->fetchAllData());
+
+            if($this->view->invoice->tip == MyShop_Invoice::INVOICE_TYPE_PERSONAL) {
+                $buyerEmail = $this->view->invoice->cumparator['email'];
+                $buyerName = $this->view->invoice->cumparator['nume'] . ' ' . $this->view->invoice->cumparator['prenume'];
+            }
+            else {
+                $buyerEmail = $this->view->invoice->cumparator['email_sediu'];
+                $buyerName = $this->view->invoice->cumparator['denumire'];
+            }
+            $email = new Zend_Mail();
+            $email->addTo($buyerEmail, $buyerName);
+            $email->addBcc($this->view->basket->config->ADRESA_EMAIL_CORESPONDENTA);
+            $email->setBodyHtml($this->view->render('comanda/preview.html'));
+            $email->setBodyText('This email can be viewed only in HTML format.');
+            $email->send(new Zend_Mail_Transport_Smtp());
+        }
+        catch(Exception $e) {
+            $this->view->assign('error', 'A apărut o eroare la salvarea comenzii dvs. Vă rugăm reîncercaţi. (' . $e->getMessage() . ')');
+            $this->_forward('confirma');
+            return;
+        }
+
+        $this->_redirect('/comanda/trimisa');
+    }
+
+    /**
+     * Display order sent confimation page
+     */
+    public function trimisaAction()
+    {
+        
     }
 }

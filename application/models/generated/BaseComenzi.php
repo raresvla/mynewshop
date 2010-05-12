@@ -26,7 +26,7 @@
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
  * @author     ##NAME## <##EMAIL##>
- * @version    SVN: $Id: Builder.php 6820 2009-11-30 17:27:49Z jwage $
+ * @version    SVN: $Id: Builder.php 7490 2010-03-29 19:53:27Z jwage $
  */
 abstract class BaseComenzi extends Doctrine_Record
 {
@@ -56,8 +56,7 @@ abstract class BaseComenzi extends Doctrine_Record
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
-             'default' => '0000-00-00 00:00:00',
-             'notnull' => true,
+             'notnull' => false,
              'autoincrement' => false,
              ));
         $this->hasColumn('membru_id', 'integer', 4, array(
@@ -115,7 +114,7 @@ abstract class BaseComenzi extends Doctrine_Record
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
-             'notnull' => true,
+             'notnull' => false,
              'autoincrement' => false,
              ));
         $this->hasColumn('status', 'enum', 12, array(
@@ -133,7 +132,7 @@ abstract class BaseComenzi extends Doctrine_Record
              ),
              'primary' => false,
              'default' => 'neconfirmata',
-             'notnull' => true,
+             'notnull' => false,
              'autoincrement' => false,
              ));
         $this->hasColumn('data_livrarii', 'date', null, array(

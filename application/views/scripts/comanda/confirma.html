@@ -15,6 +15,13 @@
     </li>
 </ul>
 
+{if $error}
+<br />
+<div align="center" class="error niftyable">
+    {$error}
+</div>
+{/if}
+
 <form name="confirma" method="post" action="/comanda/trimite" style="margin: 25px 0pt 40px;">
     <table cellspacing="0" cellpadding="8" border="0" align="center" width="100%" class="table-border">
         <tbody>
@@ -83,13 +90,14 @@
             </tr>
             {if !$invoice->buyerIsReceiver()}
             <tr>
-                <td align="left" width="30%" valign="top" style="padding-top: 6px;">
+                <td align="left" width="30%" valign="top" style="padding-top: 6px; border-top: 1px solid #E6E6E6;">
                     <strong>Destinatar:</strong>
                 </td>
-                <td align="right" style="padding-top: 6px;">
+                <td align="right" style="padding-top: 6px; border-top: 1px solid #E6E6E6;">
                     <strong style="font-size: 13px;">{$invoice->destinatar.nume} {$invoice->destinatar.prenume}</strong><br />
                     {$invoice->destinatar.adresa}<br />
-                    {$invoice->destinatar.cod_postal} {$invoice->destinatar.oras}, Jud. {$invoice->destinatar.judet}<br />
+                    {$invoice->destinatar.oras}, CP {$invoice->destinatar.cod_postal}<br />
+                    Jud. {$invoice->destinatar.judet}<br />
                 </td>
             </tr>
             {/if}
