@@ -6,6 +6,12 @@
  * @author Rares Vlasceanu
  * @version 1.0
  * @package MyShop
+ *
+ * @property string tip
+ * @property array cumparator
+ * @property array destinatar
+ * @property string modalitatePlata
+ * @property string specificatii
  */
 class MyShop_Invoice
 {
@@ -16,10 +22,10 @@ class MyShop_Invoice
     private $_data;
     private $_cache;
     
-
     const DATA_NAMESPACE = 'INVOICE_%s';
     const INVOICE_TYPE_PERSONAL = 'fizica';
     const INVOICE_TYPE_BUSINESS = 'juridica';
+    const INVOICE_CODE = '#%d-%s';
 
     /**
      * Get Invoice instance
@@ -86,6 +92,13 @@ class MyShop_Invoice
         if(!isset($this->_data[$dataType])) {
             return null;
         }
+        if($dataType == 'cumparator' && $this->tip == self::INVOICE_TYPE_BUSINESS) {
+            $companies = $this->_getUserCompanies();
+            return $companies[$this->_data['cumparator']['companie']];
+        }
+        if($dataType == 'destinatar' && $this->buyerIsReceiver()) {
+            return $this->cumparator;
+        }
 
         return $this->_data[$dataType];
     }
@@ -109,10 +122,6 @@ class MyShop_Invoice
      */
     public function  __get($name)
     {
-        if($name == 'cumparator' && $this->tip == self::INVOICE_TYPE_BUSINESS) {
-            $companies = $this->_getUserCompanies();
-            return $companies[$this->_data['cumparator']['companie']];
-        }
         return $this->get($name);
     }
 
@@ -166,7 +175,7 @@ class MyShop_Invoice
             $valid = $valid && $test;
         }
 
-        if(empty($this->destinatar['cumparator'])) {
+        if(!$this->buyerIsReceiver()) {
             $receiverValidator = array(
                 'nume' => $vChainRealName,
                 'prenume' => $vChainRealName,
@@ -245,7 +254,7 @@ class MyShop_Invoice
      */
     public function buyerIsReceiver()
     {
-        return !empty($this->destinatar['cumparator']);
+        return !empty($this->_data['destinatar']['cumparator']);
     }
 
     /**
@@ -259,14 +268,19 @@ class MyShop_Invoice
             return false;
         }
 
+        $address = array();
         if($this->tip == self::INVOICE_TYPE_PERSONAL) {
             $addresses = $this->_getUserAddresses();
             $address = $addresses[$this->cumparator['adresa']];
         }
         else {
             $companies = $this->_getUserCompanies();
-            //print_r($companies); die();
-            //die();
+            $companyId = $this->_data['cumparator']['companie'];
+            $fields = array('adresa_sediu', 'oras_sediu', 'judet_sediu', 'cod_postal_sediu');
+            $data = array_intersect_key($companies[$companyId], array_flip($fields));
+            foreach($data as $key => $value) {
+                $address[str_replace('_sediu', '', $key)] = $value;
+            }
         }
 
         return $address;
@@ -286,8 +300,7 @@ class MyShop_Invoice
             return $this->destinatar;
         }
 
-        $addresses = $this->_getUserAddresses();
-        return $addresses[$this->cumparator['adresa']];
+        return $this->getBillingAddress();
     }
 
     /**
@@ -309,6 +322,112 @@ class MyShop_Invoice
         }
 
         return $value;
+    }
+
+    /**
+     * Generate order code (next available)
+     *
+     * @return string
+     */
+    public function generateOrderCode()
+    {
+        $sql = Doctrine_Query::create();
+        $sql->select('MAX(id) + 1 as nextId');
+        $sql->from('Comenzi');
+        $data = $sql->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
+
+        return sprintf(self::INVOICE_CODE, $data['nextId'], date('dm') . (date('Y') - 2000));
+    }
+
+    /**
+     * Return info needed to preview order / generate order confirm email
+     *
+     * @return array
+     */
+    public function fetchAllData()
+    {
+        $buyer = $this->cumparator;
+        $buyer['address'] = $this->getBillingAddress();
+        $receiver = $this->destinatar;
+        $receiver['address'] = $this->getShippingAddress();
+        $orderData = array(
+            'code' => $this->generateOrderCode(),
+            'date' => date('d-m-Y\, H:i:s'),
+            'buyer' => $buyer,
+            'receiver' => $receiver,
+            'buyerIsReceiver' => $this->buyerIsReceiver(),
+            'type' => $this->tip,
+            'products' => $this->_basket,
+            'totalValue' => $this->_basket->total(),
+            'shippingCost' => $this->getShippingCost(),
+            'paymentMethod' => $this->modalitatePlata
+        );
+
+        return $orderData;
+    }
+
+    /**
+     * Save order in database
+     *
+     * @return boolean (true)
+     */
+    public function save()
+    {
+        Doctrine_Manager::connection()->beginTransaction();
+
+        $order = new Comenzi();
+        $order->membru_id = $this->_basket->getUserId();
+        $order->cod_comanda = $this->generateOrderCode();
+        $order->total_fara_tva = $this->_basket->valueWithoutVat($this->_basket->total());
+        $order->total_taxe = $this->getShippingCost();
+        $order->total_tva = ($this->_basket->total() - $order->total_fara_tva);
+        $order->mod_plata = $this->modalitatePlata;
+        $order->specificatii = $this->specificatii;
+
+        foreach($this->_basket as $item) {
+            $orderItem = new Facturi();
+            $orderItem->produs_id = $item['id'];
+            $orderItem->pret = $item['price'];
+            $orderItem->cantitate = $item['quantity'];
+            $order->Facturi[] = $orderItem;
+
+            $product = Doctrine::getTable('Produse')->find($item['id']);
+            $product->stoc_disponibil -= $item['quantity'];
+            $product->stoc_rezervat += $item['quantity'];
+            $product->save();
+        }
+
+        $shippingAddress = $this->getShippingAddress();
+        $client = new Clienti();
+        $client->tip_client = $this->tip;
+        $client->membru_id = $this->_basket->getUserId();
+        if($this->tip == self::INVOICE_TYPE_PERSONAL) {
+            $client->adresa_id = $this->cumparator['adresa'];
+            $client->nume = $this->cumparator['nume'];
+            $client->prenume = $this->cumparator['prenume'];
+            $client->telefon = $this->cumparator['telefon'];
+            $client->email = $this->cumparator['email'];
+        }
+        else {
+            $client->companie_id = $this->_data['cumparator']['companie'];
+        }
+        $client->destinatar_nume = $this->destinatar['nume'];
+        $client->destinatar_prenume = $this->destinatar['prenume'];
+        $client->destinatar_adresa = $shippingAddress['adresa'];
+        $client->destinatar_oras = $shippingAddress['oras'];
+        $client->destinatar_judet = $shippingAddress['judet'];
+        $client->destinatar_cod_postal = $shippingAddress['cod_postal'];
+        $order->Clienti[] = $client;
+
+        $order->save();
+        Doctrine_Manager::connection()->commit();
+
+        //cleanup
+        $this->_basket->removeAll();
+        unset($this->_basket);
+        $this->_data = array();
+
+        return true;
     }
 
     /**

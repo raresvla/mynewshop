@@ -10,7 +10,8 @@ var Order = {
             '.next *': this.nextStep.bindAsEventListener(this),
             '.show-hide-next': this.showNextForm.bindAsEventListener(this),
             'table.sub-section *': this.selectSubSection.bindAsEventListener(this),
-            '.do-action': this.doAction.bindAsEventListener(this)
+            '.do-action': this.doAction.bindAsEventListener(this),
+            '.do-action *': this.doAction.bindAsEventListener(this)
         });
         this.submitObserverBinded = this.submitObserver.bindAsEventListener(this);
         
@@ -142,13 +143,14 @@ var Order = {
     },
 
     doAction: function(e) {
-        var el = e.element();
+        var el = e.findElement('a');
         var action = el.readAttribute('rel');
 
         var url = null;
         var title = null;
         var params = {jsHandler: 'Order', forward: 'comanda/livrare'};
         var winDimensions = {};
+        var className = 'bluelighting';
         switch(action) {
             case 'add-address': {
                 url = '/administrare-cont/adauga-adresa';
@@ -166,6 +168,8 @@ var Order = {
                 url = '/comanda/preview';
                 title = 'Comanda MyShop';
                 winDimensions = {width: 750, height: 525};
+                params.paymentMethod = this.form.serialize(true).plata;
+                className = 'alphacube';
             }
             break;
         }
@@ -177,7 +181,8 @@ var Order = {
                 this.showWindow(tr.responseText, {
                     width: winDimensions.width,
                     height: winDimensions.height,
-                    title: title
+                    title: title,
+                    className: className
                 });
                 this._resetFormValidator(true);
             }.bind(this)
@@ -207,7 +212,7 @@ var Order = {
 
     showWindow: function(content, options) {
         options = Object.extend({
-            className: 'alphacube', //className: 'bluelighting'
+            className: 'bluelighting',
             maximizable: false,
             minimizable: false,
             resizable: false,

@@ -1,0 +1,156 @@
+<table width="725" border="0" cellspacing="0" cellpadding="0" align="center" style="margin: 0 10px; font-size: 11px;">
+    <tr>
+        <td style="background-color:#F3F7FC; border:1px solid #E6ECF9; color:#444444; padding:5px; ">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td align="left" style="font-size:24px; color:#444444;">Preview Comanda {$order.code}</td>
+                    <td rowspan="2" align="right" style="color:#666666;">
+                        <a href="http://www.mynewshop.ro">www.mynewshop.ro</a><br />
+                        Tel.: {$cfg->TELEFON}<br />
+                        Fax: {$cfg->FAX}<br />
+                        Email: <a href="mailto:{$cfg->EMAIL_CONTACT}">{$cfg->EMAIL_CONTACT}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left">Data: {$order.date}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="font-size:8px">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style="border:1px solid #E6E6E6; ">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td style="padding: 3px;">
+                        <table width="100%" border="0" cellspacing="5" cellpadding="2">
+                            <tr>
+                                <td width="270" align="left" style="font-size:13px; border-bottom:1px solid #E6E6E6; padding: 3px;">
+                                    Cumpărător{if $order.buyerIsReceiver} (Destinatar){/if}:
+                                </td>
+                                {if !$order.buyerIsReceiver}
+                                <td>&nbsp;</td>
+                                <td width="270" align="right" style="font-size:13px; border-bottom:1px solid #E6E6E6; padding: 3px;">
+                                    Destinatar:
+                                </td>
+                                {/if}
+                            </tr>
+                            <tr>
+                                <td align="left" valign="top" style="padding: 2px; padding-bottom: 10px;">
+                                    {if $order.type == 'fizica'}
+                                    <strong>{$order.buyer.nume} {$order.buyer.prenume}</strong><br />
+                                    {$order.buyer.address.adresa}<br />
+                                    {$order.buyer.address.oras}, CP {$order.buyer.address.cod_postal} <br />
+                                    {if $invoice->isProvince($order.buyer.address.judet)}Jud. {/if}{$order.buyer.address.judet}<br />
+                                    {else}
+                                    <strong>{$order.buyer.denumire}</strong><br />
+                                    C.U.I.: {$order.buyer.cod_fiscal}<br />
+                                    Nr. Reg. Com.: {$order.buyer.reg_com}<br />
+                                    {$order.buyer.adresa_sediu}<br />
+                                    {$order.buyer.oras_sediu}, {if $invoice->isProvince($order.buyer.judet_sediu)}Jud. {/if}{$order.buyer.judet_sediu}
+                                    {/if}
+                                </td>
+                                {if !$order.buyerIsReceiver}
+                                <td valign="top">&nbsp;</td>
+                                <td align="right" valign="top" style="padding: 2px; padding-bottom: 10px;">
+                                    <strong>{$order.receiver.nume} {$order.receiver.prenume}</strong><br />
+                                    {$order.receiver.address.adresa}<br />
+                                    {$order.receiver.address.oras}, CP {$order.receiver.address.cod_postal} <br />
+                                    Jud. {$order.receiver.address.judet}
+                                </td>
+                                {/if}
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="font-family:Georgia, 'Times New Roman', Times, serif; text-align:center; font-size:16px; color:#444444; background-color:#FFFCD2; border-bottom:1px solid #CCCCCC; border-top:1px solid #E6E6E6; padding:2px;">
+                        Produse comandate:
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:2px"></td>
+                </tr>
+                <tr>
+                    <td style="padding:5px">
+                        <table width="100%" border="0" cellpadding="5" cellspacing="0" style="border:1px solid #CCCCCC;">
+                            <tr>
+                                <td width="70" align="center" bgcolor="#EFEFEF" style="padding: 3px;">Cod produs </td>
+                                <td align="center" bgcolor="#EFEFEF" style="padding: 3px;">Produs</td>
+                                <td width="40" align="center" bgcolor="#EFEFEF" style="padding: 3px;">Cantitate</td>
+                                <td width="100" align="right" bgcolor="#EFEFEF" style="padding: 3px;">Preţ total <br />(RON fără TVA)</td>
+                                <td width="80" align="right" bgcolor="#EFEFEF" style="padding: 3px;">TVA</td>
+                                <td width="100" align="right" bgcolor="#EFEFEF" style="padding: 3px;">Preţ total <br />(RON cu TVA)</td>
+                            </tr>
+                            {foreach from=$order.products item=product}
+                            <tr>
+                                <td align="center" style="border-top:1px solid #E1E1E1; padding: 3px;">
+                                    {$product.cod_produs}
+                                </td>
+                                <td align="left" style="border-top:1px solid #E1E1E1; padding: 3px;">
+                                    <strong>{$product.denumire}</strong>
+                                </td>
+                                <td align="center" style="border-top:1px solid #E1E1E1; padding: 3px;">
+                                    {$product.quantity}
+                                </td>
+                                <td align="right" style="border-top:1px solid #E1E1E1; padding: 3px;">
+                                    {assign var=priceWithoutVat value=$basket->valueWithoutVat($product.price)}
+                                    {$priceWithoutVat|number_format:2:',':'.'}
+                                </td>
+                                <td align="right" style="border-top:1px solid #E1E1E1; padding: 3px;">
+                                    {math equation="x-y" x=$product.price y=$priceWithoutVat assign=productVat}
+                                    {$productVat|number_format:2:',':'.'}
+                                </td>
+                                <td align="right" style="border-top:1px solid #E1E1E1; padding: 3px;">
+                                    {$product.price|number_format:2:',':'.'}
+                                </td>
+                            </tr>
+                            {/foreach}
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:5px">
+                        <table width="225" border="0" align="right" cellpadding="5" cellspacing="0" style="border:1px solid #CCCCCC;">
+                            <tr>
+                                <td width="100" bgcolor="#EFEFEF" style="padding:5px;">Total cumpărături:</td>
+                                <td align="right" style="padding:5px;">
+                                    <strong>{$order.totalValue|number_format:2:',':'.'}</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="100" bgcolor="#EFEFEF" style="padding:5px;">Taxe de transport:</td>
+                                <td align="right" style="padding:5px;">
+                                    <strong>{$order.shippingCost|number_format:2:',':'.'}</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="100" bgcolor="#EFEFEF" style="padding:5px; border-top:1px solid #E5E5E5">
+                                    <strong>Total comandă:</strong>
+                                </td>
+                                <td align="right" style="border-top:1px solid #E5E5E5; padding:5px;">
+                                    {math equation="x+y" x=$order.totalValue y=$order.shippingCost assign=grandTotal}
+                                    <strong>{$grandTotal|number_format:2:',':'.'}</strong>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:10px"></td>
+                </tr>
+                <tr>
+                    <td align="left" style="background-color:#F3F7FC; border:1px solid #E6ECF9; color:#444444; padding:5px;">
+                        Metoda de plată: <strong>{$order.paymentMethod|upper|default:'N/A'}</strong>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<div align="center" style="padding-top:10px">
+    <input type="button" onclick="Order.dialogWindow.close()" name="inchide" value="Închide" style="font-family: Tahoma; font-size: 11px; padding: 1px 10px; min-width: 75px; padding: 1px !important;" />
+</div>
