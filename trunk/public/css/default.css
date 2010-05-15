@@ -362,6 +362,10 @@ a.lnk-red:hover { color:#B73904; }
 a.lnk-red span { color: gray; }
 a.add-to-cart { display: block; padding-left: 28px; background-image: url(/img/icons/basket.png); background-repeat: no-repeat; background-position: 5px 2px; }
 .bottom-nav { margin: 0 auto 25px auto; }
+.text-content { font-size: 12px; line-height: 1.5em; }
+.text-content p { margin-bottom: 10px; }
+.text-content ol { padding-left: 40px; margin-bottom: 15px; }
+.text-content ol li { list-style: decimal; font-style:italic; font-family: Verdana; }
 
 .highlight-row tbody tr img { border: 1px solid #FFF; }
 .highlight-row tbody tr.active { background-color: #FFFAC2; }

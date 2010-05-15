@@ -45,10 +45,13 @@ class MyShop_Helper_Acl extends Zend_Controller_Action_Helper_Abstract
      *
      * @param string $allowedRole
      */
-    public function allow($allowedRole, $message = 'Not allowed!')
+    public function allow($allowedRole, $message = null)
     {
         if(!$this->_acl->hasRole($allowedRole)) {
             $this->_acl->addRole(new Zend_Acl_Role($allowedRole));
+        }
+        if(empty($message)) {
+            $message = 'Pentru accesa această secţiune trebuie ca mai întâi să vă autentificaţi!';
         }
 
         $this->_acl->allow($allowedRole, null, $this->_getResource());
@@ -103,7 +106,7 @@ class MyShop_Helper_Acl extends Zend_Controller_Action_Helper_Abstract
     public function restricted($message)
     {
         $this->_lastMessage = $message;
-        $this->_actionController->getHelper('Redirector')->goToUrl('/login?redirect=' . urlencode($_SERVER['REQUEST_URI']));
+        $this->_actionController->getHelper('Redirector')->goToUrl('/cont/autentificare?redirect=' . urlencode($_SERVER['REQUEST_URI']));
     }
 
     /**

@@ -22,7 +22,7 @@ class ComandaController extends Zend_Controller_Action
      */
     public function postDispatch()
     {
-        if($this->getRequest()->isDispatched()) {
+        if($this->getRequest()->isDispatched() && $this->_hasParam('add-basket-breadcrumb')) {
             $this->_helper->Layout->addBreadCrumb(
                 'Coş de cumpărături',
                 '/cos-cumparaturi',
@@ -51,6 +51,7 @@ class ComandaController extends Zend_Controller_Action
 
         $user = Doctrine::getTable('Membri')->find($_SESSION['profile']['id']);
         $this->view->assign('companiesCount', sizeof($user->Companii));
+        $this->_setParam('add-basket-breadcrumb', true);
     }
 
     /**
@@ -88,10 +89,11 @@ class ComandaController extends Zend_Controller_Action
         $this->view->assign('regions', Doctrine::getTable('Judete')->fetchAll());
 
         if($this->getRequest()->isXmlHttpRequest()) {
-            $template = ($this->view->invoice->type == 'fizica' ? 'livrare-lista-adrese.html' : 'livrare-lista-comanii.html');
+            $template = ($this->view->invoice->tip == 'fizica' ? 'livrare-lista-adrese.html' : 'livrare-lista-companii.html');
             $this->getFrontController()->setParam('noViewRenderer', true);
             $this->getResponse()->setBody($this->view->render("comanda/{$template}"));
         }
+        $this->_setParam('add-basket-breadcrumb', true);
     }
 
     /**
@@ -133,6 +135,7 @@ class ComandaController extends Zend_Controller_Action
         $this->_helper->Layout->includeJs('lib/window/window.js');
         $this->_helper->Layout->includeCss('window/default.css');
         $this->_helper->Layout->includeCss('window/alphacube.css');
+        $this->_setParam('add-basket-breadcrumb', true);
     }
 
     /**
@@ -144,6 +147,7 @@ class ComandaController extends Zend_Controller_Action
         $order['paymentMethod'] = $this->_getParam('paymentMethod');
 
         $this->view->assign('cfg', $this->view->basket->config);
+        $this->view->assign('preview', true);
         $this->view->assign('order', $order);
     }
 
@@ -156,7 +160,9 @@ class ComandaController extends Zend_Controller_Action
 
         try {
             $this->view->invoice->save();
+            $this->view->assign('cfg', $this->view->basket->config);
             $this->view->assign('order', $this->view->invoice->fetchAllData());
+            $this->view->assign('token', MyShop_Invoice::generateConfirmationToken($this->view->invoice->orderId));
 
             if($this->view->invoice->tip == MyShop_Invoice::INVOICE_TYPE_PERSONAL) {
                 $buyerEmail = $this->view->invoice->cumparator['email'];
@@ -168,10 +174,27 @@ class ComandaController extends Zend_Controller_Action
             }
             $email = new Zend_Mail();
             $email->addTo($buyerEmail, $buyerName);
-            $email->addBcc($this->view->basket->config->ADRESA_EMAIL_CORESPONDENTA);
-            $email->setBodyHtml($this->view->render('comanda/preview.html'));
+            $email->addTo('rares@net.ase.ro', $buyerName);
+            $email->setFrom($this->view->basket->config->ADRESA_EMAIL_CORESPONDENTA); //, 'MyShop'
+            $email->setReplyTo($this->view->basket->config->ADRESA_EMAIL_CORESPONDENTA); //, 'MyShop'
+            //$email->addBcc($this->view->basket->config->ADRESA_EMAIL_CORESPONDENTA);
+            $email->setSubject('Comanda MyShop');
+            $email->setBodyHtml($this->view->render('comanda/preview.html'), 'utf-8', Zend_Mime::ENCODING_8BIT);
             $email->setBodyText('This email can be viewed only in HTML format.');
+            $email->setType(Zend_Mime::MULTIPART_RELATED);
+
+            //add image attachment
+            $attach = new Zend_Mime_Part(file_get_contents('img/icons/info-medium.png'));
+            $attach->type = 'image/png';
+            $attach->disposition = Zend_Mime::DISPOSITION_INLINE;
+            $attach->encoding = Zend_Mime::ENCODING_BASE64;
+            $attach->filename = 'info.png';
+            $attach->id = 'infoImage';
+
+            $email->addAttachment($attach);
             $email->send(new Zend_Mail_Transport_Smtp());
+
+            $this->view->invoice->clean();
         }
         catch(Exception $e) {
             $this->view->assign('error', 'A apărut o eroare la salvarea comenzii dvs. Vă rugăm reîncercaţi. (' . $e->getMessage() . ')');
@@ -187,6 +210,43 @@ class ComandaController extends Zend_Controller_Action
      */
     public function trimisaAction()
     {
-        
+        $this->_helper->Layout->addBreadCrumb('Trimite comanda');
+    }
+
+    /**
+     * Confirm products reservation
+     */
+    public function confirmaRezervareaAction()
+    {
+        $req = $this->_getParam('req');
+        if(($orderId = MyShop_Invoice::checkConfirmationToken($req)) === false) {
+            $this->_redirect('/comanda/eroare-confirmare');
+            return;
+        }
+
+        $order = Doctrine::getTable('Comenzi')->find($orderId);
+        $order->status = 'confirmata';
+        $this->_redirect('/comanda/confirmata/req/' . base64_encode($order->Membri->telefon));
+    }
+
+    /**
+     * Display order sent confimation page
+     */
+    public function confirmataAction()
+    {
+        $this->_helper->Layout->addBreadCrumb('Confirmă comanda');
+        if(($req = $this->_getParam('req'))) {
+            $this->view->assign('telNumber', base64_decode($req));
+        }
+        $this->view->assign('cfg', MyShop_Config::getInstance());
+    }
+
+    /**
+     * Display confirmation error page
+     */
+    public function eroareConfirmareAction()
+    {
+        $this->_helper->Layout->addBreadCrumb('Confirmă comanda');
+        $this->view->assign('cfg', MyShop_Config::getInstance());
     }
 }
