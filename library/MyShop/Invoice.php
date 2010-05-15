@@ -26,6 +26,7 @@ class MyShop_Invoice
     const INVOICE_TYPE_PERSONAL = 'fizica';
     const INVOICE_TYPE_BUSINESS = 'juridica';
     const INVOICE_CODE = '#%d-%s';
+    const ORDER_CONFIRMATION_SALT = 'MSOC-MDEb02BHGSOSu8';
 
     /**
      * Get Invoice instance
@@ -420,14 +421,73 @@ class MyShop_Invoice
         $order->Clienti[] = $client;
 
         $order->save();
+        $order->refresh();
+        $this->orderId = $order->id;
         Doctrine_Manager::connection()->commit();
 
-        //cleanup
+        return true;
+    }
+
+    /**
+     * Create current order confirmation token
+     *
+     * @param integer $orderId
+     * @return string
+     */
+    public static function generateConfirmationToken($orderId)
+    {
+        $data = array(
+            'cid' => $orderId,
+            'ttl' => time() + 24 * 60 * 60,
+        );
+        $data['signature'] = self::_generateSignature($data);
+
+        return base64_encode(json_encode($data));
+    }
+
+    /**
+     * Check confirmation token and return extracted order id
+     *
+     * @param string $token
+     * @return integer
+     */
+    public static function checkConfirmationToken($token)
+    {
+        if(empty($token)) {
+            return false;
+        }
+
+        $data = json_decode(base64_decode($token), true);
+        $signature = array_pop($data);
+        if($signature !== self::_generateSignature($data)) {
+            return false;
+        }
+        if(time() > $data['ttl']) {
+            return false;
+        }
+
+        return $data['cid'];
+    }
+
+    /**
+     * Generate data signature
+     *
+     * @param array $data
+     * @return string
+     */
+    private static function _generateSignature(&$data)
+    {
+        return sha1(http_build_query((array) $data) . self::ORDER_CONFIRMATION_SALT);
+    }
+
+    /**
+     * Clean invoice / basket data
+     */
+    public function clean()
+    {
         $this->_basket->removeAll();
         unset($this->_basket);
         $this->_data = array();
-
-        return true;
     }
 
     /**

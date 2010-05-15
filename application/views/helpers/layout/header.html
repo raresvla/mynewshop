@@ -36,7 +36,7 @@
     </div>
 </form>
 <ul>
-    <li id="current">
+    <li id="{if !$section || $section == 'index'}current{/if}">
         <a href="/">
             <span>Home</span>
         </a>
@@ -51,12 +51,12 @@
             <span>Produse recomandate</span>
         </a>
     </li>
-    <li>
+    <li id="{if $section == 'informatii'}current{/if}">
         <a href="/companie/informatii">
             <span>Informatii</span>
         </a>
     </li>
-    <li>
+    <li id="{if $section == 'contact'}current{/if}">
         <a href="/companie/contact">
             <span>Contact</span>
         </a>
