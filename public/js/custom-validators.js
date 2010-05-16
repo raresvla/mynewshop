@@ -16,7 +16,7 @@ Validation.add('realname', 'Numele poate con\u0163ine doar caractere alfabetice 
     if(value.strip() < 3) {
         return false;
     }
-    return (new RegExp("^[a-zA-Z\u0103îâşţĂÎÂŞŢ-]+$", "gi")).test(value);
+    return (new RegExp("^[ a-zA-Z\u0103îâşţĂÎÂŞŢ-]+$", "gi")).test(value);
 });
 
 //one of options, with message after second element

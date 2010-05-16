@@ -1,0 +1,23 @@
+fieldset {
+	position: relative;
+	margin-top:1em;
+	padding-top:.75em;
+}
+legend {
+	position:absolute;
+	top: -.5em;
+	left: .5em;
+}
+.box_content {
+	padding: 10px;
+	padding-top:15px;
+	margin-top:5px;
+	margin-bottom:5px;
+}
+.legend_box_container {
+	top: -.9em;
+}
+#container {
+	padding:10px;
+	padding-top:30px;
+}

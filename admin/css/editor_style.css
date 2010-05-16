@@ -1,0 +1,128 @@
+a{
+	color:#000000;
+	text-decoration: none;
+	font-size: 11px;
+}
+a:hover{
+	color:#000000;
+	text-decoration: underline;
+	font-size: 11px;
+}
+
+a.link1{
+	color:#CCCCCC;
+	text-decoration: none;
+	font-weight: normal;
+	font-size: 11px;
+
+}
+
+a.link1:hover{
+	color:#FFFFFF;
+	text-decoration: none;
+	font-weight: normal;
+}
+table, td, p {
+	color:#000000;
+	text-decoration: none;
+	font-weight: normal;
+	font-size: 11px;
+	font-family: Tahoma;
+}
+.content_text {
+	padding-top: 15px;
+	padding-right: 20px;
+	padding-bottom: 15px;
+	padding-left: 25px;
+}
+.border_top {
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: #CCCCCC;
+}
+.div_left {
+	padding:7px;
+	border-top:1px solid #888888;
+	cursor:auto;
+	font-family:Tahoma;
+	font-size:11px;
+	font-weight:bold;
+	color:#FFFFFF;
+}
+.div_left_on {
+	padding:7px;
+	border-top:1px solid #888888;
+	background-color: #886F6C;
+	cursor:pointer;
+	font-family:Tahoma;
+	font-size:11px;
+	font-weight:bold;
+	color:#FFFFFF;
+}
+.box_title {
+	padding:5px;
+	padding-top:0px;
+	font-size:18px;
+	font-family: Georgia;
+	color:#FFFFFF;
+	background-color:#4f5559;
+}
+.table_border {
+	border:1px solid #999999;
+}
+.table_header {
+	background-color:#666666;
+	color:#FFFFFF;
+}
+.even_row {
+	border-top:1px solid #CCCCCC;
+	border-bottom:1px solid #CCCCCC;
+}
+.timer_green {
+	background-color:#CEFFE7;
+	border:1px solid #3BA275;
+	padding: 1px;
+}
+.timer_red {
+	background-color:#FFF6EF;
+	border:1px solid #F27771;
+	padding: 1px;
+}
+.blue_box {
+	background-color:#F3F7FC;
+	border:1px solid #E6ECF9;
+}
+.menu_off {
+	padding-left:5px;
+	padding-right:5px;
+	border:1px solid #BBBBBB;
+	background-color:#444444;
+	cursor:auto;
+	font-family:Tahoma;
+	font-size:11px;
+	font-weight:normal;
+	color:#FFFFFF
+}
+.menu_on {
+	padding-left:5px;
+	padding-right:5px;
+	border:1px solid #FFFFFF;
+	background-color: #886F6C;
+	cursor:pointer;
+	font-family:Tahoma;
+	font-size:11px;
+	font-weight:normal;
+	color:#FFFFFF;
+}
+.list_bleu {
+	list-style-image:  url(../images/bullet2.png);
+	list-style-position: outside;
+	margin:0px;
+	padding-left:16px;
+}
+.fundal {
+	background-color:#DDDDDD;
+	border:1px solid #777777;
+	color:#222222;
+	padding:1px;
+}

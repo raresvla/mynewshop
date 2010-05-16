@@ -146,4 +146,10 @@ document.observe('dom:loaded', function() {
     $$('table.highlight-row').each(function(table) {
         new TableHightlight(table);
     });
+    $$('form.with-validator').each(function(form) {
+        window[form.identify() + 'Validator'] = new Validation(form.identify(), {
+            useTitles: true,
+            focusOnError: true
+        });
+    });
 });

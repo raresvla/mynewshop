@@ -286,7 +286,7 @@ div.blue-box { background-color: #D3D8FE; }
 div.light-blue-box { background-color: #F3F7FC; }
 div.gray-box, div.blue-box { color:#000000; padding:10px; margin-bottom: 20px; }
 div.gray-box .title, div.blue-box .title { color:#2C62B3; font-size:14px; margin: 10px 15px; }
-div.gray-box .title.with-border, div.blue-box .title.with-border { border-bottom: 1px solid #D0D0D0; font-size: 12px; margin-bottom: 10px; padding-bottom: 3px; }
+div.gray-box .title.with-border, div.blue-box .title.with-border { border-bottom: 1px solid #D0D0D0; font-size: 12px; margin: 0 0 10px; padding-bottom: 3px; }
 div.gray-box.left, div.blue-box.left { float: left; width: 46%; }
 div.gray-box.right, div.blue-box.right { float: right; width: 46%; }
 
@@ -299,6 +299,13 @@ form input.little { padding: 0px 3px; margin: 0px; }
 form input.inline-label { margin: 1px 3px 0px 3px; }
 optgroup option { padding-left: 20px; }
 input.align-center { text-align: center }
+
+/* register-login */
+form.login-form .left { width: 75px; }
+form.login-form label.right { display:block; margin-top:4px; float:left; }
+form.register-form .left { width: 110px; text-align: left; }
+form.register-form input { margin-top:5px; }
+form.register-form label { padding:5px; }
 
 /* validation */
 .validation-advice { background: url("/img/icons/error.png") no-repeat; color:#BD7F04; display:inline; font-size:11px; margin-left:13px; padding-bottom:4px; padding-left:22px; vertical-align:baseline; }
@@ -366,6 +373,15 @@ a.add-to-cart { display: block; padding-left: 28px; background-image: url(/img/i
 .text-content p { margin-bottom: 10px; }
 .text-content ol { padding-left: 40px; margin-bottom: 15px; }
 .text-content ol li { list-style: decimal; font-style:italic; font-family: Verdana; }
+.contact { margin-bottom: 20px !important; }
+.contact ul { margin: 10px 0; }
+.contact ul li { line-height:1.75em; font-size:12px; height: 1%; overflow: auto; }
+.contact ul li label { float:left; font-weight:bold; padding-right:10px; text-align:right; width:90px; }
+.contact ul li span { float:left; font-size:12px; }
+#contactFrom .left { width: 125px; }
+#contactFrom .captcha { margin-top: 10px; }
+#contactFrom .captcha img { border: 1px solid #CCC; }
+#contactFrom .captcha #captcha { margin-left: 135px; margin-top: 0px; }
 
 .highlight-row tbody tr img { border: 1px solid #FFF; }
 .highlight-row tbody tr.active { background-color: #FFFAC2; }

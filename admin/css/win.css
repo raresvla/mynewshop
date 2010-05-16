@@ -1,0 +1,30 @@
+html,body { margin:0; padding:0; height:100%; width:100%; }
+table.full-height { height:100%; width:100%; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:11px; }
+hr { margin:2px 0px; padding:2px 0px; border-width:1px 0px 0px 0px; border-color: #AAAAAA; border-style: solid; }
+.inputcol { font-size : 11px; font-family : Verdana; font-weight: normal; }
+.button_win { font-family:Tahoma; font-size:11px; padding:1px; width:80px; }
+.formular { margin: 0px; padding: 0px; text-align: center; white-space: normal; display: inline; }
+.table_border { border:1px solid #999999; }
+.table_header { background-color:#666666; color:#FFFFFF; }
+.even_row { border-top:1px solid #CCCCCC; border-bottom:1px solid #CCCCCC; }
+#container { padding:7px; }
+#box_container { background-color:#EFEFEF; border:1px solid #666666; padding:0px; }
+.box_content {  border:1px solid #AAAAAA; background-color:#F7F7F7; padding:10px; }
+.legend_box_container { font-family:Tahoma; font-size:14px; color:#003399; }
+.legend_box_content { font-family:Tahoma; font-size:14px; color:#003399; }
+.blueButton { background-color:#F3F7FC; border:1px solid #E6ECF9; padding:3px; display:block; text-decoration:none; color:#444444; font-family:Tahoma; }
+a.blueButton img { vertical-align: middle; border:0; }
+.fLeft {float: left;}
+.fRight {float: right;}
+.clear {clear: both;}
+.hidden { display: none;}
+.disabled { color: #999999; }
+.marginRight { margin-right:5px;}
+.marginLeft { margin-left:5px;}
+.loader { position: relative; top: 50%; margin-top: -20px; }
+.valignMiddle { vertical-align:middle; }
+.ajaxRequest { background:transparent url(../images/loading.gif) no-repeat scroll center; }
+.selectedRow { background-color:#99B4E5; }
+.center { text-align:center; }
+.marginBottom { margin-bottom:5px; margin-right:10px; height: 20px; }
+input[type=text].right { text-align: right; }

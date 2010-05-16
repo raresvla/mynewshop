@@ -23,7 +23,7 @@ class Membri extends BaseMembri
      */
     public function validData($update = false)
     {
-        $name = new Zend_Validate_Regex('/^[a-zA-ZăîâşţĂÎÂŞŢ-]+$/');
+        $name = new Zend_Validate_Regex('/^[ a-zA-ZăîâşţĂÎÂŞŢ-]+$/');
         $length3 = new Zend_Validate_StringLength(array('min' => 3));
         $length6 = new Zend_Validate_StringLength(array('min' => 6));
 

@@ -1,0 +1,79 @@
+<h1 class="section-title">Contact</h1>
+
+{if $showSentMessage}
+<div class="done niftyable">
+    Mesajul dumneavoastră a fost trimis cu succes. Vă mulţumim pentru feedback.
+</div>
+{/if}
+
+{if $errors}
+<div class="error niftyable">
+    Informaţiile trimise nu au putut fi validate. Vă rugăm verificaţi valorile introduse pentru: '{$errors|@implode:"', '"}'!
+</div>
+{/if}
+
+<form action="/companie/trimite-feedback" method="post" class="register-form with-validator" id="contactFrom">
+    <div class="gray-box niftyable">
+        <p class="title with-border"><strong>Contactează-ne</strong> (toate câmpurile sunt obligatorii)</p>
+        <ul>
+            <li>
+                <label class="left" for="username">Numele dumeavoastră:</label>
+                <input type="text" name="contact[nume]" id="nume" size="55" value="{$data.nume}"
+                       class="realname" title="Introduceţi un nume valid" />
+            </li>
+            <li>
+                <label class="left" for="password">Adresa de email:</label>
+                <input type="text" name="contact[email]" id="email" size="55"
+                       value="{$data.email}" class="required validate-email" title="Introduceţi adresa de email" />
+            </li>
+            <li>
+                <label class="left" for="password">Intrebarea / mesajul:</label>
+                <textarea name="contact[intrebare]" id="intrebare" class="length6" title="Introduceţi comentariul" cols="52" rows="5">{$data.intrebare}</textarea>
+            </li>
+            {if $captcha}
+            <li class="captcha">
+                <p>
+                    <label class="left" for="password">Codul de securitate:</label>
+                    <img width="{$captcha->getWidth()}" height="{$captcha->getHeight()}" alt="{$captcha->getImgAlt()}"
+                         src="{$captcha->getImgUrl()|cat:$captcha->getId()|cat:$captcha->getSuffix()}" />
+                </p>
+                <p>
+                    <input type="hidden" name="captcha[id]" value="{$captcha->getId()}" />
+                    <input type="text" name="captcha[input]" id="captcha" size="20"
+                           class="required length6" title="Introduceţi codul de securitate" />
+                </p>
+            </li>
+            {/if}
+        </ul>
+        <p align="center">
+            <input type="submit" name="save" value="Trimite" class="big" />
+        </p>
+    </div>
+</form>
+
+<table cellspacing="0" cellpadding="5" border="0" width="100%" class="table-border contact">
+    <tbody>
+        <tr>
+            <td style="padding-left: 20px;" class="table-header2" colspan="2">S.C. MYSHOP S.R.L. </td>
+        </tr>
+        <tr>
+            <td align="center" width="100">
+                <img height="80" width="80" src="/img/icons/contact.png" alt="Contact" />
+            </td>
+            <td>
+                <ul class="float-left">
+                    <li><label>Adresa: </label><span>Strada Lalelelor, nr. 11</span></li>
+                    <li><label>Telefon: </label><span>{$cfg->TELEFON}</span></li>
+                    <li><label>Fax: </label><span>{$cfg->FAX}</span></li>
+                    <li><label>Email: </label><span>{$cfg->EMAIL_CONTACT}</span></li>
+                </ul>
+                <ul class="float-left" style="border-left:1px solid #E1EFF5; margin-left:40px; padding-left:20px;">
+                    <li><label>Banca: </label><span>NewBank</span></li>
+                    <li><label>Sucursala: </label><span>Bucureşti 1</span></li>
+                    <li><label>Titular cont: </label><span>S.C. MYSHOP S.R.L.</span></li>
+                    <li><label>Cont: </label><span>RO28.RNBB.0000.0000.0000.0001</span></li>
+                </ul>
+            </td>
+        </tr>
+    </tbody>
+</table>
