@@ -32,8 +32,6 @@ class ContController extends Zend_Controller_Action
             $message .= 'Un email a fost trimis pe adresa specificata ce contine parola de acces.';
             $this->view->assign('info', $message);
         }
-
-        $this->_helper->Layout->includeCss('login-register.css');
     }
 
     /**
@@ -98,7 +96,6 @@ class ContController extends Zend_Controller_Action
         $this->view->assign('regions', Doctrine::getTable('Judete')->fetchAll());
         $this->view->assign('title', 'Creare cont');
         
-        $this->_helper->Layout->includeCss('login-register.css');
         $this->_helper->Layout->includeJs('lib/validate.js');
         $this->_helper->Layout->includeJs('custom-validators.js');
         $this->_helper->Layout->includeJs('register.js');

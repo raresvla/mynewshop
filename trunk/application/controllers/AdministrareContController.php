@@ -22,7 +22,6 @@ class AdministrareContController extends Zend_Controller_Action
         $this->_helper->Layout->includeJs('custom-validators.js');
         $this->_helper->Layout->includeJs('lib/window/window.js');
         $this->_helper->Layout->includeJs('account.js');
-        $this->_helper->Layout->includeCss('login-register.css');
         $this->_helper->Layout->includeCss('window/default.css');
         $this->_helper->Layout->includeCss('window/lighting.css');
     }

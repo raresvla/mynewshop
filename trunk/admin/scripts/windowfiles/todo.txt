@@ -1,0 +1,9 @@
+<link rel="stylesheet" href="scripts/windowfiles/dhtmlwindow.css" type="text/css" />
+<script type="text/javascript" src="scripts/windowfiles/dhtmlwindow.js">
+/***********************************************
+* DHTML Window Widget- © Dynamic Drive (www.dynamicdrive.com)
+* This notice must stay intact for legal use.
+* Visit http://www.dynamicdrive.com/ for full source code
+***********************************************/
+</script>
+var divwind = dhtmlwindow.open(\'window'.$i.'\', \'div\', \'divid'.$i.'\', \'iAppear report RID'.$content['id'].'\', \'width=300px,height=120px,left=\' + ((screen.width - 300)/2) + \'px, top=\' + ((screen.height - 200)/2) + \'px,resize=1,scrolling=0\', \'recal\'); check('.$i.','.$totalReports.');
