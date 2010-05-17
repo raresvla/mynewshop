@@ -7,6 +7,7 @@
  * @version 1.0
  * @package MyShop
  *
+ * @property integer orderId
  * @property string tip
  * @property array cumparator
  * @property array destinatar

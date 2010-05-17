@@ -173,10 +173,10 @@ class ComandaController extends Zend_Controller_Action
             }
             $email = new Zend_Mail();
             $email->addTo($buyerEmail, $buyerName);
-            $email->addTo('rares@net.ase.ro', $buyerName);
-            $email->setFrom($this->view->basket->config->ADRESA_EMAIL_CORESPONDENTA); //, 'MyShop'
-            $email->setReplyTo($this->view->basket->config->ADRESA_EMAIL_CORESPONDENTA); //, 'MyShop'
-            //$email->addBcc($this->view->basket->config->ADRESA_EMAIL_CORESPONDENTA);
+            //$email->addTo('rares@net.ase.ro', $buyerName);
+            $email->setFrom($this->view->basket->config->ADRESA_EMAIL_CORESPONDENTA, 'MyShop');
+            $email->setReplyTo($this->view->basket->config->ADRESA_EMAIL_CORESPONDENTA, 'MyShop');
+            $email->addBcc($this->view->basket->config->ADRESA_EMAIL_CORESPONDENTA);
             $email->setSubject('Comanda MyShop');
             $email->setBodyHtml($this->view->render('comanda/preview.html'), 'utf-8', Zend_Mime::ENCODING_8BIT);
             $email->setBodyText('This email can be viewed only in HTML format.');
