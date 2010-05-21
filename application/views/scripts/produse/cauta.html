@@ -1,0 +1,36 @@
+<h1 class="section-title">Căutare produse</h1>
+
+{if !$paginator->getTotal()}
+<div class="niftyable light-blue-box" align="center">
+    <p class="no-products">
+        <img src="/img/icons/info_big.png" alt="Info" align="middle" />
+        <span>Nu au fost găsite care să corespundă criteriilor introduse</span>
+    </p>
+</div>
+{else}
+<table cellspacing="0" border="0" width="100%" class="paginator-table">
+    <colgroup>
+        <col width="130">
+        <col width="240">
+        <col>
+    </colgroup>
+    <tbody>
+        <tr>
+            <td class="left">
+                Produsele <strong>{$paginator->getLowerBound()}&ndash;{$paginator->getUpperBound()}</strong>
+                (din {$paginator->getTotal()})
+            </td>
+            <td>&nbsp;&nbsp;Ordonează:
+                <select name="ordine">
+                    <option value="">după preţ - crescător</option>
+                    <option value="">după preţ - descrescător</option>
+                </select>
+            </td>
+            <td align="right" class="right">
+                {$paginator->getHtml()}
+            </td>
+        </tr>
+    </tbody>
+</table>
+{$paginator->getResults()}
+{/if}

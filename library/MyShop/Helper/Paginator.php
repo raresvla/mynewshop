@@ -18,17 +18,22 @@ class MyShop_Helper_Paginator extends Zend_Controller_Action_Helper_Abstract
     private $_currentPage;
     private $_template;
     private $_requestCfg = array();
+    private $_resultsParser;
 
     const LISTING_HTML_TEMPLATE = 'listing.html';
 
     /**
      * Allow direct call
      *
-     * @param Doctrine_Query $source
+     * @param Doctrine_Query | MyShop_Solr $source
      * @return MyShop_Helper_Paginator
      */
-    public function direct(Doctrine_Query $source)
+    public function direct($source)
     {
+        if(!$source instanceof Doctrine_Query && !$source instanceof MyShop_Solr) {
+            throw new Zend_Exception('Source must be an instance of Doctrine_Query or MyShop_Solr!');
+        }
+
         $this->source = $source;
         $this->setRequestUrl($_SERVER['REQUEST_URI'], false);
 
@@ -45,10 +50,29 @@ class MyShop_Helper_Paginator extends Zend_Controller_Action_Helper_Abstract
         if(!isset($this->_results)) {
             $this->source->limit($this->limit);
             $this->source->offset($this->getOffset());
-            $this->_results = $this->source->execute(array(), Doctrine::HYDRATE_ARRAY);
+            $this->_results = $this->source->fetchArray();
+            if($this->_resultsParser) {
+                $this->_results = call_user_func($this->_resultsParser, $this->_results);
+            }
         }
 
         return $this->_results;
+    }
+
+    /**
+     * Set function to be called for parsing results
+     *
+     * @param Closure | array $parser
+     * @return MyShop_Helper_Paginator
+     */
+    public function setResultsParser($parser)
+    {
+        if(!$parser instanceof Closure && !is_array($parser)) {
+            throw new Zend_Exception('Results parser not supported!');
+        }
+
+        $this->_resultsParser = $parser;
+        return $this;
     }
 
     /**
@@ -191,6 +215,9 @@ class MyShop_Helper_Paginator extends Zend_Controller_Action_Helper_Abstract
      */
     public function postDispatch()
     {
+        if(!$this->_actionController->getRequest()->isDispatched()) {
+            return;
+        }
         $this->_actionController->view->assign('paginator', $this);
         $this->_calculateLimits();
         if($this->_template) {

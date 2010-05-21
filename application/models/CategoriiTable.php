@@ -3,6 +3,7 @@
  */
 class CategoriiTable extends Doctrine_Table
 {
+    private $_storage;
     const CATALOG_ROUTE_NAME = 'catalog';
 
     /**
@@ -83,42 +84,46 @@ class CategoriiTable extends Doctrine_Table
      */
     public function getCategoryPath($categoryId, $depth = 2)
     {
-        $sql = Doctrine_Query::create();
-        $sql->select('c.*');
-        $sql->from($this->getComponentName() . ' c');
-        $sql->where('c.id = ?', $categoryId);
+        if(!isset($this->_storage[$categoryId])) {
+            $sql = Doctrine_Query::create();
+            $sql->select('c.*');
+            $sql->from($this->getComponentName() . ' c');
+            $sql->where('c.id = ?', $categoryId);
 
-        $i = 0;
-        $parentAlias = 'c';
-        while($i < $depth) {
-            $newParentAlias = $parentAlias . $i;
-            $sql->leftJoin("{$parentAlias}.Parent {$newParentAlias}");
-            $sql->addSelect("{$newParentAlias}.*");
-            $i++;
-        }
-
-        $category = $sql->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
-        if(empty($category)) {
-            return array();
-        }
-
-        $cPath = array();
-        while($category) {
-            array_unshift(
-                $cPath,
-                array(
-                    'denumire' => $category['denumire'],
-                    'id' => $category['id']
-                )
-            );
-            if(isset($category['Parent'])) {
-                $category = &$category['Parent'];
+            $i = 0;
+            $parentAlias = 'c';
+            while($i < $depth) {
+                $newParentAlias = $parentAlias . $i;
+                $sql->leftJoin("{$parentAlias}.Parent {$newParentAlias}");
+                $sql->addSelect("{$newParentAlias}.*");
+                $i++;
             }
-            else {
-                $category = false;
+
+            $category = $sql->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
+            if(empty($category)) {
+                return array();
             }
+
+            $cPath = array();
+            while($category) {
+                array_unshift(
+                    $cPath,
+                    array(
+                        'denumire' => $category['denumire'],
+                        'id' => $category['id']
+                    )
+                );
+                if(isset($category['Parent'])) {
+                    $category = &$category['Parent'];
+                }
+                else {
+                    $category = false;
+                }
+            }
+
+            $this->_storage[$categoryId] = $cPath;
         }
 
-        return $cPath;
+        return $this->_storage[$categoryId];
     }
 }
