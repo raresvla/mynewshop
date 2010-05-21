@@ -45,15 +45,13 @@ class MyShop_Plugin_Router extends Zend_Controller_Plugin_Abstract
          */
         $router->addRoute('product-details',
             new Zend_Controller_Router_Route_Regex(
-                '^[a-zA-Z0-9\-/]+?-(([0-9_]+)-)?([0-9]+)\.html$',
+                '^[a-zA-Z0-9\-/]+?-([0-9]+)\.html$', //(([0-9_]+)-)?
                 array(
                     'controller' => 'produse',
                     'action' => 'detalii-produs'
                 ),
                 array(
-                    1 => 'hasCpath',
-                    2 => 'cPath',
-                    3 => 'pid'
+                    1 => 'pid'
                 ),
                 '%s-%d.html'
             )

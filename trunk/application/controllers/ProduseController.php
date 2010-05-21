@@ -17,8 +17,6 @@ class ProduseController extends Zend_Controller_Action
                 $cPath = (array) explode('_', $cPath);
                 $this->_setParam('cPath', $cPath);
             }
-            $this->view->assign('topCategoryId', array_shift($cPath));
-            $this->view->assign('categoryId', (empty($cPath) ? $this->_getParam('topCategoryId') : array_pop($cPath)));
         }
         $this->_helper->Layout->includeCss('products.css');
         $this->_helper->Layout->includeJs('products.js');
@@ -33,8 +31,20 @@ class ProduseController extends Zend_Controller_Action
             return;
         }
 
-        $cPath = $this->_getParam('cPath');
-        $categoryId = array_pop($cPath);
+        if(!$this->_hasParam('categoryId')) {
+            $cPath = $this->_getParam('cPath');
+            $categoryId = array_pop($cPath);
+        }
+        else {
+            $categoryId = $this->_getParam('categoryId');
+            $cPath = Doctrine::getTable('Categorii')->getCategoryPath($categoryId);
+            print_r($cPath); die('here');
+            foreach($cPath as &$item) {
+                $item = $item['id'];
+            }
+            $cPath[] = $categoryId;
+            $this->_setParam('cPath', $cPath);
+        }
         $breadCrumbs = Doctrine::getTable('Categorii')->getBreadCrumbsTo(
             $categoryId,
             $this->_getParam('cPath')
@@ -58,6 +68,10 @@ class ProduseController extends Zend_Controller_Action
                 'unshift'
             );
         }
+
+        $cPath = $this->_getParam('cPath');
+        $this->view->assign('topCategoryId', array_shift($cPath));
+        $this->view->assign('categoryId', (empty($cPath) ? $this->_getParam('topCategoryId') : array_pop($cPath)));
     }
 
     /**
@@ -95,6 +109,21 @@ class ProduseController extends Zend_Controller_Action
     }
 
     /**
+     * Search products
+     */
+    public function cautaAction()
+    {
+        $this->view->assign('search', true);
+
+        $solr = new MyShop_Solr();
+        $solr->where($this->_getParam('q'));
+        
+        $this->_setParam('source', $solr);
+        $this->_setParam('fromAction', 'cauta');
+        $this->_forward('list');
+    }
+
+    /**
      * List all products in category
      */
     public function listeazaProduseAction()
@@ -112,26 +141,56 @@ class ProduseController extends Zend_Controller_Action
         if(empty($category)) {
             throw new Zend_Exception('Category with id ' . $categoryId . ' hasn\'t been found!');
         }
+        $this->view->assign('category', $category);
 
-        $sql = Doctrine_Query::create();
-        $sql->select('p.*, c.*');
-        $sql->addSelect('g.foto, pm.pret_oferta, pc.*, car.*');
-        $sql->from('Produse p');
-        $sql->leftJoin('p.MainPhoto g WITH g.main = 1');
-        $sql->leftJoin('p.Promotii pm WITH (pm.data_inceput <= DATE(NOW()) AND pm.data_sfarsit >= DATE(NOW()))');
-        $sql->leftJoin('p.ProduseCaracteristici pc');
-        $sql->leftJoin('p.Categorie c');
-        $sql->innerJoin('pc.Caracteristici car WITH car.preview = 1');
-        $sql->where('categorie_id = ? AND (p.stoc_disponibil + p.stoc_rezervat) > 0 AND p.afisat = 1', $categoryId);
+        //source is Solr search
+        $solr = new MyShop_Solr();
+        $solr->where('categorieId:' . $categoryId);
 
-        //init paginator
-        $paginator = $this->_helper->Paginator($sql);
-        $paginator->setTemplate('produse/listeaza-produse-pag.html');
+        $this->_setParam('source', $solr);
+        $this->_setParam('fromAction', 'listeaza-produse');
+        $this->_forward('list');
+    }
+
+    /**
+     * List products
+     */
+    public function listAction()
+    {
+        $source = $this->_getParam('source');
+
+        try {
+            $paginator = $this->_helper->Paginator($source);
+            $paginator->setTemplate('produse/listeaza-produse-pag.html');
+        }
+        catch(Exception $e) {
+            $this->_forward('index');
+            return;
+        }
+        
         $requestUrl = str_replace('pagina-' . $this->_getParam('pagina'), 'pagina-%d', $_SERVER['REQUEST_URI']);
         $paginator->setRequestUrl($requestUrl, true);
 
-        $this->view->assign('cPath', implode('_', $this->_getParam('cPath')));
-        $this->view->assign('category', $category);
+        $parser = function($results) {
+            foreach($results as &$item) {
+                foreach($item['caracteristici'] as $key => &$car) {
+                    $data = explode('#', $car);
+                    if($data[0] != 1) {
+                        unset($item['caracteristici'][$key]);
+                        continue;
+                    }
+                    $car = array_combine(
+                        array('preview', 'name', 'value'),
+                        $data
+                    );
+                }
+            }
+            return $results;
+        };
+        $paginator->setResultsParser($parser);
+        $paginator->postDispatch();
+
+        $this->render($this->_getParam('fromAction'));
         $this->_helper->Layout->includeCss('rating.css');
     }
 
@@ -163,6 +222,7 @@ class ProduseController extends Zend_Controller_Action
             throw new Zend_Exception('Product not found! (debug: id: ' . $pid . ')');
         }
         Doctrine::getTable('Produse')->organizeDescription($product['ProduseCaracteristici']);
+        $this->_setParam('categoryId', $product['categorie_id']);
         
         $this->view->assign('product', $product);
         $this->_helper->Layout->addBreadcrumb($product['denumire']);

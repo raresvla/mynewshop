@@ -125,10 +125,10 @@ class MyShop_Solr extends Apache_Solr_Service
      *
      * @return int
      */
-    public function total()
+    public function count()
     {
-        $this->execute();
-        $num  = $this->_results['response']['numFound'];
+        $this->fetchArray();
+        $num = $this->_results['response']['numFound'];
         
         return $num;
     }

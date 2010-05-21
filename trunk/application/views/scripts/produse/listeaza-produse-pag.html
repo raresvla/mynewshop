@@ -8,20 +8,20 @@
     <tbody>
         <tr>
             <td align="center">
-                <a title="Click pentru detalii" href="/{$product.Categorie.denumire|url_escape}/{$product.denumire|url_escape}-{$cPath}-{$product.id}.html">
-                    <img height="100" width="100" alt="{$product.denumire}" class="img_produs" src="/thumbs/medium/{$product.MainPhoto.foto}">
+                <a title="Click pentru detalii" href="/{$product.categorie|url_escape}/{$product.denumire|url_escape}-{$product.id}.html">
+                    <img height="100" width="100" alt="{$product.denumire}" class="img_produs" src="/thumbs/medium/{$product.imagine}">
                 </a>
             </td>
             <td>
                 <h2>
-                    <a title="Click pentru detalii" href="/{$product.Categorie.denumire|url_escape}/{$product.denumire|url_escape}-{$cPath}-{$product.id}.html">
+                    <a title="Click pentru detalii" href="/{$product.categorie|url_escape}/{$product.denumire|url_escape}-{$product.id}.html">
                         {$product.denumire}
                     </a>
                 </h2>
                 <ul class="product-specs">
-                    {foreach from=$product.ProduseCaracteristici item=spec}
+                    {foreach from=$product.caracteristici item=spec}
                     <li>
-                        <strong>{$spec.Caracteristici.caracteristica}:</strong> {$spec.valoare}
+                        <strong>{$spec.name}:</strong> {$spec.value}
                     </li>
                     {/foreach}
                     {if $product.rating}
@@ -44,10 +44,10 @@
                 <p>
                     <strong>Preţ (cu TVA):<br />{$product.pret|@number_format:2:',':'.'} RON</strong>
                 </p>
-                <p class="aviability {if !$product.stoc_disponibil}un{/if}available">
-                    {if $product.stoc_disponibil}Disponibil{else}Indisponibil{/if}
+                <p class="aviability {if !$product.inStoc}un{/if}available">
+                    {if $product.inStoc}Disponibil{else}Indisponibil{/if}
                 </p>
-                {if $product.stoc_disponibil}
+                {if $product.inStoc}
                 <p>
                     <a href="/cos-cumparaturi/adauga?pid={$product.id}" 
                        class="lnk-button add-to-cart float-right"

@@ -24,11 +24,11 @@
     </p>
     {/if}
 </div>
-<form method="get" class="searchform" action="/cauta">
+<form method="get" class="searchform" action="/produse/cauta">
     <div class="container">
         <p class="float-left">Caută:</p>
         <div class="float-left input-container">
-            <input type="text" name="q" />
+            <input type="text" name="q" value="{if $search}{$smarty.get.q}{/if}" />
         </div>
         <div class="float-left button-container">
             <button type="submit" title="Click pentru căutare"></button>
