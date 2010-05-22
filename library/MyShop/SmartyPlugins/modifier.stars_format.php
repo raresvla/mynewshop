@@ -29,4 +29,3 @@ function smarty_modifier_stars_format($number)
         }
     }
 }
-

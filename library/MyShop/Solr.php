@@ -9,6 +9,7 @@
 class MyShop_Solr extends Apache_Solr_Service
 {
     public $config;
+    public $maxScore;
 
     private $_query;
     private $_offset;
@@ -88,8 +89,7 @@ class MyShop_Solr extends Apache_Solr_Service
         $sql->leftJoin('p.Promotii pm WITH (pm.data_inceput <= DATE(NOW()) AND pm.data_sfarsit >= DATE(NOW()))');
         $sql->leftJoin('p.ProduseCaracteristici pc');
         $sql->leftJoin('p.Categorie c');
-        $sql->innerJoin('pc.Caracteristici car');
-        $sql->orderBy('car.preview desc');
+        $sql->innerJoin('pc.Caracteristici car WITH car.preview = 1');
         $sql->where('p.id = ?', $productId);
         $produs = $sql->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
         if(empty($produs)) {
@@ -111,7 +111,6 @@ class MyShop_Solr extends Apache_Solr_Service
         );
         foreach($produs['ProduseCaracteristici'] as $car) {
             $data['caracteristici'][] = implode('#', array(
-                $car['Caracteristici']['preview'],
                 trim($car['Caracteristici']['caracteristica'], "\r\n"),
                 trim($car['valoare'], "\r\n")
             ));
@@ -210,6 +209,9 @@ class MyShop_Solr extends Apache_Solr_Service
         }
 
         $this->_results = json_decode($this->_response->getRawResponse(), true);
+        if(isset($this->_results['response']['maxScore'])) {
+            $this->maxScore = $this->_results['response']['maxScore'];
+        }
         return $this->_results['response']['docs'];
     }
 
@@ -427,5 +429,19 @@ class MyShop_Solr extends Apache_Solr_Service
     {
         $this->_extraParams['facet.limit'] = $facetLimit;
         return $this;
+    }
+
+    /**
+     * Set return fields list
+     *
+     * @param array | string $fields
+     */
+    public function setReturnFields($fields)
+    {
+        if(is_array($fields)) {
+            $fields = implode(',', $fields);
+        }
+
+        return $this->_setExtraParam('fl', $fields);
     }
 }

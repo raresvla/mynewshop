@@ -33,9 +33,15 @@ class MyShop_Helper_Paginator extends Zend_Controller_Action_Helper_Abstract
         if(!$source instanceof Doctrine_Query && !$source instanceof MyShop_Solr) {
             throw new Zend_Exception('Source must be an instance of Doctrine_Query or MyShop_Solr!');
         }
+        $request = $this->getActionController()->getRequest();
 
         $this->source = $source;
         $this->setRequestUrl($_SERVER['REQUEST_URI'], false);
+        $this->queryString = http_build_query(array_diff_key(
+            $request->getQuery(),
+            array_flip(array('pagina'))
+        ));
+        $this->setRequestUrl($request->getPathInfo());
 
         return $this;
     }
@@ -316,7 +322,7 @@ class MyShop_Helper_Paginator extends Zend_Controller_Action_Helper_Abstract
         }
 
         $queryString = ($this->queryString ? $this->queryString . '&amp;' : null);
-        return "{$this->_requestCfg['url']}?{$queryString}page={$page}";
+        return "{$this->_requestCfg['url']}?{$queryString}pagina={$page}";
     }
 
     /**
