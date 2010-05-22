@@ -40,8 +40,26 @@ class MyShop_Util_String
 
     /**
      * Escape url
+     *
+     * @return MyShop_Util_String
      */
     public function escapeUrl()
+    {
+        $this->removeDiacritics();
+
+        $pattern = '/[^a-zA-Z0-9]/';
+        $this->_string = preg_replace($pattern, ' ', strtolower($this->_string));
+        $this->_string = str_replace(array('  ', ' '), array('', '-'), $this->_string);
+
+        return $this;
+    }
+
+    /**
+     * Remove string diacritics
+     * 
+     * @return MyShop_Util_String
+     */
+    public function removeDiacritics()
     {
         $diacritics = array(
             'ă' => 'a',
@@ -56,10 +74,6 @@ class MyShop_Util_String
             'Ţ' => 'T'
         );
         $this->_string = str_replace(array_keys($diacritics), array_values($diacritics), $this->_string);
-
-        $pattern = '/[^a-zA-Z0-9]/';
-        $this->_string = preg_replace($pattern, ' ', strtolower($this->_string));
-        $this->_string = str_replace(array('  ', ' '), array('', '-'), $this->_string);
 
         return $this;
     }

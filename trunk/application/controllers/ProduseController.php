@@ -32,13 +32,15 @@ class ProduseController extends Zend_Controller_Action
         }
 
         if(!$this->_hasParam('categoryId')) {
+            if(!$this->_hasParam('cPath')) {
+                return;
+            }
             $cPath = $this->_getParam('cPath');
             $categoryId = array_pop($cPath);
         }
         else {
             $categoryId = $this->_getParam('categoryId');
             $cPath = Doctrine::getTable('Categorii')->getCategoryPath($categoryId);
-            print_r($cPath); die('here');
             foreach($cPath as &$item) {
                 $item = $item['id'];
             }
@@ -113,11 +115,30 @@ class ProduseController extends Zend_Controller_Action
      */
     public function cautaAction()
     {
-        $this->view->assign('search', true);
+        $q = trim($this->_getParam('q'));
+        if(empty($q)) {
+            $this->_redirect('/');
+            return;
+        }
+
+        //fields boosts
+        $searchFields = array(
+            'denumire' => 10,
+            'categorie' => 5,
+            'caracteristici' => 3,
+            'producator' => 1
+        );
+        $query = null;
+        foreach($searchFields as $field => $boost) {
+            $query .= ($query ? ' ' : null) . "{$field}:{$q}^{$boost}";
+        }
 
         $solr = new MyShop_Solr();
-        $solr->where($this->_getParam('q'));
-        
+        $solr->where($query);
+        $solr->setReturnFields('*,score');
+        //print_r($solr->fetchArray()); die();
+
+        $this->view->assign('search', true);
         $this->_setParam('source', $solr);
         $this->_setParam('fromAction', 'cauta');
         $this->_forward('list');
@@ -167,30 +188,29 @@ class ProduseController extends Zend_Controller_Action
             $this->_forward('index');
             return;
         }
-        
-        $requestUrl = str_replace('pagina-' . $this->_getParam('pagina'), 'pagina-%d', $_SERVER['REQUEST_URI']);
-        $paginator->setRequestUrl($requestUrl, true);
+
+        if(!$this->view->search) {
+            $requestUrl = str_replace(
+                'pagina-' . $this->_getParam('pagina'),
+                'pagina-%d', $_SERVER['REQUEST_URI']
+            );
+            $paginator->setRequestUrl($requestUrl, true);
+        }
 
         $parser = function($results) {
             foreach($results as &$item) {
                 foreach($item['caracteristici'] as $key => &$car) {
-                    $data = explode('#', $car);
-                    if($data[0] != 1) {
-                        unset($item['caracteristici'][$key]);
-                        continue;
-                    }
                     $car = array_combine(
-                        array('preview', 'name', 'value'),
-                        $data
+                        array('name', 'value'),
+                        explode('#', $car)
                     );
                 }
             }
             return $results;
         };
         $paginator->setResultsParser($parser);
-        $paginator->postDispatch();
-
-        $this->render($this->_getParam('fromAction'));
+        
+        $this->_helper->viewRenderer->setScriptAction($this->_getParam('fromAction'));
         $this->_helper->Layout->includeCss('rating.css');
     }
 

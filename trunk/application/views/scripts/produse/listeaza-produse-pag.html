@@ -8,6 +8,12 @@
     <tbody>
         <tr>
             <td align="center">
+                {if $search}
+                <p>Relevanţă:</p>
+                <div class="relevance">
+                    <div class="r{$product.score|normalize_relevance:$paginator->source->maxScore}"></div>
+                </div>
+                {/if}
                 <a title="Click pentru detalii" href="/{$product.categorie|url_escape}/{$product.denumire|url_escape}-{$product.id}.html">
                     <img height="100" width="100" alt="{$product.denumire}" class="img_produs" src="/thumbs/medium/{$product.imagine}">
                 </a>
@@ -15,13 +21,13 @@
             <td>
                 <h2>
                     <a title="Click pentru detalii" href="/{$product.categorie|url_escape}/{$product.denumire|url_escape}-{$product.id}.html">
-                        {$product.denumire}
+                        {$product.denumire|google_highlight:$smarty.get.q}
                     </a>
                 </h2>
                 <ul class="product-specs">
                     {foreach from=$product.caracteristici item=spec}
                     <li>
-                        <strong>{$spec.name}:</strong> {$spec.value}
+                        <strong>{$spec.name}:</strong> {$spec.value|google_highlight:$smarty.get.q}
                     </li>
                     {/foreach}
                     {if $product.rating}
