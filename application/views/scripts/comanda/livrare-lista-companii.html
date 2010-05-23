@@ -5,54 +5,59 @@
         <table cellspacing="0" cellpadding="5" border="0" width="100%"
                class="sub-section {if $companiesCount == 1 || $invoice->cumparator.id == $company->id}selected{/if}"
                {if !$smarty.foreach.companies.first}style="border-top: 1px solid #E6E6E6"{/if}>
+           <colgroup>
+                <col width="50" align="left" />
+                <col width="120" align="left" />
+                <col align="left" />
+            </colgroup>
             <tbody>
                 <tr>
-                    <td align="center" width="50" valign="middle" rowspan="11">
+                    <td align="center" valign="middle" rowspan="11">
                         <input type="radio" value="{$company->id}" name="selected[company]"
                             {if $companiesCount == 1 || $invoice->cumparator.id == $company->id}checked="checked"{/if}/>
                     </td>
-                    <td align="left" width="120">Denumire:</td>
-                    <td align="left"><strong>{$company->denumire}</strong></td>
+                    <td>Denumire:</td>
+                    <td><strong>{$company->denumire}</strong></td>
                 </tr>
                 <tr>
-                    <td align="left" width="120">Persoana de contact: </td>
-                    <td align="left">{$company->persoana_contact}</td>
+                    <td>Persoana de contact: </td>
+                    <td>{$company->persoana_contact}</td>
                 </tr>
                 <tr>
-                    <td align="left" width="120">C.U.I:</td>
-                    <td align="left">{$company->cod_fiscal}</td>
+                    <td>C.U.I:</td>
+                    <td>{$company->cod_fiscal}</td>
                 </tr>
                 <tr>
-                    <td align="left" width="120">Nr. Reg. Com: </td>
-                    <td align="left">{$company->reg_com}</td>
+                    <td>Nr. Reg. Com: </td>
+                    <td>{$company->reg_com}</td>
                 </tr>
                 <tr>
-                    <td align="left" width="120">Cont bacar:</td>
-                    <td align="left">{$company->cont}</td>
+                    <td>Cont bacar:</td>
+                    <td>{$company->cont}</td>
                 </tr>
                 <tr>
-                    <td align="left" width="120">Banca:</td>
-                    <td align="left">{$company->banca}</td>
+                    <td>Banca:</td>
+                    <td>{$company->banca}</td>
                 </tr>
                 <tr>
-                    <td align="left" width="120">E-mail:</td>
-                    <td align="left">{$company->email_sediu}</td>
+                    <td>E-mail:</td>
+                    <td>{$company->email_sediu}</td>
                 </tr>
                 <tr>
-                    <td align="left" width="120">Adresa:</td>
-                    <td align="left">{$company->adresa_sediu}</td>
+                    <td>Adresa:</td>
+                    <td>{$company->adresa_sediu}</td>
                 </tr>
                 <tr>
-                    <td align="left" width="120">Judeţ / Sector:</td>
-                    <td align="left">{$company->judet_sediu}</td>
+                    <td>Judeţ / Sector:</td>
+                    <td>{$company->judet_sediu}</td>
                 </tr>
                 <tr>
-                    <td align="left" width="120">Localitate:</td>
-                    <td align="left">{$company->oras_sediu}</td>
+                    <td>Localitate:</td>
+                    <td>{$company->oras_sediu}</td>
                 </tr>
                 <tr>
-                    <td align="left" width="120">Cod poştal:</td>
-                    <td align="left">{$company->cod_postal_sediu}</td>
+                    <td>Cod poştal:</td>
+                    <td>{$company->cod_postal_sediu}</td>
                 </tr>
             </tbody>
         </table>

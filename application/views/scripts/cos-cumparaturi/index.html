@@ -6,11 +6,11 @@
     Cosul dvs. de cumparaturi este gol!
 </div>
 {else}
-<form name="basket" method="post" action="/cos-cumparaturi/actualizeaza" id="cart">
-    <div align="left">
-        <div align="center" style="width: 90px; padding: 3px; border-bottom: 0px none;" class="table-border">
+<form method="post" action="/cos-cumparaturi/actualizeaza" id="cart">
+    <div>
+        <div style="width: 90px; padding: 3px; border-bottom: 0px none;" class="table-border">
             <a class="lnk-red" href="/cos-cumparaturi/goleste-cosul">
-                <img height="20" border="0" width="20" alt="" class="valignMiddle" src="/img/icons/empty-basket.png"> Goleşte coşul
+                <img height="20" width="20" alt="" class="valignMiddle" src="/img/icons/empty-basket.png" /> Goleşte coşul
             </a>
         </div>
     </div>
@@ -37,11 +37,15 @@
                 <td align="center">
                     <input type="checkbox" value="{$product.id}" name="remove[]" class="highlight-marker" />
                 </td>
-                <td align="left">
+                <td>
                     <table cellspacing="0" cellpadding="0" width="100%">
+                        <colgroup>
+                            <col width="55" />
+                            <col />
+                        </colgroup>
                         <tbody>
                             <tr>
-                                <td width="55">
+                                <td>
                                     <a href="">
                                         <img height="50" width="50" src="/thumbs/small/{$product.foto}" alt="{$product.denumire}" />
                                     </a>
@@ -55,13 +59,13 @@
                         </tbody>
                     </table>
                 </td>
-                <td align="center" width="55">
+                <td>
                     <input type="text" class="align-center" size="2" value="{$product.quantity}" name="quantity[{$product.id}]" />
                 </td>
-                <td align="right" width="80">
+                <td>
                     {$basket->valueWithoutVat($product.price)|number_format:2:',':'.'}
                 </td>
-                <td align="right" width="80">
+                <td>
                     {math equation="x * y" x=$product.price y=$product.quantity assign=itemValue}
                     {$itemValue|number_format:2:',':'.'}
                 </td>
@@ -71,11 +75,15 @@
     </table>
 </form>
 <br />
-<table cellspacing="0" cellpadding="3" border="0" align="right" width="225" class="table-border" style="margin-bottom: 50px;">
+<table cellspacing="0" cellpadding="3" border="0" width="225" class="table-border float-right" style="margin-bottom: 50px;">
+    <colgroup>
+        <col width="100" />
+        <col align="right" />
+    </colgroup>
     <tbody>
         <tr>
-            <td width="100" class="table-header">Total cumpărături:</td>
-            <td align="right">
+            <td class="table-header">Total cumpărături:</td>
+            <td>
                 <strong>{$basket->total()|number_format:2:',':'.'} RON </strong>
             </td>
         </tr>
@@ -84,23 +92,28 @@
 {/if}
 
 <hr class="fancy-spacer" />
-<table cellspacing="0" cellpadding="0" border="0" align="center" width="500px" class="bottom-nav">
+<table cellspacing="0" cellpadding="0" border="0" width="500px" class="bottom-nav">
+    <colgroup>
+        <col width="33%" align="center" />
+        <col width="33%" align="center" />
+        <col align="center" />
+    </colgroup>
     <tbody>
         <tr>
-            <td align="center" width="33%">
+            <td>
                 <a class="lnk-button" href="{$backUrl}" style="width: 85px">
-                    <img height="20" border="0" width="20" alt="" class="valignMiddle" src="/img/icons/back.png" /> <span>Înapoi</span>
+                    <img height="20" width="20" alt="" class="valignMiddle" src="/img/icons/back.png" /> <span>Înapoi</span>
                 </a>
             </td>
             {if $basket|@count}
-            <td align="center" width="33%">
+            <td>
                 <a class="lnk-button" href="javascript://" style="width: 85px" onclick="$('cart').submit()">
-                    <img height="20" border="0" width="20" alt="" class="valignMiddle" src="/img/icons/update.png" /> Actualizează
+                    <img height="20" width="20" alt="" class="valignMiddle" src="/img/icons/update.png" /> Actualizează
                 </a>
             </td>
-            <td align="center" width="33%">
+            <td>
                 <a class="lnk-button" href="/comanda" style="width: 85px">
-                    Continuă <img height="20" border="0" width="20" alt="" src="/img/icons/forward.png" />
+                    Continuă <img height="20" width="20" alt="" src="/img/icons/forward.png" />
                 </a>
             </td>
             {/if}

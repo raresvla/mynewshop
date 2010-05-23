@@ -28,10 +28,18 @@
             </tr>
         </tbody>
     </table>
+    {foreachelse}
+    <div class="table-header2" align="center" style="padding: 20px;">
+        <img height="17" width="17" src="/img/icons/info_little.png" class="valign-middle" alt="">
+        Nicio adresă introdusă.
+    </div>
     {/foreach}
+
+    {if $addresses|@count}
     <p style="padding-left: 20px;">
         <img src="/img/misc/arrow_ltr.png" alt="" />
         <a href="javascript://" class="action" rel="edit-address">Editează</a> &nbsp;|&nbsp;
         <a href="javascript://" class="action" rel="delete-address">Şterge</a>
     </p>
+    {/if}
 </form>

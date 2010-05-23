@@ -17,17 +17,17 @@
         <p class="title with-border"><strong>Contactează-ne</strong> (toate câmpurile sunt obligatorii)</p>
         <ul>
             <li>
-                <label class="left" for="username">Numele dumeavoastră:</label>
+                <label class="left" for="nume">Numele dumeavoastră:</label>
                 <input type="text" name="contact[nume]" id="nume" size="55" value="{$data.nume}"
                        class="realname" title="Introduceţi un nume valid" />
             </li>
             <li>
-                <label class="left" for="password">Adresa de email:</label>
+                <label class="left" for="email">Adresa de email:</label>
                 <input type="text" name="contact[email]" id="email" size="55"
                        value="{$data.email}" class="required validate-email" title="Introduceţi adresa de email" />
             </li>
             <li>
-                <label class="left" for="password">Intrebarea / mesajul:</label>
+                <label class="left" for="intrebare">Intrebarea / mesajul:</label>
                 <textarea name="contact[intrebare]" id="intrebare" class="length6" title="Introduceţi comentariul" cols="52" rows="5">{$data.intrebare}</textarea>
             </li>
             {if $captcha}
@@ -45,19 +45,23 @@
             </li>
             {/if}
         </ul>
-        <p align="center">
+        <p style="text-align: center;">
             <input type="submit" name="save" value="Trimite" class="big" />
         </p>
     </div>
 </form>
 
 <table cellspacing="0" cellpadding="5" border="0" width="100%" class="table-border contact">
+    <colgroup>
+        <col width="100" />
+        <col />
+    </colgroup>
     <tbody>
         <tr>
             <td style="padding-left: 20px;" class="table-header2" colspan="2">S.C. MYSHOP S.R.L. </td>
         </tr>
         <tr>
-            <td align="center" width="100">
+            <td align="center">
                 <img height="80" width="80" src="/img/icons/contact.png" alt="Contact" />
             </td>
             <td>

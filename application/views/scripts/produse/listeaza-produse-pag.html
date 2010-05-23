@@ -1,9 +1,9 @@
 {foreach from=$paginator->getResults() item=product name=pLoop}
 <table cellspacing="0" cellpadding="0" border="0" width="100%" class="products {if $smarty.foreach.pLoop.last}last{/if}">
     <colgroup>
-        <col width="150">
-        <col>
-        <col width="150">
+        <col width="150" />
+        <col />
+        <col width="150" />
     </colgroup>
     <tbody>
         <tr>
@@ -15,7 +15,7 @@
                 </div>
                 {/if}
                 <a title="Click pentru detalii" href="/{$product.categorie|url_escape}/{$product.denumire|url_escape}-{$product.id}.html">
-                    <img height="100" width="100" alt="{$product.denumire}" class="img_produs" src="/thumbs/medium/{$product.imagine}">
+                    <img height="100" width="100" alt="{$product.denumire}" src="/thumbs/medium/{$product.imagine}" />
                 </a>
             </td>
             <td>

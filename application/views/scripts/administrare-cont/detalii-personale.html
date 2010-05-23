@@ -3,7 +3,7 @@
         <li>
             <label class="left" for="adresare">Adresare: *</label>
             <label>
-                <input type="radio" name="data[adresare]" value="Doamna"
+                <input type="radio" name="data[adresare]" value="Doamna" id="adresare"
                        class="inline-label" {if $data.adresare == 'Doamna'}checked="checked"{/if} />Doamna
             </label>
             <label>
@@ -42,14 +42,14 @@
                    value="{$data.fax}" />
         </li>
         <li>
-            <hr size="1" noshade="noshade" class="single-line">
+            <hr class="single-line" />
         </li>
         <li>
             <label class="left" for="checkbox">Newsletter:</label>
             <input type="checkbox" name="data[newsletter]" id="checkbox" value="1" {if $data.newsletter}checked="checked"{/if} />
         </li>
     </ul>
-    <p align="center">
+    <p style="text-align: center">
         <input type="submit" name="save" value="Salvează" class="win-button" />
     </p>
 </form>

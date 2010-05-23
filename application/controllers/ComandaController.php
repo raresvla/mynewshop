@@ -15,6 +15,7 @@ class ComandaController extends Zend_Controller_Action
         
         $invoice = MyShop_Invoice::getInstance(MyShop_Basket::getInstance());
         $this->view->assign('invoice', $invoice);
+        $this->view->assign('title', 'Trimite comanda');
     }
 
     /**
