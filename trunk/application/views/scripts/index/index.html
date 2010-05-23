@@ -1,26 +1,77 @@
-<h2 class="section-title">Produse noi</h2>
-<div style="padding: 0pt 20px;" class="clear-fix">
-    <div style="width: 300px;" class="container green float-left">
-        <div class="left green"></div>
-        <div class="right green"></div>
-        <div class="content">
-            <p class="image">
-                <a href="produse/detalii/3-rpc_p2-id2225-i03n2212_i03n2212.html">
-                    <img height="100" width="100" alt="RPC P2-ID2225-I03N2212" src="/thumbs/medium/img2_1.jpg" />
+{if $newProducts|@count}
+<div style="margin-bottom: 20px;">
+    <h2 class="section-title">Produse noi</h2>
+
+    {foreach from=$newProducts item=product name=newProducts}
+    {math equation='x % 2' x=$smarty.foreach.newProducts.iteration assign=iterationOdd}
+    {if $iterationOdd}
+    <div class="clear-fix outer-container">
+    {/if}
+        <div style="width: 300px;" class="container green float-{if $iterationOdd}left{else}right{/if}">
+            <div class="left"></div>
+            <div class="right"></div>
+            <div class="content">
+                <p class="image">
+                    <a href="/{$product.Categorie.denumire|url_escape}/{$product.denumire|url_escape}-{$product.id}.html">
+                        <img height="100" width="100" alt="{$product.denumire}" src="/thumbs/medium/{$product.picture}" />
+                    </a>
+                </p>
+                <p>
+                    <a class="link" href="/{$product.Categorie.denumire|url_escape}/{$product.denumire|url_escape}-{$product.id}.html">{$product.denumire}</a>
+                </p>
+                <p class="price">Preţ (cu TVA): <strong>{$product.pret|@number_format:2:',':'.'} RON</strong></p>
+            </div>
+            <div class="bottom clear-fix">
+                <a href="/{$product.Categorie.denumire|url_escape}/{$product.denumire|url_escape}-{$product.id}.html" class="float-left details">
+                    Detalii
                 </a>
-            </p>
-            <p>
-                <a class="link" href="produse/detalii/3-rpc_p2-id2225-i03n2212_i03n2212.html">RPC P2-ID2225-I03N2212</a>
-            </p>
-            <p class="price">Preţ (cu TVA): <strong>1.556,56 RON</strong></p>
+                <a href="/cos-cumparaturi/adauga?pid={$product.id}" class="float-right buy">
+                    Adaugă în coş
+                </a>
+            </div>
         </div>
-        <div class="bottom green clear-fix">
-            <a href="produse/detalii/3-rpc_p2-id2225-i03n2212_i03n2212.html" class="float-left details">
-                Detalii
-            </a>
-            <a href="cos-cumparaturi/adauga/3-rpc_p2-id2225-i03n2212_i03n2212.html" class="float-right buy">
-                Adaugă în coş
-            </a>
-        </div>
+    {if !$iterationOdd || $smarty.foreach.newProducts.last}
     </div>
+    {/if}
+    {/foreach}
 </div>
+{/if}
+
+{if $recommendations|@count}
+<div style="margin-bottom: 20px;">
+    <h2 class="section-title">Recomandari</h2>
+
+    {foreach from=$recommendations item=product name=recommendations}
+    {math equation='x % 2' x=$smarty.foreach.recommendations.iteration assign=iterationOdd}
+    {if $iterationOdd}
+    <div class="clear-fix outer-container">
+    {/if}
+        <div style="width: 300px;" class="container red float-{if $iterationOdd}left{else}right{/if}">
+            <div class="left"></div>
+            <div class="right"></div>
+            <div class="content">
+                <p class="image">
+                    <a href="/{$product.Categorie.denumire|url_escape}/{$product.denumire|url_escape}-{$product.id}.html">
+                        <img height="100" width="100" alt="{$product.denumire}" src="/thumbs/medium/{$product.picture}" />
+                    </a>
+                </p>
+                <p>
+                    <a class="link" href="/{$product.Categorie.denumire|url_escape}/{$product.denumire|url_escape}-{$product.id}.html">{$product.denumire}</a>
+                </p>
+                <p class="price">Preţ (cu TVA): <strong>{$product.pret|@number_format:2:',':'.'} RON</strong></p>
+            </div>
+            <div class="bottom clear-fix">
+                <a href="/{$product.Categorie.denumire|url_escape}/{$product.denumire|url_escape}-{$product.id}.html" class="float-left details">
+                    Detalii
+                </a>
+                <a href="/cos-cumparaturi/adauga?pid={$product.id}" class="float-right buy">
+                    Adaugă în coş
+                </a>
+            </div>
+        </div>
+    {if !$iterationOdd || $smarty.foreach.recommendations.last}
+    </div>
+    {/if}
+    {/foreach}
+</div>
+{/if}

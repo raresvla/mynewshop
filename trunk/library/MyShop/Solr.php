@@ -67,6 +67,7 @@ class MyShop_Solr extends Apache_Solr_Service
             }
         }
         catch(Exception $e) {
+            print_r($e->getMessage()); die();
             return false;
         }
 
@@ -107,7 +108,10 @@ class MyShop_Solr extends Apache_Solr_Service
             'greutate' => $produs['greutate'],
             'pret' => $produs['pret'],
             'rating' => $produs['rating'],
-            'inStoc' => true
+            'nou' => $produs['noutati'],
+            'recomandat' => $produs['recomandari'],
+            'dataAdaugarii' => $produs['data_adaugare'] . 'T00:00:00Z',
+            'inStoc' => ($produs['stoc_disponibil'] + $produs['stoc_rezervat']) > 0
         );
         foreach($produs['ProduseCaracteristici'] as $car) {
             $data['caracteristici'][] = implode('#', array(

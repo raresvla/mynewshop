@@ -15,14 +15,18 @@
     </li>
 </ul>
 
-<form class="formular" name="billType" method="post" action="/comanda/set-mod-facturare" style="margin: 40px 0;">
-    <table cellspacing="0" cellpadding="8" border="0" align="center" width="90%" class="table-border">
+<form class="formular" method="post" action="/comanda/set-mod-facturare" style="margin: 40px 0;">
+    <table cellspacing="0" cellpadding="8" border="0" width="90%" class="table-border">
+        <colgroup>
+            <col width="40%" align="left" />
+            <col align="right" />
+        </colgroup>
         <tbody>
             <tr>
-                <td align="left" width="40%" class="table-header line-top" style="font-size: 12px; padding: 5px;">
+                <td align="left" class="table-header line-top" style="font-size: 12px; padding: 5px;">
                     <strong>TOTAL COMANDĂ:</strong>
                 </td>
-                <td align="right" width="60%" class="table-header line-top" style="font-size: 12px; padding: 5px;">
+                <td align="right" class="table-header line-top" style="font-size: 12px; padding: 5px;">
                     <strong>{$basket->total()|number_format:2:',':'.'} RON</strong>
                 </td>
             </tr>
@@ -53,17 +57,21 @@
 </form>
 
 <hr class="fancy-spacer" />
-<table cellspacing="0" cellpadding="0" border="0" align="center" width="500px" class="bottom-nav">
+<table cellspacing="0" cellpadding="0" width="500px" class="bottom-nav">
+    <colgroup>
+        <col width="50%" align="center" />
+        <col align="center" />
+    </colgroup>
     <tbody>
         <tr>
-            <td align="center" width="50%">
+            <td align="center">
                 <a class="lnk-button" href="/cos-cumparaturi" style="width: 85px">
-                    <img height="20" border="0" width="20" alt="" class="valignMiddle" src="/img/icons/back.png" /> Înapoi
+                    <img height="20" width="20" alt="" class="valignMiddle" src="/img/icons/back.png" /> Înapoi
                 </a>
             </td>
-            <td align="center" width="50%">
+            <td align="center">
                 <a class="lnk-button next" href="javascript://" style="width: 85px">
-                    Continuă <img height="20" border="0" width="20" alt="" src="/img/icons/forward.png" />
+                    Continuă <img height="20" width="20" alt="" src="/img/icons/forward.png" />
                 </a>
             </td>
         </tr>

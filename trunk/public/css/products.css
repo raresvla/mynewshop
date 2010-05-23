@@ -22,9 +22,9 @@
 
 .photo-gallery { height:220px; padding:10px; width:320px; }
 .photo-gallery a { display: block; }
-.photo-gallery .float-left { color:#999999; padding:5px; width:70px; }
+.photo-gallery .float-left { color:#999999; padding:5px; text-align:center; width:70px; }
 .photo-gallery .float-left img { border:1px solid #EFEFEF; margin:5px;}
-.buy-box { background-color:#F7F7F7; margin-top:20px; overflow:hidden; padding:25px 15px 15px; width:250px; }
+.buy-box { background-color:#F7F7F7; margin-top:20px; overflow:hidden; padding:25px 15px 15px; width:250px; text-align: center; }
 .buy-box .inner { background-color:#FFFFFF; padding:10px; width: 220px; }
 .buy-box .inner .price { font-size:14px; color: #000; }
 .buy-box .inner .aviability { width: 55px; margin: 0 auto 10px; }
@@ -41,6 +41,7 @@
 .description-content p { text-indent: 15px; margin-bottom: 10px; }
 
 .tableSpec { border:1px solid #CCCCCC; border-top:1px dotted #CCCCCC; margin-top:3px; border-collapse:separate; }
+.tableSpec tr.highlight { background-color: #f9f9f9 }
 .tableSpec td { padding: 2px; }
 .tableSpec .tableSpecTitle { font-family: Verdana; font-size:11px; font-weight:bold; color:#8A0000; padding-top:8px; }
 .tableSpec .tableSpecLeft { border-top: 1px solid #E6E6E6; padding-left:15px; }

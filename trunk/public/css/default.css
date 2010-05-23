@@ -246,13 +246,13 @@ form.searchform div.button-container button { width: 23px; height: 23px; backgro
 #header li a:hover span {
     background-position:100% -42px;
 }
-#header #current a {
-    background-position:left top;
-    color: #FFF;
+#header .current a {
+    background-position:left top !important;
+    color: #FFF !important;
 }
-#header #current a span {
-    background-position:right top;
-    color: #FFF;
+#header .current a span {
+    background-position:right top !important;
+    color: #FFF !important;
 }
 /* end menu tabs */
 
@@ -404,27 +404,29 @@ ul.steps li.first { margin-left: 65px; }
 .payment-options li { float: left; margin-left: 75px; text-align: left; }
 
 /* containers */
+.outer-container { padding: 0 15px 25px; }
 .container { background-repeat:repeat-x; padding:0px; margin-right:8px; }
 .container.green { background-image:url(/img/layout/container_fill_green.png); }
 .container.red { background-image:url(/img/layout/container_fill_red.png); }
 .container.gray { background-image:url(/img/layout/container_fill_gray.png); }
 .container .left { width:4px; height:4px; float:left; }
-.container .left.green { background-image:url(/img/layout/container_top_left_green.png); }
-.container .left.red { background-image:url(/img/layout/container_top_left_red.png); }
-.container .left.gray { background-image:url(/img/layout/container_top_left_gray.png); }
+.container.green .left { background-image:url(/img/layout/container_top_left_green.png); }
+.container.red .left { background-image:url(/img/layout/container_top_left_red.png); }
+.container.gray .left { background-image:url(/img/layout/container_top_left_gray.png); }
 .container .right { width:4px; height:4px; float:right; }
-.container .right.green { background-image:url(/img/layout/container_top_right_green.png); }
-.container .right.red { background-image:url(/img/layout/container_top_right_red.png); }
-.container .right.gray { background-image:url(/img/layout/container_top_right_gray.png); }
+.container.green .right { background-image:url(/img/layout/container_top_right_green.png); }
+.container.red .right { background-image:url(/img/layout/container_top_right_red.png); }
+.container.gray .right { background-image:url(/img/layout/container_top_right_gray.png); }
 .container .content { height:1%; overflow:auto; padding:10px 5px; }
 .container .content .image { float:left; margin-right:5px; border:1px solid #EFEFEF; }
+.container .content .image a { display: block; }
 .container .content .price { float:right; color:#555555; padding-top:10px; }
 .container .content .link { color:#0875C0; font-family: Verdana; font-size:11px; font-weight:bold; text-decoration:none; }
 .container .content .link:hover { text-decoration:none; }
-.container .bottom { height:22px; clear: both; }
-.container .bottom.green { background-image:url(/img/layout/container_bottom_fill_green.png); background-repeat: repeat-x; }
-.container .bottom.red { background-image:url(/img/layout/container_bottom_fill_red.png); }
-.container .bottom.gray { background-image:url(/img/layout/container_bottom_fill_gray.png); }
+.container .bottom { height:22px; clear: both; background-repeat: repeat-x; }
+.container.green .bottom { background-image:url(/img/layout/container_bottom_fill_green.png); }
+.container.red .bottom { background-image:url(/img/layout/container_bottom_fill_red.png); }
+.container.gray .bottom { background-image:url(/img/layout/container_bottom_fill_gray.png); }
 .container .bottom .details { display: block; height: 22px; width: 58px; background-image:url(/img/layout/details.png); text-indent: -1000px; }
 .container .bottom .buy { display: block; height: 22px; width: 83px; background-image:url(/img/layout/add-to-cart.png); text-indent: -1000px; }
 

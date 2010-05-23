@@ -12,6 +12,7 @@ class CosCumparaturiController extends Zend_Controller_Action
     public function init()
     {
         $this->_helper->Layout->addBreadCrumb('Coş de cumpărături', '/cos-cumparaturi');
+        $this->view->assign('title', 'Cos de cumparaturi');
     }
 
     /**

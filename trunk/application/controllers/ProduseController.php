@@ -140,7 +140,7 @@ class ProduseController extends Zend_Controller_Action
 
         $this->view->assign('search', true);
         $this->_setParam('source', $solr);
-        $this->_setParam('fromAction', 'cauta');
+        $this->_setParam('render', 'cauta');
         $this->_forward('list');
     }
 
@@ -169,7 +169,44 @@ class ProduseController extends Zend_Controller_Action
         $solr->where('categorieId:' . $categoryId);
 
         $this->_setParam('source', $solr);
-        $this->_setParam('fromAction', 'listeaza-produse');
+        $this->_setParam('render', 'listeaza-produse');
+        $this->_forward('list');
+    }
+
+    /**
+     * List new products
+     */
+    public function noiAction()
+    {
+        $this->_helper->Layout->addBreadcrumb('Produse noi');
+        $this->view->assign('title', 'Produse noi');
+        $this->view->assign('noProductFound', 'Nu au fost găsite produse.');
+        $this->view->assign('section', 'new-products');
+
+        $solr = new MyShop_Solr();
+        $solr->where('nou:1');
+        $solr->orderBy('dataAdaugarii desc');
+
+        $this->_setParam('source', $solr);
+        $this->_setParam('render', 'listeaza-produse');
+        $this->_forward('list');
+    }
+
+    /**
+     * List recommended products
+     */
+    public function recomandateAction()
+    {
+        $this->_helper->Layout->addBreadcrumb('Produse recomandate');
+        $this->view->assign('title', 'Produse recomandate');
+        $this->view->assign('noProductFound', 'Nu au fost găsite produse.');
+        $this->view->assign('section', 'recommended-products');
+
+        $solr = new MyShop_Solr();
+        $solr->where('recomandat:1');
+
+        $this->_setParam('source', $solr);
+        $this->_setParam('render', 'listeaza-produse');
         $this->_forward('list');
     }
 
@@ -189,7 +226,7 @@ class ProduseController extends Zend_Controller_Action
             return;
         }
 
-        if(!$this->view->search) {
+        if(empty($this->view->search)) {
             $requestUrl = str_replace(
                 'pagina-' . $this->_getParam('pagina'),
                 'pagina-%d', $_SERVER['REQUEST_URI']
@@ -210,7 +247,7 @@ class ProduseController extends Zend_Controller_Action
         };
         $paginator->setResultsParser($parser);
         
-        $this->_helper->viewRenderer->setScriptAction($this->_getParam('fromAction'));
+        $this->_helper->viewRenderer->setScriptAction($this->_getParam('render'));
         $this->_helper->Layout->includeCss('rating.css');
     }
 
@@ -226,6 +263,7 @@ class ProduseController extends Zend_Controller_Action
 
         $sql = Doctrine_Query::create();
         $sql->select('p.*, c.*, mg.foto, g.foto, pm.pret_oferta, pc.*, car.*, sc.*');
+        $sql->addSelect('(p.stoc_disponibil + p.stoc_rezervat) AS stoc_total');
         $sql->from('Produse p');
         $sql->leftJoin('p.GalerieFoto g WITH g.main != 1');
         $sql->leftJoin('p.MainPhoto mg WITH mg.main = 1');

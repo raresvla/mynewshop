@@ -1,18 +1,18 @@
-<h1 class="section-title">{$category.denumire}</h1>
+<h1 class="section-title">{if $category}{$category.denumire}{else}{$title}{/if}</h1>
 
 {if !$paginator->getTotal()}
 <div class="niftyable light-blue-box" align="center">
     <p class="no-products">
         <img src="/img/icons/info_big.png" alt="Info" align="middle" />
-        <span>Nu au fost găsite produse în această categorie</span>
+        <span>{$noProductFound|default:'Nu au fost găsite produse în această categorie'}</span>
     </p>
 </div>
 {else}
 <table cellspacing="0" border="0" width="100%" class="paginator-table">
     <colgroup>
-        <col width="130">
-        <col width="240">
-        <col>
+        <col width="130" />
+        <col width="240" />
+        <col />
     </colgroup>
     <tbody>
         <tr>

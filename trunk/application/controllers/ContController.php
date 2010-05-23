@@ -21,6 +21,7 @@ class ContController extends Zend_Controller_Action
      */
     public function autentificareAction()
     {
+        $this->view->assign('title', 'Autentificare');
         $this->_helper->Layout->addBreadcrumb('Autentificare', '/cont/autentificare');
         $aclMessage = $this->_helper->Acl->getLastMessage();
         if($aclMessage) {
@@ -92,6 +93,7 @@ class ContController extends Zend_Controller_Action
      */
     public function inregistrareAction()
     {
+        $this->view->assign('title', 'Inregistrare');
         $this->_helper->Layout->addBreadcrumb('Creare cont', '/cont/inregistrare');
         $this->view->assign('regions', Doctrine::getTable('Judete')->fetchAll());
         $this->view->assign('title', 'Creare cont');

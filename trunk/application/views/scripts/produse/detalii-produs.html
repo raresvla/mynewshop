@@ -4,9 +4,9 @@
 </h1>
 
 <div class="clear-fix product-top">
-    <div align="right" class="float-left photo-gallery">
+    <div class="float-left photo-gallery">
         {if $product.GalerieFoto|@count}
-        <div align="center" class="float-left">
+        <div class="float-left">
             Galerie foto
             {foreach from=$product.GalerieFoto item=photo name=photoGallery}
             <a title="{$product.denumire}" rel="lightbox[galerie]"
@@ -26,11 +26,11 @@
         {/if}
     </div>
 
-    <div align="center" class="niftyable float-right buy-box">
+    <div class="niftyable float-right buy-box">
         <div class="niftyable inner">
             <b class="price">{$product.pret|@number_format:2:',':'.'} (cu TVA)</b>
-            <p class="aviability {if !$product.stoc_disponibil}un{/if}available">
-                {if $product.stoc_disponibil}Disponibil{else}Indisponibil{/if}
+            <p class="aviability {if !$product.stoc_total}un{/if}available">
+                {if $product.stoc_total}Disponibil{else}Indisponibil{/if}
             </p>
             {if $product.stoc_disponibil}
             <p>
@@ -80,17 +80,17 @@
         {foreach from=$product.ProduseCaracteristici item=specifications key=sectionName}
         <table cellspacing="0" cellpadding="4" border="0" width="100%" class="tableSpec">
             <colgroup>
-                <col width="45%">
-                <col>
+                <col width="45%" />
+                <col />
             </colgroup>
             <tbody>
                 <tr>
-                    <td colspan="2" class="tableSpecTitle">{$sectionName}</td>
+                    <td colspan="2" class="tableSpecTitle">{$sectionName|@htmlspecialchars}</td>
                 </tr>
                 {foreach from=$specifications item=spec name=sectionSpecs}
-                <tr bgcolor="{if $smarty.foreach.sectionSpecs.index %2 == 0}#f9f9f9{/if}">
-                    <td class="tableSpecLeft">{$spec.name}</td>
-                    <td class="tableSpecRight">{$spec.value|replace:'[YES]':'Da'|replace:'|':'<br />'}</td>
+                <tr class="{if $smarty.foreach.sectionSpecs.index %2 == 0}highlight{/if}">
+                    <td class="tableSpecLeft">{$spec.name|@htmlspecialchars}</td>
+                    <td class="tableSpecRight">{$spec.value|@htmlspecialchars|replace:'[YES]':'Da'|replace:'|':'<br />'}</td>
                 </tr>
                 {/foreach}
             </tbody>
@@ -102,19 +102,19 @@
 <hr class="fancy-spacer" style="margin-top: 40px" />
 <table cellspacing="5" cellpadding="0" border="0" width="70%" class="bottom-nav">
     <colgroup>
-        <col width="50%"/>
-        <col width="50%"/>
+        <col width="50%" />
+        <col />
     </colgroup>
     <tbody>
         <tr>
             <td>
                 <a style="width: 146px;" class="lnk-button" href="{$lastCategory.href}">
-                    <img height="20" border="0" width="20" alt="" src="/img/icons/back.png" align="top" /> &nbsp;Înapoi la lista de produse
+                    <img height="20" width="20" alt="" src="/img/icons/back.png" /> &nbsp;Înapoi la lista de produse
                 </a>
             </td>
             <td align="right">
                 <a style="width: 145px;" onclick="" class="lnk-button" href="javascript://">
-                    <img height="20" border="0" width="22" alt="" src="/img/icons/recommend.png" align="top" /> &nbsp;Recomandă unui prieten
+                    <img height="20" width="22" alt="" src="/img/icons/recommend.png" /> &nbsp;Recomandă unui prieten
                 </a>
             </td>
         </tr>

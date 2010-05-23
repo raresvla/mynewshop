@@ -24,6 +24,7 @@ class CompanieController extends Zend_Controller_Action
      */
     public function informatiiAction()
     {
+        $this->view->assign('title', 'Informatii');
         $this->_helper->Layout->addBreadcrumb('Informaţii');
     }
 
@@ -32,6 +33,7 @@ class CompanieController extends Zend_Controller_Action
      */
     public function contactAction()
     {
+        $this->view->assign('title', 'Contact');
         $this->_helper->Layout->addBreadcrumb('Contact');
         $this->_helper->Layout->includeJs('lib/validate.js');
         $this->_helper->Layout->includeJs('custom-validators.js');
