@@ -1,10 +1,10 @@
 <?php
 function db_c()
 {
-	$dbserver	= 'localhost';
+	$dbserver	= '127.0.0.1';
 	$dbuser		= 'root';
 	$dbpass		= 'rares';
-	$dbname		= 'mynewshop';
+	$dbname		= 'myshop';
 	$db_conn = mysql_connect($dbserver, $dbuser, $dbpass)
 	or die ("Eroare mySQL : Nu ma pot conecta la baza de date.");
 	mysql_select_db($dbname)
