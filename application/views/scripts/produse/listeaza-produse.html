@@ -20,11 +20,11 @@
                 Produsele <strong>{$paginator->getLowerBound()}&ndash;{$paginator->getUpperBound()}</strong>
                 (din {$paginator->getTotal()})
             </td>
-            <td>&nbsp;&nbsp;Ordonează:
+            <td>{*&nbsp;&nbsp;Ordonează:
                 <select name="ordine">
                     <option value="">după preţ - crescător</option>
                     <option value="">după preţ - descrescător</option>
-                </select>
+                </select>*}
             </td>
             <td align="right" class="right">
                 {$paginator->getHtml()}
