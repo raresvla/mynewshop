@@ -73,7 +73,7 @@ class ContController extends Zend_Controller_Action
             $this->_forward($originalRequest['action'], $originalRequest['controller']);
         }
         else {
-            $this->_redirect('/');
+            $this->_redirect($this->_getParam('redirect', '/'));
         }
     }
 
@@ -82,9 +82,18 @@ class ContController extends Zend_Controller_Action
      */
     public function logoutAction()
     {
-        Zend_Session::destroy();
-        MyShop_Plugin_Authentication::unsetAuthCookie();
+        if(sizeof(MyShop_Basket::getInstance())) {
+            $basketData = $_SESSION[MyShop_Basket::DATA_NAMESPACE];
+            Zend_Session::regenerateId();
+            $_SESSION = array(
+                MyShop_Basket::DATA_NAMESPACE => $basketData
+            );
+        }
+        else {
+            Zend_Session::destroy();
+        }
 
+        MyShop_Plugin_Authentication::unsetAuthCookie();
         $this->_redirect('/');
     }
 
