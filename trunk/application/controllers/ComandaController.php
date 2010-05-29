@@ -11,7 +11,7 @@ class ComandaController extends Zend_Controller_Action
      */
     public function init()
     {
-        $this->_helper->Acl->allow(MyShop_Helper_Acl::ROLE_MEMBER);
+        $this->_helper->Acl->allow(MyShop_Helper_Acl::ROLE_MEMBER, 'Pentru a finaliza comanda, trebuie să vă autentificaţi.');
         
         $invoice = MyShop_Invoice::getInstance(MyShop_Basket::getInstance());
         $this->view->assign('invoice', $invoice);

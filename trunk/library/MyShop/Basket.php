@@ -91,7 +91,7 @@ class MyShop_Basket implements ArrayAccess, Iterator, Countable
         $sql = Doctrine_Query::create();
         $sql->select('c.id_produs, c.cantitate, p.denumire, p.cod_produs, p.stoc_disponibil, g.foto as foto');
         $sql->addSelect('IF(pm.pret_oferta, pm.pret_oferta, p.pret) AS price');
-        $sql->from('CartTrack c INDEXBY id_produs');
+        $sql->from('CartTrack c');
         $sql->innerJoin('c.Produse p');
         $sql->leftJoin('p.MainPhoto g WITH g.main = 1');
         $sql->leftJoin('p.Promotii pm WITH (pm.data_inceput <= DATE(NOW()) AND pm.data_sfarsit >= DATE(NOW()))');

@@ -182,28 +182,12 @@ form.searchform div.button-container button { width: 23px; height: 23px; backgro
 #rightbar { float: right; width: 23%; padding: 0; margin:0; }
 
 /* Footer */
-#footer { 
-    clear: both;
-    color: #FFF;
-    background: #A9BAC3;
-    border-top: 5px solid #568EB6;
-    margin: 0; padding: 0;
-    height: 50px;
-    font-size: 95%;
-}
+#footer { clear: both; color: #FFF; background: #A9BAC3; border-top: 5px solid #568EB6; margin: 0; padding: 0; height: 50px; font-size: 95%; }
 #footer p { margin: 10px 15px; }
-#footer a { 
-    text-decoration: none;
-    color: #FFF;
-}
-#footer .footer-left{
-    float: left;
-    width: 65%;
-}
-#footer .footer-right{
-    float: right;
-    width: 30%;
-}
+#footer a { text-decoration: none; color: #FFF; }
+#footer .footer-left { float: left; width: 65%; }
+#footer .footer-right{ float: right; width: 30%; }
+#footer .xhtml-valid { margin: 7px 0; padding: 3px 15px; border-right: 1px solid #568EB6; }
 
 /* menu tabs */
 #header ul {
