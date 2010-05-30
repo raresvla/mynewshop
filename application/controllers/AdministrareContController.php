@@ -181,7 +181,7 @@ class AdministrareContController extends Zend_Controller_Action
         $address->save();
 
         $action = $controller = null;
-        $forward = explode('/', $this->_getParam('forward', 'management-adrese'));
+        $forward = explode('/', $this->_getParam('forward') ? $this->_getParam('forward') : 'management-adrese');
         $action = array_pop($forward);
         if($forward) {
             $controller = array_pop($forward);
@@ -264,7 +264,7 @@ class AdministrareContController extends Zend_Controller_Action
         $company->save();
 
         $action = $controller = null;
-        $forward = explode('/', $this->_getParam('forward', 'companii'));
+        $forward = explode('/', $this->_getParam('forward') ? $this->_getParam('forward') : 'companii');
         $action = array_pop($forward);
         if($forward) {
             $controller = array_pop($forward);

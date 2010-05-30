@@ -79,7 +79,7 @@ function accessManagement(id) {
 }
 </script>
 <?php
-if ($done)
+if (!empty($done))
 {
 	echo '</head>
 <body>
@@ -125,7 +125,7 @@ window.close(); window.opener.location.href = window.opener.location;
             <tr>
               <td align="left">Nume de utilizator:</td>
               <td align="left"><?php echo ($_GET['action'] == "edit" ? "<strong>{$data['username']}</strong>" : "");?>
-                  <input type="<?php echo ($_GET['action'] == "edit" ? "hidden" : "text")?>" id="username" name="username" value="<?php echo $username;?>" class="inputcol" size="43" /></td>
+                  <input type="<?php echo ($_GET['action'] == "edit" ? "hidden" : "text")?>" id="username" name="username" value="<?php if(!empty($username)) echo $username;?>" class="inputcol" size="43" /></td>
             </tr>
             <tr>
               <td align="left">Parola:</td>

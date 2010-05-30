@@ -24,7 +24,7 @@ function printSubcategories($id, $level = 0) {
     }
 }
 
-if($_GET['base']) {
+if(!empty($_GET['base'])) {
     $title = "MyShop - by Rareş Vlăsceanu";
     
     $sql = "SELECT COUNT(*) FROM `categorii` WHERE 1";
@@ -84,16 +84,16 @@ body { margin: 0px 5px; }
 Event.observe(window, 'load', function() {
 	var myUI = new UI('myButtons');
 	<?php
-	if($user->hasRight('categorii', 'edit') && !$_GET['base']) {
+	if($user->hasRight('categorii', 'edit') && empty($_GET['base'])) {
 	    echo "myUI.addButton({id: 'edit', name: 'Editează', icon: 'images/icons/edit.png', width: 80, link: editeaza}, 'left');\n";
 	}
 	if($user->hasRight('categorii', 'insert')) {
 	    echo "myUI.addButton({id: 'add', name: 'Adaugă', icon: 'images/icons/add_mic.png', width: 80, link: adauga}, 'left');\n";
 	}
-	if($user->hasRight('categorii', 'edit') && in_array($data['id'], $categoriiFrunza)) {
+	if(!empty($data) && $user->hasRight('categorii', 'edit') && in_array($data['id'], $categoriiFrunza)) {
 	    echo "myUI.addButton({id: 'caracteristici', name: 'Caracteristici', icon: 'images/icons/specificatii.png', width: 100, link: caracteristici}, 'left');\n";
 	}
-	if($user->hasRight('categorii', 'delete') && !$_GET['base']) {
+	if($user->hasRight('categorii', 'delete') && empty($_GET['base'])) {
 	    echo "myUI.addButton({id: 'delete', name: 'Şterge', icon: 'images/icons/delete.png', width: 80, link: sterge}, 'right');\n";
 	}
 	?>
@@ -107,13 +107,13 @@ Event.observe(window, 'load', function() {
 <fieldset id="myFrame" style="<?php echo ($browser == "IE" ? "padding: 7px" : "");?>">
   <legend>Detalii categorie</legend>
   <br />
-  <form id="myForm" name="myForm" method="post" action="ajax.php?sectiune=categorii&actiune=upload&id=<?php echo $data['id'];?>" target="_upload" enctype="multipart/form-data" onsubmit="return ($F('_icon') ? true : false)">
-   <input type="hidden" id="_id" name="_id" value="<?php echo $data['id'];?>" />
-   <input type="hidden" id="_parentId" name="_parentId" value="<?php echo $data['parent_id'];?>" />
+  <form id="myForm" name="myForm" method="post" action="ajax.php?sectiune=categorii&actiune=upload&id=<?php if(!empty($data)) echo $data['id'];?>" target="_upload" enctype="multipart/form-data" onsubmit="return ($F('_icon') ? true : false)">
+   <input type="hidden" id="_id" name="_id" value="<?php if(!empty($data)) echo $data['id'];?>" />
+   <input type="hidden" id="_parentId" name="_parentId" value="<?php if(!empty($data)) echo $data['parent_id'];?>" />
    <input type="hidden" id="_context" name="_context" value="" />
    <div id="myButtons"></div>
    <div id="container" class="clear">
-    <?php if($_GET['base']) { ?>
+    <?php if(!empty($_GET['base'])) { ?>
     <table width="100%" border="0" cellspacing="0" cellpadding="5" class="clear" id="insert" style="display:none">
       <tr>
         <td colspan="2"></td>
@@ -133,7 +133,7 @@ Event.observe(window, 'load', function() {
       <tr>
         <td width="100">Total categorii: </td>
         <td><strong><?php echo $totalCategorii;?></strong></td>
-        <td rowspan="2" valign="middle" align="right"><img width="184" height="37" border="0" alt="MyShop" src="http://www.mynewshop.ro/img/layout/logo.png" /></td>
+        <td rowspan="2" valign="middle" align="right"><img width="184" height="37" border="0" alt="MyShop" src="http://<?php echo $config->DOMENIU_SITE; ?>/img/layout/logo.png" /></td>
       </tr>
       <tr>
         <td width="100">Total produse: </td>
@@ -165,7 +165,7 @@ Event.observe(window, 'load', function() {
         </tr>
   	    <tr>
     	  <td width="100" valign="top">Imagine:</td>
-    	  <td valign="middle"><img id="icon" src="http://www.mynewshop.ro/imagini/categorii/<?php echo $data['icon'];?>" width="<?php echo $details[0];?>" height="<?php echo $details[1];?>" class="fLeft" style="border: 1px solid #E5E5E5; padding:10px" /> <div class="fRight" id="changeImage" style="padding:left:50px"></div></td>
+    	  <td valign="middle"><img id="icon" src="http://<?php echo $config->DOMENIU_SITE; ?>/imagini/categorii/<?php echo $data['icon'];?>" width="<?php echo $details[0];?>" height="<?php echo $details[1];?>" class="fLeft" style="border: 1px solid #E5E5E5; padding:10px" /> <div class="fRight" id="changeImage" style="padding:left:50px"></div></td>
   		</tr>
   		<tr>
   		  <td colspan="2"><img src="images/spacer.gif" height="3" width="100%" /> </td>

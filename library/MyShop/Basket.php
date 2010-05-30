@@ -15,6 +15,8 @@ class MyShop_Basket implements ArrayAccess, Iterator, Countable
     private $_sessionId;
     private $_index = 0;
     public $config;
+    public $maxAvaliableReachedMessage = "Max avaliable quantity for product '%s' is %d!";
+    public $notAvaliableMessage = "Product '%s' is no longer available!";
 
     const DATA_NAMESPACE = 'BASKET';
 
@@ -90,9 +92,10 @@ class MyShop_Basket implements ArrayAccess, Iterator, Countable
     {
         $sql = Doctrine_Query::create();
         $sql->select('c.id_produs, c.cantitate, p.denumire, p.cod_produs, p.stoc_disponibil, g.foto as foto');
-        $sql->addSelect('IF(pm.pret_oferta, pm.pret_oferta, p.pret) AS price');
+        $sql->addSelect('cc.denumire AS categorie, IF(pm.pret_oferta, pm.pret_oferta, p.pret) AS price');
         $sql->from('CartTrack c');
         $sql->innerJoin('c.Produse p');
+        $sql->leftJoin('p.Categorii cc');
         $sql->leftJoin('p.MainPhoto g WITH g.main = 1');
         $sql->leftJoin('p.Promotii pm WITH (pm.data_inceput <= DATE(NOW()) AND pm.data_sfarsit >= DATE(NOW()))');
         if(empty($this->_userId)) {
@@ -105,6 +108,7 @@ class MyShop_Basket implements ArrayAccess, Iterator, Countable
         $shadowCopy = $sql->fetchArray();
         foreach($shadowCopy as &$product) {
             $data = $product['Produse'] + array(
+                'categorie' => $product['categorie'],
                 'foto' => $product['foto'],
                 'price' => $product['price']
             );
@@ -141,8 +145,9 @@ class MyShop_Basket implements ArrayAccess, Iterator, Countable
 
         $sql = Doctrine_Query::create();
         $sql->select('p.denumire, p.cod_produs, p.stoc_disponibil, g.foto as foto');
-        $sql->addSelect('IF(pm.pret_oferta, pm.pret_oferta, p.pret) AS price');
+        $sql->addSelect('cc.denumire AS categorie, IF(pm.pret_oferta, pm.pret_oferta, p.pret) AS price');
         $sql->from('Produse p');
+        $sql->leftJoin('p.Categorii cc');
         $sql->leftJoin('p.MainPhoto g WITH g.main = 1');
         $sql->leftJoin('p.Promotii pm WITH (pm.data_inceput <= DATE(NOW()) AND pm.data_sfarsit >= DATE(NOW()))');
         $sql->where('p.id = ?', $productId);
@@ -160,15 +165,29 @@ class MyShop_Basket implements ArrayAccess, Iterator, Countable
     private function _addToBasket($productData, $quantity = 1, $updateShadowCopy = true)
     {
         $productId = $productData['id'];
-        if(!isset($this->_data[$productId])) {
-            if(!isset($productData['quantity'])) {
-                $productData['quantity'] = $quantity;
+        if(isset($this->_data[$productId])) {
+            $quantity += $this->_data[$productId]['quantity'];
+        }
+        if($quantity > $productData['stoc_disponibil']) {
+            if(empty($productData['stoc_disponibil'])) {
+                $message = $this->notAvaliableMessage;
             }
+            else {
+                $message = $this->maxAvaliableReachedMessage;
+            }
+            $productName = (!empty($productData['denumire']) ? '"' . $productData['denumire'] . '"' : '');
+            throw new Zend_Exception(sprintf(
+                $message,
+                $productName,
+                $productData['stoc_disponibil']
+            ));
+        }
+        
+        if(!isset($this->_data[$productId])) {
             $this->_data[$productId] = $productData;
         }
-        else {
-            $this->_data[$productId]['quantity'] += $quantity;
-        }
+        $this->_data[$productId]['quantity'] = $quantity;
+        
         if($updateShadowCopy) {
             $this->_updateShadowCopy($productId);
         }

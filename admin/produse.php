@@ -82,7 +82,7 @@ $totalProduse = mysql_result(mysql_query($sql, db_c()), 0);
                 <tr>
                   <td width="100">Total categorii: </td>
                   <td><strong><?php echo $totalCategorii;?></strong></td>
-                  <td rowspan="2" valign="middle" align="right"><img width="184" height="37" border="0" alt="MyShop" src="http://www.mynewshop.ro/img/layout/logo.png" /></td>
+                  <td rowspan="2" valign="middle" align="right"><img width="184" height="37" border="0" alt="MyShop" src="http://<?php echo $config->DOMENIU_SITE; ?>/img/layout/logo.png" /></td>
                 </tr>
                 <tr>
                   <td width="100">Total produse: </td>

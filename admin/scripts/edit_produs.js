@@ -10,7 +10,7 @@ function showHide(section, id, event) {
 			if(section == 'imagini') {
 				$('img_' + id).style.borderColor = '#99B4E5';
 			}
-		} break;
+		}break;
 		case 'off': {
 			if(!($('check_' + section + '_' + id).checked)) {
 				$('row_' + section + '_' + id).style.backgroundColor = '';
@@ -27,7 +27,7 @@ function showHide(section, id, event) {
 				}
 				
 			}
-		} break;
+		}break;
 	}
 }
 
@@ -36,7 +36,7 @@ function selectDeselect(element, type, id) {
 		window[type + 'Selectate'].push(id);
 	}
 	else {
-		window[type + 'Selectate'] = window[type + 'Selected'].without(id);
+		window[type + 'Selectate'] = window[type + 'Selectate'].without(id);
 	}
 }
 
@@ -183,7 +183,22 @@ function editCaracteristica() {
 	valoare.disabled = false;
 	sectiune.disabled = true;
 	caracteristica.disabled = true;
-	var myWin = new windowManager(450, 200, $('_winCaracteristici'), {actionButton: {id: 'caracteristici_continua', handler: myHandler}, closeButton: {id: 'caracteristici_renunt'}}, {icon: {src: 'images/icons/edit.png', height: '16', width: '16'}, text: 'Editează caracteristica'}, 'valoare');
+	var myWin = new windowManager(450, 200, $('_winCaracteristici'), {
+        actionButton: {
+            id: 'caracteristici_continua',
+            handler: myHandler
+        },
+        closeButton: {
+            id: 'caracteristici_renunt'
+        }
+    }, {
+        icon: {
+            src: 'images/icons/edit.png',
+            height: '16',
+            width: '16'
+        },
+        text: 'Editează caracteristica'
+    }, 'valoare');
 }
 
 function _filterSectiuni() {
@@ -270,7 +285,22 @@ function addImagine() {
 		}
 	};
 	$('source').value = 'new';
-	var myWin = new windowManager(370, 130, $('_winImagini'), {actionButton: {id: 'imagini_continua', handler: myHandler}, closeButton: {id: 'imagini_renunt'}}, {icon: {src: 'images/icons/add.png', height: '16', width: '16'}, text: 'Adaugă imagine'}, 'imagine');
+    var myWin = new windowManager(370, 130, $('_winImagini'), {
+        actionButton: {
+            id: 'imagini_continua',
+            handler: myHandler
+        },
+        closeButton: {
+            id: 'imagini_renunt'
+        }
+    }, {
+        icon: {
+            src: 'images/icons/add.png',
+            height: '16',
+            width: '16'
+        },
+        text: 'Adaugă imagine'
+    }, 'imagine');
 	Windows.getFocusedWindow().updateHeight();
 }
 

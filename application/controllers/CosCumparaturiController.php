@@ -13,6 +13,10 @@ class CosCumparaturiController extends Zend_Controller_Action
     {
         $this->_helper->Layout->addBreadCrumb('Coş de cumpărături', '/cos-cumparaturi');
         $this->view->assign('title', 'Cos de cumparaturi');
+        $basket = MyShop_Basket::getInstance();
+        $basket->maxAvaliableReachedMessage = "Cantitatea maximă disponibilă pentru produsul "
+            . "<strong>%s</strong> este <strong>%d</strong> !";
+        $basket->notAvaliableMessage = "Produsul <strong>%s</strong> nu este disponibil !";
     }
 
     /**
@@ -20,7 +24,9 @@ class CosCumparaturiController extends Zend_Controller_Action
      */
     public function indexAction()
     {
-        $backUrl = $_SERVER['HTTP_REFERER'];
+        if(isset($_SERVER['HTTP_REFERER'])) {
+            $backUrl = $_SERVER['HTTP_REFERER'];
+        }
         if(empty($backUrl) || strpos($backUrl, 'cos-cumparaturi') !== false) {
             $backUrl = '/';
         }
@@ -32,8 +38,15 @@ class CosCumparaturiController extends Zend_Controller_Action
      */
     public function adaugaAction()
     {
-        $basket = MyShop_Basket::getInstance();
-        $basket->add($this->_getParam('pid'));
+        try {
+            $basket = MyShop_Basket::getInstance();
+            $basket->add($this->_getParam('pid'));
+        }
+        catch(Exception $e) {
+            $this->view->assign('message', $e->getMessage());
+            $this->_forward('index');
+            return;
+        }
         $this->_redirect('/cos-cumparaturi');
     }
 
@@ -58,15 +71,22 @@ class CosCumparaturiController extends Zend_Controller_Action
             array_flip($toRemove)
         );
 
-        foreach($toUpdate as $productId => $quantity) {
-            if($quantity < 1) {
-                $toRemove[] = $productId;
-                continue;
+        try {
+            foreach($toUpdate as $productId => $quantity) {
+                if($quantity < 1) {
+                    $toRemove[] = $productId;
+                    continue;
+                }
+                $basket[$productId] = $quantity;
             }
-            $basket[$productId] = $quantity;
+            foreach($toRemove as $productId) {
+                $basket->remove($productId);
+            }
         }
-        foreach($toRemove as $productId) {
-            $basket->remove($productId);
+        catch(Exception $e) {
+            $this->view->assign('message', $e->getMessage());
+            $this->_forward('index');
+            return;
         }
 
         $this->_redirect('/cos-cumparaturi');

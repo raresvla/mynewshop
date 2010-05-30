@@ -50,10 +50,10 @@
                 <p>
                     <strong>Preţ (cu TVA):<br />{$product.pret|@number_format:2:',':'.'} RON</strong>
                 </p>
-                <p class="aviability {if !$product.inStoc}un{/if}available">
-                    {if $product.inStoc}Disponibil{else}Indisponibil{/if}
+                <p class="aviability {if $product.stocDisponibil <= 0}un{/if}available">
+                    {if $product.stocDisponibil > 0}Disponibil{else}Indisponibil{/if}
                 </p>
-                {if $product.inStoc}
+                {if $product.stocDisponibil > 0}
                 <p>
                     <a href="/cos-cumparaturi/adauga?pid={$product.id}" 
                        class="lnk-button add-to-cart float-right"

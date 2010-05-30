@@ -36,7 +36,7 @@ $denumire = mysql_result(mysql_query($sql, db_c()), 0);
 <script type="text/javascript" src="scripts/windowManager.js"></script>
 <script type="text/javascript" src="scripts/prototype_window/javascripts/window.js"></script>
 <?php
-if ($done)
+if (!empty($done))
 {
 	echo '</head>
 <body>
@@ -54,7 +54,7 @@ window.close(); window.opener.location.href = window.opener.location;
 <body>
   <table class="full-height">
     <tbody><tr>
-      <td align="center" style="padding-top:5px"><form action="edit_user.php?action=save&source=<?php echo ($_GET['action'] == "edit" ? "db&id={$_GET['id']}" : "new");?>" method="post" class="formular" id="edit">
+      <td align="center" style="padding-top:5px"><form action="edit_user.php?action=save&source=<?php echo (isset($_GET['action']) && $_GET['action'] == "edit" ? "db&id={$_GET['id']}" : "new");?>" method="post" class="formular" id="edit">
         <fieldset id="box_container">
           <legend class="legend_box_container"><img src="images/icons/caracteristici_big.png" alt="" width="25" height="25" style="vertical-align: middle;" /> <strong><?php echo $denumire;?></strong></legend>
           <div id="container">

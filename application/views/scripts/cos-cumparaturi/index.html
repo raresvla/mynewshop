@@ -1,5 +1,10 @@
 <h1 class="section-title">Coş de cumpărături</h1>
 
+{if $message}
+<div align="center" class="error niftyable">
+    {$message}
+</div>
+{/if}
 {if !$basket|@count}
 <div style="padding-left: 20px; margin-bottom: 50px;" class="table-header2">
     <img height="17" width="17" alt="" class="valign-middle" src="/img/icons/info_little.png" />
@@ -46,12 +51,12 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <a href="">
+                                    <a href="/{$product.categorie|url_escape}/{$product.denumire|url_escape}-{$product.id}.html">
                                         <img height="50" width="50" src="/thumbs/small/{$product.foto}" alt="{$product.denumire}" />
                                     </a>
                                 </td>
                                 <td>
-                                    <a class="lnk-red" href="">
+                                    <a class="lnk-red" href="/{$product.categorie|url_escape}/{$product.denumire|url_escape}-{$product.id}.html">
                                         {$product.denumire} {if $product.cod_produs}<span>[{$product.cod_produs}]</span>{/if}
                                     </a>
                                 </td>
@@ -62,10 +67,10 @@
                 <td>
                     <input type="text" class="align-center" size="2" value="{$product.quantity}" name="quantity[{$product.id}]" />
                 </td>
-                <td>
+                <td align="right">
                     {$basket->valueWithoutVat($product.price)|number_format:2:',':'.'}
                 </td>
-                <td>
+                <td align="right">
                     {math equation="x * y" x=$product.price y=$product.quantity assign=itemValue}
                     {$itemValue|number_format:2:',':'.'}
                 </td>
@@ -83,7 +88,7 @@
     <tbody>
         <tr>
             <td class="table-header">Total cumpărături:</td>
-            <td>
+            <td align="right">
                 <strong>{$basket->total()|number_format:2:',':'.'} RON </strong>
             </td>
         </tr>

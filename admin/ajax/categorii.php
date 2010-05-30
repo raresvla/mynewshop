@@ -95,8 +95,8 @@ class AjaxActionCategorii
     }
     
     public function categorii_clearUpload() {
-        if ($_SESSION['uploadIconTmp']) {
-            $tmpFile = "../imagini/categorii/{$_SESSION['uploadIconTmp']['tmpIcon']}";
+        if (!empty($_SESSION['uploadIconTmp'])) {
+            $tmpFile = "../public/imagini/categorii/{$_SESSION['uploadIconTmp']['tmpIcon']}";
             if (file_exists($tmpFile)) {
                 unlink($tmpFile);
                 echo $_SESSION['uploadIconTmp']['oldIcon'];
@@ -115,8 +115,8 @@ class AjaxActionCategorii
         if (! mysql_query($sql, db_c())) {
             echo 'false';
         } else {
-            if ($data['icon'] && file_exists("../imagini/categorii/{$data['icon']}")) {
-                @unlink("../imagini/categorii/{$data['icon']}");
+            if ($data['icon'] && file_exists("../public/imagini/categorii/{$data['icon']}")) {
+                @unlink("../public/imagini/categorii/{$data['icon']}");
             }
             echo ($data['parent_id'] ? $data['parent_id'] : - 1);
         }
