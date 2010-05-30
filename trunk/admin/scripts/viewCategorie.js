@@ -54,7 +54,7 @@ function adauga(event, UIObject) {
 		/* base view */
 		$('insert').show();
 		$('stats').hide();
-		$('denumire_RO').focus();
+		$('denumire').focus();
 	}
 }
 

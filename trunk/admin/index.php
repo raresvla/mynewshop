@@ -72,7 +72,7 @@ div.fLeft ul { padding-left:20px; }
             <tr>
               <td>&nbsp;&raquo; Membri noi: </td>
               <td><strong><?php echo $membriNoi;?></strong></td>
-              <td rowspan="2" valign="middle" align="right"><img width="184" height="37" border="0" alt="MyShop" src="http://www.mynewshop.ro/img/layout/logo.png" /></td>
+              <td rowspan="2" valign="middle" align="right"><img width="184" height="37" border="0" alt="MyShop" src="http://<?php echo $config->DOMENIU_SITE; ?>/img/layout/logo.png" /></td>
             </tr>
             <tr>
               <td>&nbsp;&raquo; Comenzi noi: </td>

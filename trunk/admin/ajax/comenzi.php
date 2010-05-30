@@ -18,12 +18,17 @@ class AjaxActionComenzi
         $rezultatepepagina = 20;
         $pagina = isset($_POST['pagina']) ? $_POST['pagina'] : 1;
         $dela = ($pagina - 1) * $rezultatepepagina;
-        $sorting = json_decode(stripslashes($_POST['sorting']), true);
-        
+        if(empty($_POST['sorting'])) {
+            $sorting = array('element' => 'data', 'direction' => 'desc');
+        }
+        else {
+            $sorting = json_decode(stripslashes($_POST['sorting']), true);
+        }
+
         $sql = "SELECT COUNT(*) FROM `comenzi` WHERE 1";
-        $totalRezultate = mysql_num_rows(mysql_query($sql, db_c()));
+        $totalRezultate = mysql_result(mysql_query($sql, db_c()), 0);
         
-        $sql = "SELECT c.*, DATE_FORMAT(c.data, '%d/%m/%Y %H:%i:%s') AS `data`, c.total_fara_tva + c.total_tva AS `total_comanda`, CONCAT(m.nume, ' ', m.prenume) AS `nume_client` FROM `comenzi` AS `c` LEFT JOIN `membri` AS `m` ON c.membru_id = m.id ORDER BY `{$sorting['element']}` " . $sorting['direction'] . " LIMIT $dela, $rezultatepepagina";
+        $sql = "SELECT c.*, DATE_FORMAT(c.data, '%d/%m/%Y %H:%i:%s') AS `data_f`, c.total_fara_tva + c.total_tva AS `total_comanda`, CONCAT(m.nume, ' ', m.prenume) AS `nume_client` FROM `comenzi` AS `c` LEFT JOIN `membri` AS `m` ON c.membru_id = m.id ORDER BY `{$sorting['element']}` " . $sorting['direction'] . " LIMIT $dela, $rezultatepepagina";
         $comenzi = mysql_query($sql, db_c());
         
         $header = '<tr><td align="center" class="table_header">#</td>';
@@ -42,7 +47,7 @@ class AjaxActionComenzi
             while ($row = mysql_fetch_assoc($comenzi)) {
                 $table .= "<tr id=\"row_{$row['id']}\" onmouseover=\"showHide({$row['id']}, 'on')\" onmouseout=\"showHide({$row['id']}, 'off')\"" . (!$row['new'] ? ' class="viewed"' : '') . " style=\"height:20px\">";
                 $table .= '<td align="center"><span id="span_' . $row['id'] . '" style="display: block; padding: 3px 0px">' . ($i+$dela+1) . '.</span><input type="checkbox" name="comenzi[]" id="check_' . $row['id'] . '" value="' . $row['id'] . '" onclick="selectDeselect(this, ' . $row['id'] . ');" style="display:none" /></td>';
-                $table .= "<td align=\"center\">{$row['data']}</td>";
+                $table .= "<td align=\"center\">{$row['data_f']}</td>";
                 $table .= "<td align=\"center\">{$row['cod_comanda']}</td>";
                 $table .= "<td align=\"left\">{$row['nume_client']}</td>";
                 $table .= "<td align=\"right\" style=\"padding-right:20px;\">" . number_format($row['total_comanda'], 2, ".", ",") . "</td>";
@@ -184,12 +189,62 @@ class AjaxActionComenzi
     
     public function comenzi_statusComanda ()
     {
-        $sql = "UPDATE `comenzi` SET `new` = 0 WHERE `id` = {$_POST['comandaId']} LIMIT 1";
-        mysql_query($sql, db_c());
-        
-        $sql = "UPDATE `comenzi` SET `status` = '{$_POST['status']}'" . ($_POST['status'] == 'livrata' ? ', `data_livrarii` = DATE(NOW()) ' : '') . " WHERE `id` = {$_POST['comandaId']} LIMIT 1";
-        mysql_query($sql, db_c());
-        
+        $sql = Doctrine_Query::create();
+        $sql->select('*');
+        $sql->from('Comenzi c');
+        $sql->leftJoin('c.Facturi f');
+        $sql->leftJoin('f.Produse p');
+        $sql->where('id = ?', $_POST['comandaId']);
+        $order = $sql->fetchOne();
+
+        /* neconfirmata, confirmata, livrata, returnata, anulata */
+        if($order['status'] != $_POST['status']) {
+            $solr = new MyShop_Solr();
+            foreach($order['Facturi'] as $item) {
+                switch($_POST['status']) {
+                    case 'confirmata':
+                    case 'neconfirmata': {
+                        if($order['status'] != ($_POST['status'] == 'confirmata' ? 'neconfirmata' : 'confirmata')) {
+                            $item['Produse']['stoc_rezervat'] += $item['cantitate'];
+                            if($order['status'] == 'anulata') {
+                                $item['Produse']['stoc_disponibil'] -= $item['cantitate'];
+                            }
+                        }
+                    } break;
+                    case 'livrata': {
+                        if($order['status'] == 'anulata') {
+                            $item['Produse']['stoc_disponibil'] -= $item['cantitate'];
+                        }
+                        else {
+                            $item['Produse']['stoc_rezervat'] -= $item['cantitate'];
+                        }
+                    } break;
+                    case 'returnata': {
+                        if($order['status'] == 'livrata') {
+                            $item['Produse']['stoc_disponibil'] += $item['cantitate'];
+                        }
+                    } break;
+                    case 'anulata': {
+                        if($order['status'] != 'livrata') {
+                            $item['Produse']['stoc_rezervat'] -= $item['cantitate'];
+                            $item['Produse']['stoc_disponibil'] += $item['cantitate'];
+                        }
+                    } break;
+                }
+            }
+            $order->new = 0;
+            $order->status = $_POST['status'];
+            if($_POST['status'] == 'livrata') {
+                $order->data_livrarii = new Doctrine_Expression('DATE(NOW())');
+            }
+            $order->save();
+
+            //reindex products
+            foreach($order['Facturi'] as $item) {
+                $solr->index($item['Produse']['id']);
+            }
+        }
+
         $this->comenzi_getComenzi();
     }    
     

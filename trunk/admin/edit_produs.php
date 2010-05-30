@@ -195,7 +195,7 @@ tinyMCE.init({
 }
 </style>
 <?php
-if ($done)
+if (!empty($done))
 {
 	echo '</head>
 <body>
@@ -230,28 +230,28 @@ window.close(); window.opener.goTo();
               <tr>
                 <td align="left">Denumire:</td>
                 <td colspan="3" align="left">
-                    <input name="denumire" type="text" class="inputcol" id="denumire" size="54" value="<?php echo $data['denumire'];?>" />
+                    <input name="denumire" type="text" class="inputcol" id="denumire" size="54" value="<?php if(!empty($data)) echo $data['denumire'];?>" />
                 </td>
               </tr>
               <tr>
                 <td align="left">Marca:</td>
-                <td colspan="3" align="left"><input name="marca" type="text" class="inputcol" id="marca" size="54" value="<?php echo $data['marca'];?>" /></td>
+                <td colspan="3" align="left"><input name="marca" type="text" class="inputcol" id="marca" size="54" value="<?php if(!empty($data)) echo $data['marca'];?>" /></td>
               </tr>
               <tr>
                 <td align="left">Cod Produs: </td>
-                <td align="left"><input name="cod_produs" type="text" class="inputcol" id="cod_produs" size="20" value="<?php echo $data['cod_produs'];?>" /></td>
+                <td align="left"><input name="cod_produs" type="text" class="inputcol" id="cod_produs" size="20" value="<?php if(!empty($data)) echo $data['cod_produs'];?>" /></td>
                 <td align="left">Greutate:</td>
-                <td align="left"><input name="greutate" type="text" class="inputcol right" id="greutate" size="10" value="<?php echo $data['greutate'];?>" /> Kg</td>
+                <td align="left"><input name="greutate" type="text" class="inputcol right" id="greutate" size="10" value="<?php if(!empty($data)) echo $data['greutate'];?>" /> Kg</td>
               </tr>
               <tr>
-                <td colspan="4" align="center" style="padding:0px;"><img src="images/spacer.gif" alt="" width="1" height="18" /><input type="hidden" id="_categorieId" name="_categorieId" value="<?php echo (isset($data['categorie_id']) ? $data['categorie_id'] : $_GET['categorieId']);?>" /><input type="hidden" id="_produsId" name="_produsId" value="<?php echo $_GET['id'];?>" /></td>
+                <td colspan="4" align="center" style="padding:0px;"><img src="images/spacer.gif" alt="" width="1" height="18" /><input type="hidden" id="_categorieId" name="_categorieId" value="<?php echo (isset($data['categorie_id']) ? $data['categorie_id'] : $_GET['categorieId']);?>" /><input type="hidden" id="_produsId" name="_produsId" value="<?php if(!empty($_GET['id'])) echo $_GET['id'];?>" /></td>
               </tr>
               <tr>
                 <td colspan="4" align="center" style="padding:0px">Descriere: </td>
                 </tr>
               <tr>
                 <td colspan="4" align="center">
-                    <textarea name="descriere" id="descriere" cols="52" rows="11"><?php echo $data['descriere'];?></textarea></td>
+                    <textarea name="descriere" id="descriere" cols="52" rows="11"><?php if(!empty($data)) echo $data['descriere'];?></textarea></td>
                 </tr>
             </table>
             </fieldset>
@@ -270,20 +270,20 @@ window.close(); window.opener.goTo();
               </colgroup>
               <tr>
                 <td align="left"><label for="afisat">Afişat:</label></td>
-                <td align="left"><?php if($data['afisat'] || !isset($data['afisat'])) { ?><input name="afisat" type="checkbox" id="afisat" value="1" checked="checked" /><?php } else { ?><input name="afisat" type="checkbox" id="afisat" value="1" /><?php } ?></td>
+                <td align="left"><?php if(!isset($data['afisat']) || $data['afisat']) { ?><input name="afisat" type="checkbox" id="afisat" value="1" checked="checked" /><?php } else { ?><input name="afisat" type="checkbox" id="afisat" value="1" /><?php } ?></td>
                 <td align="left"><label for="noutati">Noutăţi:</label></td>
-                <td align="left"><?php if($data['noutati']) { ?><input name="noutati" type="checkbox" id="noutati" value="1" checked="checked" /><?php } else { ?><input name="noutati" type="checkbox" id="noutati" value="1" /><?php } ?></td>
+                <td align="left"><?php if(!empty($data) && $data['noutati']) { ?><input name="noutati" type="checkbox" id="noutati" value="1" checked="checked" /><?php } else { ?><input name="noutati" type="checkbox" id="noutati" value="1" /><?php } ?></td>
                 <td align="left" colspan="2"><label for="recomandari">Recomandări:</label></td>
-                <td align="left"><?php if($data['recomandari']) { ?><input name="recomandari" type="checkbox" id="recomandari" value="1" checked="checked" /><?php } else { ?><input name="recomandari" type="checkbox" id="recomandari" value="1" /><?php } ?></td>
+                <td align="left"><?php if(!empty($data) && $data['recomandari']) { ?><input name="recomandari" type="checkbox" id="recomandari" value="1" checked="checked" /><?php } else { ?><input name="recomandari" type="checkbox" id="recomandari" value="1" /><?php } ?></td>
               </tr>
               <tr>
                 <td colspan="7" style="padding: 0px"><hr /></td>
               </tr>
               <tr>
                 <td align="left">Pret:</td>
-                <td colspan="2" align="left"><input name="pret" type="text" class="inputcol right" id="pret" size="15" value="<?php echo $data['pret'];?>" /></td>
+                <td colspan="2" align="left"><input name="pret" type="text" class="inputcol right" id="pret" size="15" value="<?php if(!empty($data)) echo $data['pret'];?>" /></td>
                 <td colspan="2" align="right">Stoc:</td>
-                <td colspan="2"  align="left"><input name="stoc_disponibil" type="text" class="inputcol right" id="stoc_disponibil" size="10" value="<?php echo $data['stoc_disponibil'];?>" /></td>
+                <td colspan="2"  align="left"><input name="stoc_disponibil" type="text" class="inputcol right" id="stoc_disponibil" size="10" value="<?php if(!empty($data)) echo $data['stoc_disponibil'];?>" /></td>
               </tr>
             </table>
             </fieldset>
@@ -359,7 +359,7 @@ window.close(); window.opener.goTo();
   </tr>
  </tbody>
 </table>
-<?php if($error) { $keys = array_keys($err); ?><script type="text/javascript">alert('<?php echo (str_replace("'", "\'", $message));?>'); document.forms['edit'].<?php echo $err[$keys[0]];?>.focus();</script><?php } ?>
+<?php if(!empty($error)) { $keys = array_keys($err); ?><script type="text/javascript">alert('<?php echo (str_replace("'", "\'", $message));?>'); document.forms['edit'].<?php echo $err[$keys[0]];?>.focus();</script><?php } ?>
 <div class="hidden" id="_winCaracteristici">
   <img src="images/spacer.gif" height="20" width="100%" alt="" />
   <div class="marginBottom"><select name="sectiune" id="sectiune" class="fRight inputcol" style="width:339px" onchange="_filterCaracteristici(this)"></select><span class="fRight">Secţiune:&nbsp;</span></div>

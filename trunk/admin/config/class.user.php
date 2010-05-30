@@ -59,7 +59,11 @@ class User
      */
     private function _loginPermitted ()
     {
-        return $_COOKIE[self::$_cookieCount] < self::$_incercari ? true : false;
+        if(empty($_COOKIE[self::$_cookieCount])) {
+            return true;
+        }
+
+        return $_COOKIE[self::$_cookieCount] < self::$_incercari;
     }
     
     /**
@@ -244,6 +248,8 @@ class User
      */
     public function printMenu ($currentSection)
     {
+        global $CALE_VIRTUALA_SERVER;
+        
         $menu = null;
         $sql = "(SELECT 'Home' AS zona, 'home.png' AS icon, 'index.php' AS link, 'index.php' AS scripts) UNION (SELECT z.zona, z.icon, z.link, CONCAT(z.link, IF(z.pagini_derivate, CONCAT(',', z.pagini_derivate), '')) AS scripts FROM `admin_drepturi` AS `d` LEFT JOIN `admin_zone` AS `z` ON d.zone_id = z.id WHERE d.user_id = '{$this->_userId}' AND `afisat` = 1)" . ($this->_tip == "powerUser" ? " UNION (SELECT `zona`, `icon`, `link`, CONCAT(`link`, IF(`pagini_derivate`, CONCAT(',', `pagini_derivate`), '')) AS `scripts` FROM `admin_zone` WHERE `powerUserZone` = 1  AND `afisat` = 1)" : "");
         $result = mysql_query($sql, db_c());

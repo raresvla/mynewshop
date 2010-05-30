@@ -397,6 +397,7 @@ class MyShop_Invoice
             $product->stoc_disponibil -= $item['quantity'];
             $product->stoc_rezervat += $item['quantity'];
             $product->save();
+            $product->free();
         }
 
         $shippingAddress = $this->getShippingAddress();
@@ -424,7 +425,17 @@ class MyShop_Invoice
         $order->save();
         $order->refresh();
         $this->orderId = $order->id;
-        Doctrine_Manager::connection()->commit();
+
+        try {
+            $solr = new MyShop_Solr();
+            Doctrine_Manager::connection()->commit();
+            foreach($this->_basket as $item) {
+                $solr->index($item['id']);
+            }
+        }
+        catch(Doctrine_Exception $e) {
+            Doctrine_Manager::connection()->rollback();
+        }
 
         return true;
     }

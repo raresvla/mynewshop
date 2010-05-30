@@ -151,7 +151,7 @@ class AjaxActionProduse
     }
     
     public function produse_getCaracteristici() {
-        if($_GET['firstRun']) {
+        if(!empty($_GET['firstRun'])) {
             $_SESSION['_caracteristici'] = array();
             if($_GET['produsId']) {
                 $sql = "SELECT pc.id, pc.id_caracteristica, s.sectiune, c.caracteristica, REPLACE(pc.valoare, '|', '<br />') AS `valoare` FROM `caracteristici` AS `c` LEFT JOIN `produse_caracteristici` AS `pc` ON c.id = pc.id_caracteristica LEFT JOIN `sectiuni_caracteristici` AS `s` ON s.id = c.sectiune_id WHERE pc.id_produs = {$_GET['produsId']} ORDER BY s.ordine ASC";
@@ -171,8 +171,8 @@ class AjaxActionProduse
             $buffer = '<table width="100%" cellpadding="2" cellspacing="0"><colgroup><col width="30" /><col width="100" /><col width="40%" /><col /></colgroup>';
             foreach ($_SESSION['_caracteristici'] as $c) {
                 $buffer .= "<tr id=\"row_caracteristici_{$i}\" onmouseover=\"showHide('caracteristici', {$i}, 'on')\" onmouseout=\"showHide('caracteristici', {$i}, 'off')\" style=\"height:20px\">";
-                $buffer .= "<td align=\"center\"><span id=\"span_caracteristici_{$i}\" style=\"display: block; padding:3.5px 0px;\">" . ($i+1) . ".</span><input type=\"checkbox\" name=\"caracteristici[]\" id=\"check_caracteristici_{$i}\" value=\"{$row['id']}\" style=\"display: none\" onclick=\"selectDeselect(this, 'caracteristici', {$i});\" /></td>";
-                $buffer .= "<td align=\"left\">{$c['sectiune']}</td><td align=\"left\">{$c['caracteristica']['name']}</td><td align=\"left\">" . ($c['source'] == 'new' || $c['modified'] ? str_replace('|', '<br />', $c['valoare']) : $c['valoare']) . "</td></tr>";
+                $buffer .= "<td align=\"center\"><span id=\"span_caracteristici_{$i}\" style=\"display: block; padding:3.5px 0px;\">" . ($i+1) . ".</span><input type=\"checkbox\" name=\"caracteristici[]\" id=\"check_caracteristici_{$i}\" value=\"{$c['caracteristica']['id']}\" style=\"display: none\" onclick=\"selectDeselect(this, 'caracteristici', {$i});\" /></td>";
+                $buffer .= "<td align=\"left\">{$c['sectiune']}</td><td align=\"left\">{$c['caracteristica']['name']}</td><td align=\"left\">" . ($c['source'] == 'new' || !empty($c['modified']) ? str_replace('|', '<br />', $c['valoare']) : $c['valoare']) . "</td></tr>";
                 $i++;
             }
             $buffer .= "</table>";
@@ -293,7 +293,7 @@ class AjaxActionProduse
     public function produse_uploadImagine() {
         if ($imagine = $_FILES['imagine']) {
             if(isset($_SESSION['_uploadImagini'])) {
-                //delete image allready uploaded
+                //delete image already uploaded
                 @unlink('../public/imagini/produse/' . $_SESSION['_uploadImagini']['foto']);
                 @unlink('../public/thumbs/50/' . $_SESSION['_uploadImagini']['foto']);
                 @unlink('../public/thumbs/100/' . $_SESSION['_uploadImagini']['foto']);

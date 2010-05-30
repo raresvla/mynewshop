@@ -18,7 +18,12 @@ class AjaxActionClienti
         $rezultatepepagina = 20;
         $pagina = isset($_POST['pagina']) ? $_POST['pagina'] : 1;
         $dela = ($pagina - 1) * $rezultatepepagina;
-        $sorting = json_decode(stripslashes($_POST['sorting']), true);
+        if(empty($_POST['sorting'])) {
+            $sorting = array('element' => 'numele', 'direction' => 'asc');
+        }
+        else {
+            $sorting = json_decode(stripslashes($_POST['sorting']), true);
+        }
         
         $sql = "SELECT m.*, COUNT(c.id) FROM `membri` AS `m` LEFT JOIN `comenzi` AS `c` ON m.id = c.membru_id GROUP BY m.id";
         $totalRezultate = mysql_num_rows(mysql_query($sql, db_c()));
@@ -39,7 +44,7 @@ class AjaxActionClienti
                 $table .= "<tr id=\"row_{$row['id']}\" onmouseover=\"showHide({$row['id']}, 'on')\" onmouseout=\"showHide({$row['id']}, 'off')\" style=\"height:20px\">";
                 $table .= '<td align="center"><span id="span_' . $row['id'] . '">' . ($i+$dela+1) . '.</span><input type="checkbox" name="clienti[]" id="check_' . $row['id'] . '" value="' . $row['id'] . '" onclick="selectDeselect(this, ' . $row['id'] . ');" style="display:none" /></td>';
                 $table .= "<td>{$row['nume']} {$row['prenume']}" . ($row['cnp'] ? "<br /><span class=\"subtitle\">CNP: {$row['cnp']}</span></td>" : '');
-                $table .= "<td align=\"left\" >{$row['telefon1']}<br />{$row['email']}</td>";
+                $table .= "<td align=\"left\" >{$row['telefon']}<br />{$row['email']}</td>";
                 $table .= "<td align=\"center\">{$row['ult_login']}</td>";
                 $table .= "<td align=\"center\">{$row['comenzi']}</td>";
                 $table .= "<td align=\"center\">" . ($row['status'] == 'activ' ? '<img src="images/icons/ok.png" width="16" height="16" alt="" />' : '<img src="images/icons/lipsa.png" width="16" height="16" alt="" />') . "</td>";

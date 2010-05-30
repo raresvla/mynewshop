@@ -18,7 +18,8 @@ var windowManager = Class.create({
 			minimizable: false,
 			maximizable: false,
 			hideEffect: Element.hide,
-			showEffect: Element.show
+			showEffect: Element.show,
+            destroyOnClose: true
 		});
 		if(Object.isElement(this.content)) {
 			this.win.setHTMLContent(this.content.innerHTML.replace('|', '<br />'));
@@ -27,9 +28,14 @@ var windowManager = Class.create({
 			this.win.setHTMLContent(this.content);
 		}
 		this.win.showCenter();
-		
-		this.closeMethodBind = this.closeMethod.bindAsEventListener(this);
-		Event.observe(this.buttons.closeButton.id, 'click', this.closeMethodBind);
+
+        if(this.buttons.closeButton) {
+            this.closeMethodBind = (this.buttons.closeButton.handler || Prototype.emptyFunction).wrap(function(closeHandler) {
+                closeHandler();
+                this.closeMethod();
+            }).bindAsEventListener(this);
+            Event.observe(this.buttons.closeButton.id, 'click', this.closeMethodBind);
+        }
 		
 		if(this.buttons.actionButton) {
 			this.actionMethod = this.buttons.actionButton.handler;
@@ -40,13 +46,26 @@ var windowManager = Class.create({
 		if(_focus) {
 			$(_focus).focus();
 		}
+
+        this.win.myCloseObserver = {
+            onClose: function(eventName, win) {
+                if(win != this.win) {
+                    return;
+                }
+                
+                if(this.buttons.actionButton) {
+                    Event.stopObserving(this.buttons.actionButton.id, 'click', this.actionMethodBind);
+                }
+                if(this.buttons.closeButton) {
+                    Event.stopObserving(this.buttons.closeButton.id, 'click', this.closeMethodBind);
+                }
+                Windows.removeObserver(this.win.myCloseObserver);
+            }.bind(this)
+        }
+        Windows.addObserver(this.win.myCloseObserver);
 	},
 	
 	closeMethod: function() {
 		this.win.close();
-		if(this.buttons.actionButton) {
-			Event.stopObserving(this.buttons.actionButton.id, 'click', this.actionMethodBind);
-		}
-		Event.stopObserving(this.buttons.closeButton.id, 'click', this.closeMethodBind);
 	}
 });

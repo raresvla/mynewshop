@@ -88,7 +88,8 @@ function verificaThumb ($path, $imagine, $dimensiune)
             $thumb->save($_thumb);
             chmod($_thumb, 0777);
         }
-        return array('thumb' => str_replace('../public/', 'http://www.mynewshop.ro/', $_thumb), 'details' => getimagesize($_thumb));
+        $config = MyShop_Config::getInstance();
+        return array('thumb' => str_replace('../public/', "http://{$config->DOMENIU_SITE}/", $_thumb), 'details' => getimagesize($_thumb));
     } else {
         return null;
     }

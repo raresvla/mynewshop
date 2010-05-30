@@ -41,9 +41,10 @@ class MyShop_Solr extends Apache_Solr_Service
      * @param array $params
      * @param boolean $commit
      * @param boolean $optimize
+     * @param integer $maxRetiers
      * @return boolean
      */
-    public function insert($params, $commit = true, $optimize = true)
+    public function insert($params, $commit = true, $optimize = true, $maxRetries = 5)
     {
         $document = new Apache_Solr_Document();
 
@@ -58,16 +59,51 @@ class MyShop_Solr extends Apache_Solr_Service
             }
         }
         try {
-            $this->addDocument($document);
-            if($commit) {
-                $this->commit();
+            $addRetries = 0;
+            try {
+                addDocument:
+                $this->addDocument($document);
             }
+            catch(Exception $e) {
+                if($addRetries == $maxRetries) {
+                    throw $e;
+                }
+                $addRetries++;
+                goto addDocument;
+            }
+
+            $commitRetries = 0;
+            if($commit) {
+                try {
+                    doCommit:
+                    $this->commit();
+                }
+                catch(Exception $e) {
+                    if($commitRetries == $maxRetries) {
+                        throw $e;
+                    }
+                    $commitRetries++;
+                    goto doCommit;
+                }
+            }
+
+            $optimizeRetries = 0;
             if($optimize) {
-                $this->optimize();
+                try {
+                    doOptimize:
+                    $this->optimize();
+                }
+                catch(Exception $e) {
+                    if($optimizeRetries == $maxRetries) {
+                        throw $e;
+                    }
+                    $optimizeRetries++;
+                    goto doOptimize;
+                }
             }
         }
         catch(Exception $e) {
-            print_r($e->getMessage()); die();
+            throw $e;
             return false;
         }
 
@@ -111,7 +147,8 @@ class MyShop_Solr extends Apache_Solr_Service
             'nou' => $produs['noutati'],
             'recomandat' => $produs['recomandari'],
             'dataAdaugarii' => $produs['data_adaugare'] . 'T00:00:00Z',
-            'inStoc' => ($produs['stoc_disponibil'] + $produs['stoc_rezervat']) > 0
+            'stocDisponibil' => $produs['stoc_disponibil'],
+            'stocRezervat' => $produs['stoc_rezervat']
         );
         foreach($produs['ProduseCaracteristici'] as $car) {
             $data['caracteristici'][] = implode('#', array(
