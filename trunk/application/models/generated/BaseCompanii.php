@@ -19,6 +19,7 @@
  * @property string $oras_sediu
  * @property string $cod_postal_sediu
  * @property Membri $Membri
+ * @property Doctrine_Collection $Clienti
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -162,5 +163,9 @@ abstract class BaseCompanii extends Doctrine_Record
         $this->hasOne('Membri', array(
              'local' => 'membru_id',
              'foreign' => 'id'));
+
+        $this->hasMany('Clienti', array(
+             'local' => 'id',
+             'foreign' => 'companie_id'));
     }
 }

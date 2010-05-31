@@ -22,7 +22,10 @@
  * @property string $destinatar_oras
  * @property string $destinatar_judet
  * @property string $destinatar_cod_postal
+ * @property Companii $Companii
  * @property Comenzi $Comenzi
+ * @property Membri $Membri
+ * @property Adrese $Adrese
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -198,8 +201,20 @@ abstract class BaseClienti extends Doctrine_Record
     public function setUp()
     {
         parent::setUp();
+        $this->hasOne('Companii', array(
+             'local' => 'companie_id',
+             'foreign' => 'id'));
+
         $this->hasOne('Comenzi', array(
              'local' => 'comanda_id',
+             'foreign' => 'id'));
+
+        $this->hasOne('Membri', array(
+             'local' => 'membru_id',
+             'foreign' => 'id'));
+
+        $this->hasOne('Adrese', array(
+             'local' => 'adresa_id',
              'foreign' => 'id'));
     }
 }

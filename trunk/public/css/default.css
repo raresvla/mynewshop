@@ -331,7 +331,10 @@ table.selected { background-color: #D9D9F3; }
 table.no-padding td { padding: 0px; }
 table .table-header { background-color:#E1EFF5; border-bottom:1px solid #E6ECF9; color:#444444; padding:5px; }
 .table-header2 { background-color:#E1EFF5; border-bottom:1px solid #E6ECF9; font-size:13px; color:#444444; padding:5px; }
-
+.show-order-details { background: url(/img/icons/max.png) no-repeat left; display:block; padding-left:20px; text-align:left; }
+.anulata  { color:#E70000; }
+.neconfirmata { color:#082970; }
+.confirmata { color:#444; }
 
 /* windows styles */
 .bluelighting_content, .alphacube_content { font-family: Tahoma !important; text-align: left; padding: 10px 0; }

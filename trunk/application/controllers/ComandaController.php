@@ -146,6 +146,7 @@ class ComandaController extends Zend_Controller_Action
         $order = $this->view->invoice->fetchAllData();
         $order['paymentMethod'] = $this->_getParam('paymentMethod');
 
+        $this->view->assign('regionsTable', Doctrine::getTable('Judete'));
         $this->view->assign('cfg', $this->view->basket->config);
         $this->view->assign('preview', true);
         $this->view->assign('order', $order);
@@ -156,6 +157,7 @@ class ComandaController extends Zend_Controller_Action
      */
     public function trimiteAction()
     {
+        $this->view->assign('regionsTable', Doctrine::getTable('Judete'));
         $this->view->invoice->modalitatePlata = $this->_getParam('plata');
 
         try {

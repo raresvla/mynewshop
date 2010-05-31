@@ -286,4 +286,49 @@ class AdministrareContController extends Zend_Controller_Action
 
         $this->_forward('companii');
     }
+
+    /**
+     * Show orders history
+     */
+    public function istoricComenziAction()
+    {
+        $sql = Doctrine_Query::create();
+        $sql->select('*, DATE_FORMAT(data, "%d/%m/%Y %H:%i") as data_formatata');
+        $sql->from('Comenzi');
+        $sql->where('membru_id = ?', $_SESSION['profile']['id']);
+        $sql->orderBy('data desc');
+
+        $this->view->assign('orders', $sql->fetchArray());
+        $this->_helper->Layout->includeCss('window/alphacube.css');
+    }
+
+    /**
+     * View order details
+     */
+    public function veziComandaAction()
+    {
+        $sql = Doctrine_Query::create();
+        $sql->select('c.*, DATE_FORMAT(c.data, "%d/%m/%Y %H:%i") as date');
+        $sql->addSelect('f.*, p.*, cc.*, ca.*, co.*');
+        $sql->from('Comenzi c');
+        $sql->leftJoin('c.Clienti cc');
+        $sql->leftJoin('cc.Adrese ca');
+        $sql->leftJoin('cc.Companii co');
+        $sql->leftJoin('c.Facturi f');
+        $sql->leftJoin('f.Produse p');
+        $sql->where('membru_id = ? and id = ?', array($_SESSION['profile']['id'], $this->_getParam('id')));
+        $sql->orderBy('data desc');
+        $order = $sql->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
+
+        $order['products'] = $order['Facturi'];
+        print_r($order); die();
+
+        $this->view->assign('order', $order);
+        $this->view->assign('preview', true);
+        $this->view->assign('cfg', MyShop_Config::getInstance());
+        $this->view->assign('regionsTable', Doctrine::getTable('Judete'));
+
+        $this->_helper->viewRenderer->setNoController(true);
+        $this->_helper->viewRenderer->setScriptAction('comanda/preview');
+    }
 }
