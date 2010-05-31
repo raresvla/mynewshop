@@ -31,4 +31,15 @@ class JudeteTable extends Doctrine_Table
 
         return $regions;
     }
+
+    /**
+     * Check if region is in provice
+     *
+     * @param string $region
+     * @return boolean
+     */
+    public function isProvince($region)
+    {
+        return !(strpos($region, 'Sector') !== false);
+    }
 }

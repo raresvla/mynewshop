@@ -1,0 +1,35 @@
+<table cellspacing="0" cellpadding="5" border="0" width="100%" class="table-border do-not-attach-observers">
+    <colgroup>
+        <col width="25" align="right" />
+        <col align="center" />
+        <col width="120" align="center" />
+        <col width="120" align="right" />
+        <col width="120" align="center" />
+        <col width="90" align="center" />
+    </colgroup>
+    <thead>
+        <tr>
+            <td align="right" class="table-header">#</td>
+            <td align="center" class="table-header">Comanda</td>
+            <td align="center" class="table-header">Data</td>
+            <td align="right" class="table-header">Total comandă<br>(RON)</td>
+            <td align="center" class="table-header">Status</td>
+            <td align="center" class="table-header">Opţiuni</td>
+        </tr>
+    </thead>
+    <tbody>
+        {foreach from=$orders item=order name=ordersLoop}
+        {math equation="x+y" x=$order.total_fara_tva y=$order.total_tva assign=grandTotal}
+        <tr>
+            <td align="right">{$smarty.foreach.ordersLoop.iteration}.</td>
+            <td align="center"><strong>{$order.cod_comanda}</strong></td>
+            <td align="center">{$order.data_formatata}</td>
+            <td align="right">{$grandTotal|number_format:2:',':'.'}</td>
+            <td align="center" class="{$order.status}">{$order.status|@ucfirst}</td>
+            <td align="center">
+                <a class="lnk-red action show-order-details" href="javascript://" rel="order-details|{$order.id}">Vezi detalii</a>
+            </td>
+        </tr>
+        {/foreach}
+    </tbody>
+</table>

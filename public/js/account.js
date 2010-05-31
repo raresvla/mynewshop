@@ -148,6 +148,9 @@ var Account = {
 
     selectSubSection: function(e) {
         var subsection = e.findElement('table');
+        if(subsection.hasClassName('do-not-attach-observers')) {
+            return;
+        }
         var clickedOnInput = (e.element().tagName.toLowerCase() == 'input');
 
         if(clickedOnInput && subsection.hasClassName('selected')) {
@@ -168,7 +171,10 @@ var Account = {
 
     getSelectedSectionValue: function() {
         var table = this.content.select('table').find(function(table) {
-            return table.down('input').checked
+            if(table.hasClassName('do-not-attach-observers')) {
+                return false;
+            }
+            return table.down('input').checked;
         });
         
         if(!table) {
@@ -181,6 +187,11 @@ var Account = {
         var el = e.element();
         var action = el.readAttribute('rel');
         var sectionValue = this.getSelectedSectionValue();
+        if(!sectionValue) {
+            action = action.split('|');
+            sectionValue = action[1];
+            action = action[0];
+        }
 
         var url = null;
         var params = {};
@@ -277,8 +288,22 @@ var Account = {
                 });
             }
             break;
+
+            case 'order-details': {
+                new Ajax.Request('/administrare-cont/vezi-comanda', {
+                    method: 'get',
+                    parameters: {id: sectionValue},
+                    onSuccess: function(tr) {
+                        this.showWindow(tr.responseText, {
+                            width: 750,
+                            height: 525,
+                            title: 'Comanda MyShop',
+                            className: 'alphacube'
+                        });
+                    }.bind(this)
+                });
+            } break;
         }
-        
     },
 
     showWindow: function(content, options) {

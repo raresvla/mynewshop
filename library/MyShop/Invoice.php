@@ -501,15 +501,4 @@ class MyShop_Invoice
         unset($this->_basket);
         $this->_data = array();
     }
-
-    /**
-     * Check if region is in provice
-     *
-     * @param string $region
-     * @return boolean
-     */
-    public function isProvince($region)
-    {
-        return !(strpos($region, 'Sector') !== false);
-    }
 }

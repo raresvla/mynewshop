@@ -12,5 +12,12 @@
  */
 class Comenzi extends BaseComenzi
 {
+    public function  setUp()
+    {
+        parent::setUp();
 
+        $this->hasOne('Clienti', array(
+             'local' => 'id',
+             'foreign' => 'comanda_id'));
+    }
 }

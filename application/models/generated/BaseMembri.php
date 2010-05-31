@@ -23,6 +23,7 @@
  * @property enum $status
  * @property Doctrine_Collection $Adrese
  * @property Doctrine_Collection $CartTrack
+ * @property Doctrine_Collection $Clienti
  * @property Doctrine_Collection $ComentariiProduse
  * @property Doctrine_Collection $Comenzi
  * @property Doctrine_Collection $Companii
@@ -209,6 +210,10 @@ abstract class BaseMembri extends Doctrine_Record
              'foreign' => 'membru_id'));
 
         $this->hasMany('CartTrack', array(
+             'local' => 'id',
+             'foreign' => 'membru_id'));
+
+        $this->hasMany('Clienti', array(
              'local' => 'id',
              'foreign' => 'membru_id'));
 

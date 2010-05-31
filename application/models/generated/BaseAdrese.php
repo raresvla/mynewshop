@@ -13,6 +13,7 @@
  * @property string $cod_postal
  * @property string $tara
  * @property Membri $Membri
+ * @property Doctrine_Collection $Clienti
  * 
  * @package    ##PACKAGE##
  * @subpackage ##SUBPACKAGE##
@@ -99,5 +100,9 @@ abstract class BaseAdrese extends Doctrine_Record
         $this->hasOne('Membri', array(
              'local' => 'membru_id',
              'foreign' => 'id'));
+
+        $this->hasMany('Clienti', array(
+             'local' => 'id',
+             'foreign' => 'adresa_id'));
     }
 }
