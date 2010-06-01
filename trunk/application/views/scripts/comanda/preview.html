@@ -40,7 +40,7 @@
                 <td style="background-color:#F3F7FC; border:1px solid #E6ECF9; color:#444444; padding:5px; ">
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                         <tr>
-                            <td align="left" style="font-size:24px; color:#444444;">{if $preview}Previzualizare {/if}Comandă {$order.code}</td>
+                            <td align="left" style="font-size:24px; color:#444444;">{if $preview && !$ordersHistory}Sumar Comandă{else}Comanda{/if} {$order.code}</td>
                             <td rowspan="2" align="right" style="color:#666666;">
                                 <a href="http://{$cfg->DOMENIU_SITE}">{$cfg->DOMENIU_SITE}</a><br />
                                 Tel.: {$cfg->TELEFON}<br />
@@ -190,7 +190,7 @@
         </table>
         {if $preview}
         <div align="center" style="padding-top:10px">
-            <input type="button" onclick="Order.dialogWindow.close()" name="inchide" value="Închide" style="font-family: Tahoma; font-size: 11px; padding: 1px 10px; min-width: 75px; padding: 1px !important;" />
+            <input type="button" onclick="{$jsHandler|default:'Order'}.dialogWindow.close()" name="inchide" value="Închide" style="font-family: Tahoma; font-size: 11px; padding: 1px 10px; min-width: 75px; padding: 1px !important;" />
         </div>
         {/if}
         {if !$preview}
