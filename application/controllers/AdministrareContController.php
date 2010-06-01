@@ -24,6 +24,7 @@ class AdministrareContController extends Zend_Controller_Action
         $this->_helper->Layout->includeJs('account.js');
         $this->_helper->Layout->includeCss('window/default.css');
         $this->_helper->Layout->includeCss('window/lighting.css');
+        $this->_helper->Layout->includeCss('window/alphacube.css');
     }
 
     /**
@@ -299,7 +300,6 @@ class AdministrareContController extends Zend_Controller_Action
         $sql->orderBy('data desc');
 
         $this->view->assign('orders', $sql->fetchArray());
-        $this->_helper->Layout->includeCss('window/alphacube.css');
     }
 
     /**
@@ -319,12 +319,51 @@ class AdministrareContController extends Zend_Controller_Action
         $sql->where('membru_id = ? and id = ?', array($_SESSION['profile']['id'], $this->_getParam('id')));
         $sql->orderBy('data desc');
         $order = $sql->fetchOne(array(), Doctrine::HYDRATE_ARRAY);
+        if(empty($order)) {
+            throw new Zend_Exception('Invalid order id!');
+        }
 
-        $order['products'] = $order['Facturi'];
-        print_r($order); die();
+        //set order buyer/receiver data
+        $order['type'] = $order['Clienti']['tip_client'];
+        $order['code'] = $order['cod_comanda'];
+        foreach(array('nume', 'prenume', 'adresa', 'oras', 'judet', 'cod_postal') as $data) {
+            $order['receiver'][$data] = $order['Clienti']["destinatar_{$data}"];
+        }
+        if($order['type'] == MyShop_Invoice::INVOICE_TYPE_PERSONAL) {
+            $order['buyer'] = array_intersect_key($order['Clienti'], array_flip(array(
+                'nume', 'prenume', 'telefon', 'fax', 'email'
+            )));
+            $order['buyer']['address'] = $order['Clienti']['Adrese'];
+            if(($order['buyer']['nume'] == $order['receiver']['nume']) &&
+                ($order['buyer']['prenume'] == $order['receiver']['prenume'])) {
+                $order['buyerIsReceiver'] = true;
+            }
+        }
+        else {
+            $order['buyer'] = $order['Clienti']['Companii'];
+            if(empty($order['receiver']['nume']) && empty($order['receiver']['prenume'])) {
+                $order['buyerIsReceiver'] = true;
+            }
+        }
 
+        //set products
+        foreach($order['Facturi'] as $item) {
+            $order['products'][] = array(
+                'cod_produs' => $item['Produse']['cod_produs'],
+                'denumire' => $item['Produse']['denumire'],
+                'quantity' => $item['cantitate'],
+                'price' => $item['pret']
+            );
+        }
+        $order['totalValue'] = $order['total_fara_tva'] + $order['total_tva'];
+        $order['shippingCost'] = $order['total_taxe'];
+        unset($order['Facturi']);
+        unset($order['Clienti']);
+        
         $this->view->assign('order', $order);
         $this->view->assign('preview', true);
+        $this->view->assign('jsHandler', 'Account');
+        $this->view->assign('ordersHistory', true);
         $this->view->assign('cfg', MyShop_Config::getInstance());
         $this->view->assign('regionsTable', Doctrine::getTable('Judete'));
 

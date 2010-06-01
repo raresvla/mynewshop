@@ -130,6 +130,7 @@ class ComandaController extends Zend_Controller_Action
         $this->_helper->Layout->includeJs('lib/validate.js');
         $this->_helper->Layout->includeJs('custom-validators.js');
         $this->_helper->Layout->includeJs('order.js');
+        $this->view->assign('regionsTable', Doctrine::getTable('Judete'));
 
         //window
         $this->_helper->Layout->includeJs('lib/window/window.js');

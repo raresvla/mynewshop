@@ -1,7 +1,6 @@
 var Order = {
     content: null,
     form: null,
-    billType: null,
     
     init: function() {
         this.content = $('content');
@@ -17,7 +16,6 @@ var Order = {
         
         Validation.add('bill-type', 'Selecta\u0163i modul de facturare', this.validateBillType.bind(this));
         this.setFormValidator();
-        this.billType = this.form['billType'].value;
     },
     
     setFormValidator: function() {
@@ -84,7 +82,7 @@ var Order = {
         }
         if(window.confirm('Contul dvs. nu are nicio companie asociat\u0103.\nDoriţi adăugarea unei noi companii ?')) {
             window.location.href = '/administrare-cont/companii';
-            return true;
+            return false;
         }
         else {
             elem.checked = false;
@@ -195,9 +193,7 @@ var Order = {
             return;
         }
 
-        var params = Object.extend(this.getActiveForm().serialize(true), {
-            type: this.billType
-        });
+        var params = this.getActiveForm().serialize(true);
         new Ajax.Request(this.getActiveForm().readAttribute('action'), {
             method: 'get',
             parameters: Object.toQueryString(params),

@@ -414,13 +414,15 @@ class MyShop_Invoice
         else {
             $client->companie_id = $this->_data['cumparator']['companie'];
         }
-        $client->destinatar_nume = $this->destinatar['nume'];
-        $client->destinatar_prenume = $this->destinatar['prenume'];
+        if($this->tip != self::INVOICE_TYPE_BUSINESS || !$this->buyerIsReceiver()) {
+            $client->destinatar_nume = $this->destinatar['nume'];
+            $client->destinatar_prenume = $this->destinatar['prenume'];
+        }
         $client->destinatar_adresa = $shippingAddress['adresa'];
         $client->destinatar_oras = $shippingAddress['oras'];
         $client->destinatar_judet = $shippingAddress['judet'];
         $client->destinatar_cod_postal = $shippingAddress['cod_postal'];
-        $order->Clienti[] = $client;
+        $order->Clienti = $client;
 
         $order->save();
         $order->refresh();
