@@ -1,7 +1,7 @@
 <div id="logo">
     <a href="/">MyShop</a>
 </div>
-<div class="right-container">
+<div class="right-container {if !$smarty.session.favoriteProducts|@count || !$basket|@count}no-fav-products{/if}">
     <p class="user">
     {if !$smarty.session.profile}
         <span>Bun venit!</span>
@@ -13,14 +13,17 @@
         [<a href="/administrare-cont">Administrare cont</a> | <a href="/cont/logout">Logout</a>]
     {/if}
     </p>
-
-    {if $basket|@count}
-    <p class="basket">
+    <p class="basket" style="{if !$basket|@count}display:none;{/if}">
         <a href="/cos-cumparaturi">
-            <strong>Coș de cumpărături ({$basket|@count})</strong>
-        </a>
-        |
+            <strong>Coș de cumpărături (<span>{$basket|@count}</span>)</strong>
+        </a> |
         <a href="/comanda">Trimite comanda</a>
+    </p>
+    {if $smarty.session.favoriteProducts|@count}
+    <p class="favorite-products clear-fix">
+        <a href="/produse/favorite" class="float-right">
+            Produse favorite (<span>{$smarty.session.favoriteProducts|@count}</span>)
+        </a>
     </p>
     {/if}
 </div>

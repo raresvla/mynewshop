@@ -46,17 +46,21 @@
             <div class="float-left rating-container">
                 <p class="float-left">Notă:</p>
                 <ul class="rating {$product.rating|stars_format}star float-left">
-                    <li class="one">1</li>
-                    <li class="two">2</li>
-                    <li class="three">3</li>
-                    <li class="four">4</li>
-                    <li class="five">5</li>
+                    {foreach from=$ratings item=dummy name=rating}
+                    <li class="{$smarty.foreach.rating.iteration|stars_format}">
+                        <a href="javascript://" title="Votează produsul" rel="{$product.id}|{$smarty.foreach.rating.iteration}">
+                            {$smarty.foreach.rating.iteration}
+                        </a>
+                    </li>
+                    {/foreach}
                 </ul>
             </div>
             {/if}
+            {if $smarty.session.profile && !$smarty.session.favoriteProducts[$product.id]}
             <p class="float-right">
-                <a href="" class="add-to-fav">Adaugă la favorite</a>
+                <a href="javascript://" class="add-to-fav" rel="{$product.id}">Adaugă la favorite</a>
             </p>
+            {/if}
         </div>
     </div>
 </div>

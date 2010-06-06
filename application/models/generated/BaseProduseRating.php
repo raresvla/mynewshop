@@ -8,6 +8,7 @@
  * @property integer $id
  * @property integer $id_produs
  * @property integer $id_membru
+ * @property date $data
  * @property integer $rating
  * @property Produse $Produse
  * @property Membri $Membri
@@ -42,6 +43,14 @@ abstract class BaseProduseRating extends Doctrine_Record
         $this->hasColumn('id_membru', 'integer', 4, array(
              'type' => 'integer',
              'length' => 4,
+             'fixed' => false,
+             'unsigned' => false,
+             'primary' => false,
+             'notnull' => true,
+             'autoincrement' => false,
+             ));
+        $this->hasColumn('data', 'date', null, array(
+             'type' => 'date',
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,

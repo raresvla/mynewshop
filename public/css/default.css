@@ -152,10 +152,11 @@ form.searchform div.button-container button { width: 23px; height: 23px; backgro
     top: 15px;
 }
 #header #logo a { background:url("/img/layout/logo.png") no-repeat scroll 0 0 transparent; display: block; height: 100%; width: 100%; text-indent: -1000px; }
-#header .right-container { position:absolute; right:0; text-align:right;}
-#header .right-container p { margin:10px 0 5px; }
+#header .right-container { position:absolute; right:0; text-align:right; padding-top: 8px; }
+#header .no-fav-products { padding-top: 15px; }
 #header .right-container p.user span { background: url("/img/icons/icon_key.gif") no-repeat 0 2px; padding-left:25px; }
-#header .right-container p.basket { line-height:20px; margin:0; padding-left:25px; }
+#header .right-container p.favorite-products a { display: block; background: url("/img/icons/whish_list.png") no-repeat; padding-left: 20px; height: 18px; }
+#header .right-container p.basket { line-height:20px; padding-left:25px; }
 
 /* main */
 #main { float: left; padding: 0; width: 78%; margin-left:0.5%; min-height: 500px; color: #000; }

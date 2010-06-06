@@ -65,7 +65,6 @@ abstract class BaseProduseFavorite extends Doctrine_Record
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
-             'default' => '0000-00-00 00:00:00',
              'notnull' => true,
              'autoincrement' => false,
              ));

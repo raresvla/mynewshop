@@ -66,6 +66,9 @@ class ContController extends Zend_Controller_Action
                 'id', 'username', 'nume', 'prenume', 'email'
             ))
         );
+        foreach($user->ProduseFavorite as $item) {
+            $_SESSION['favoriteProducts'][$item['produs_id']] = true;
+        }
         MyShop_Basket::getInstance()->setUserId($_SESSION['profile']['id']);
 
         $originalRequest = $this->_getParam('originalRequest');
