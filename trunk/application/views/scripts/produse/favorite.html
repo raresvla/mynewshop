@@ -1,0 +1,91 @@
+<h1 class="section-title">Produse favorite</h1>
+
+{if !$favoriteProducts|@count}
+<div style="padding-left: 20px; margin-bottom: 50px;" class="table-header2">
+    <img height="17" width="17" alt="" class="valign-middle" src="/img/icons/info_little.png" />
+    Nu aţi adăugat niciun produs în listă. Pentru a marca un produs, folosiţi "<strong>Adaugă la favorite</strong>" din pagina de prezentare a produsului.
+</div>
+{else}
+<table cellspacing="0" cellpadding="5" border="0" width="100%" class="table-border highlight-row" id="favoriteProducts">
+    <colgroup>
+        <col align="center" width="50" />
+        <col align="center" />
+        <col align="right" width="80" />
+        <col align="center" width="130" />
+    </colgroup>
+    <thead>
+        <tr>
+            <th class="table-header" align="center">#</th>
+            <th class="table-header" align="center"></th>
+            <th class="table-header" align="right">Preţ cu TVA</th>
+            <th class="table-header" align="center">Data introducerii în listă</th>
+        </tr>
+    </thead>
+    <tbody>
+        {foreach from=$favoriteProducts item=product}
+        <tr class="hover">
+            <td align="center">
+                <input type="checkbox" value="{$product.id}" name="remove[]" class="highlight-marker" />
+            </td>
+            <td>
+                <table cellspacing="0" cellpadding="0" width="100%">
+                    <colgroup>
+                        <col width="55" />
+                        <col />
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a href="/{$product.Categorie.denumire|url_escape}/{$product.denumire|url_escape}-{$product.id}.html">
+                                    <img height="50" width="50" src="/thumbs/small/{$product.MainPhoto.foto}" alt="{$product.denumire}" />
+                                </a>
+                            </td>
+                            <td>
+                                <a class="lnk-red" href="/{$product.Categorie.denumire|url_escape}/{$product.denumire|url_escape}-{$product.id}.html">
+                                    {$product.denumire} {if $product.cod_produs}<span>[{$product.cod_produs}]</span>{/if}
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td align="right">
+                {$product.price|number_format:2:',':'.'} RON
+            </td>
+            <td align="center">
+                {$product.lastModif}
+            </td>
+        </tr>
+        {/foreach}
+    </tbody>
+</table>
+<p style="padding-left: 15px; margin-bottom: 50px;">
+    <img alt="" src="/img/misc/arrow_ltr.png">
+    <a rel="add-in-basket" class="action" href="javascript://">Adaugă în coş</a> &nbsp;|&nbsp;
+    <a rel="remove" class="action" href="javascript://">Şterge</a>
+</p>
+{/if}
+
+<hr class="fancy-spacer" />
+<table cellspacing="0" cellpadding="0" border="0" width="500px" class="bottom-nav">
+    <colgroup>
+        <col width="50%" align="center" />
+        <col align="center" />
+    </colgroup>
+    <tbody>
+        <tr>
+            <td align="center">
+                <a class="lnk-button" href="{$backUrl}" style="width: 65px">
+                    <img height="20" width="20" alt="" class="valignMiddle" src="/img/icons/back.png" /> <span>Înapoi</span>
+                </a>
+            </td>
+            {if $favoriteProducts|@count}
+            <td align="center">
+                <a class="lnk-button action" href="javascript://" style="width: 120px" rel="remove-all">
+                    Şterge întreaga listă <img height="20" width="20" alt="" src="/img/icons/empty-basket.png" />
+                </a>
+            </td>
+            {/if}
+        </tr>
+    </tbody>
+</table>

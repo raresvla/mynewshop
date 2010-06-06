@@ -281,12 +281,189 @@ class ProduseController extends Zend_Controller_Action
         }
         Doctrine::getTable('Produse')->organizeDescription($product['ProduseCaracteristici']);
         $this->_setParam('categoryId', $product['categorie_id']);
-        
+
+        $this->view->assign('ratings', array_fill(0, 5, true));
         $this->view->assign('product', $product);
         $this->_helper->Layout->addBreadcrumb($product['denumire']);
         $this->_helper->Layout->includeJs('lib/scriptaculous/builder.js');
         $this->_helper->Layout->includeJs('lib/lightbox/lightbox.js');
         $this->_helper->Layout->includeCss('lightbox/lightbox.css');
         $this->_helper->Layout->includeCss('rating.css');
+    }
+
+    /**
+     * Rate product
+     */
+    public function voteazaAction()
+    {
+        $this->getFrontController()->setParam('noViewRenderer', true);
+        $response = $this->getResponse();
+
+        try {
+            if($this->_helper->acl->getRole() == MyShop_Helper_Acl::ROLE_GUEST) {
+                throw new Exception('Pentru a putea vota trebui să fiţi autentificat!');
+            }
+
+            $vote = new ProduseRating();
+            $vote->id_membru = $_SESSION['profile']['id'];
+            $vote->rating = $this->_getParam('rate');
+            $vote->data = new Doctrine_Expression('DATE(NOW())');
+
+            //fetch product
+            $sql = Doctrine_Query::create();
+            $sql->select('p.*, r.*');
+            $sql->from('Produse p');
+            $sql->leftJoin('p.ProduseRating r');
+            $sql->where('p.id = ?', $this->_getParam('id'));
+            $product = $sql->fetchOne();
+            if(!$product) {
+                throw new Exception('Produsul nu a fost găsit!');
+            }
+
+            //calculate new rating
+            $ratings = array();
+            foreach($product['ProduseRating'] as $item) {
+                $ratings[] = $item['rating'];
+            }
+            $ratings[] = $this->_getParam('rate');
+            $newRating = array_sum($ratings) / sizeof($ratings);
+
+            //save rating
+            $oldRating = $product['rating'];
+            $product['rating'] = $newRating;
+            $product->ProduseRating[] = $vote;
+            $product->save();
+
+            //reindex product
+            $solr = new MyShop_Solr();
+            $solr->index($this->_getParam('id'));
+        }
+        catch(Doctrine_Exception $e) {
+            $response->setBody('Votul dumneavoastră a fost deja înregistrat. Vă mulţumim!');
+        }
+        catch(Exception $e) {
+            $response->setBody($e->getMessage());
+        }
+
+        if(isset($e)) {
+            $response->setHttpResponseCode(403);
+        }
+        else {
+            $response->setBody("{$oldRating}|{$newRating}");
+        }
+    }
+
+    /**
+     * Favorite products
+     */
+    public function favoriteAction()
+    {
+        $this->_helper->acl->allow(MyShop_Helper_Acl::ROLE_MEMBER);
+        if(empty($_SESSION['favoriteProducts'])) {
+            return;
+        }
+
+        $sql = Doctrine_Query::create();
+        $sql->select('p.denumire, p.cod_produs, c.denumire, mg.foto, p.pret as price');
+        $sql->addSelect('DATE_FORMAT(f.data_ultimei_modificari, "%d/%m/%Y %H:%i:%s") as lastModif');
+        $sql->from('Produse p');
+        $sql->leftJoin('p.MainPhoto mg WITH mg.main = 1');
+        $sql->leftJoin('p.Categorie c');
+        $sql->innerJoin('p.ProduseFavorite f WITH f.membru_id = ?', $_SESSION['profile']['id']);
+
+        $this->view->assign('favoriteProducts', $sql->fetchArray());
+        if(isset($_SERVER['HTTP_REFERER'])) {
+            $backUrl = $_SERVER['HTTP_REFERER'];
+        }
+        if(empty($backUrl) || strpos($backUrl, 'favorite') !== false) {
+            $backUrl = '/';
+        }
+        $this->view->assign('backUrl', $backUrl);
+    }
+
+    /**
+     * Add product to favorites list
+     */
+    public function adaugaLaFavoriteAction()
+    {
+        $this->getFrontController()->setParam('noViewRenderer', true);
+
+        try {
+            if($this->_helper->acl->getRole() == MyShop_Helper_Acl::ROLE_GUEST) {
+                throw new Exception('Pentru a putea vota trebui să fiţi autentificat!');
+            }
+            $productId = $this->_getParam('id');
+            if(isset($_SESSION['favoriteProducts'][$productId])) {
+                return;
+            }
+            
+            $favorite = new ProduseFavorite();
+            $favorite->membru_id = $_SESSION['profile']['id'];
+            $favorite->produs_id = $productId;
+            $favorite->save();
+            $_SESSION['favoriteProducts'][$productId] = true;
+
+            $this->getResponse()->setHeader('X-JSON', json_encode(array(
+                'basket' => MyShop_Basket::getInstance()->count(),
+                'favorites' => sizeof($_SESSION['favoriteProducts'])
+            )));
+        }
+        catch(Exception $e) {
+            $response = $this->getResponse();
+            $response->setHttpResponseCode(403);
+            $response->setBody($e->getMessage());
+        }
+    }
+
+    /**
+     * Update favorite products list
+     */
+    public function updateFavoriteAction()
+    {
+        $selected = explode(',', $this->_getParam('selected'));
+        
+        switch($this->_getParam('actionToPerform')) {
+            case 'add-in-basket': {
+                $basket = MyShop_Basket::getInstance();
+                foreach($selected as $productId) {
+                    $basket->add($productId);
+                }
+            }
+            case 'remove': {
+                $sql = Doctrine_Query::create();
+                $sql->delete();
+                $sql->from('ProduseFavorite');
+                $sql->where('membru_id = ?', $_SESSION['profile']['id']);
+                $sql->andWhereIn('produs_id', $selected);
+                $sql->limit(sizeof($selected));
+                $sql->execute();
+
+                $_SESSION['favoriteProducts'] = array_diff_key(
+                    $_SESSION['favoriteProducts'],
+                    array_flip($selected)
+                );
+            } break;
+        }
+
+        $this->getResponse()->setHeader('X-JSON', json_encode(array(
+            'basket' => MyShop_Basket::getInstance()->count(),
+            'favorites' => sizeof($_SESSION['favoriteProducts'])
+        )));
+        $this->_forward('favorite');
+    }
+
+    /**
+     * Remove all favorite products
+     */
+    public function stergeFavoriteAction()
+    {
+        $sql = Doctrine_Query::create();
+        $sql->delete();
+        $sql->from('ProduseFavorite');
+        $sql->where('membru_id = ?', $_SESSION['profile']['id']);
+        $sql->execute();
+
+        unset($_SESSION['favoriteProducts']);
+        $this->_redirect('/produse/favorite');
     }
 }
