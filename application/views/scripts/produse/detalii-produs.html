@@ -42,7 +42,6 @@
         </div>
         <hr />
         <div class="clear-fix">
-            {if $product.rating}
             <div class="float-left rating-container">
                 <p class="float-left">Notă:</p>
                 <ul class="rating {$product.rating|stars_format}star float-left">
@@ -55,7 +54,6 @@
                     {/foreach}
                 </ul>
             </div>
-            {/if}
             {if $smarty.session.profile && !$smarty.session.favoriteProducts[$product.id]}
             <p class="float-right">
                 <a href="javascript://" class="add-to-fav" rel="{$product.id}">Adaugă la favorite</a>

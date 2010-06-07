@@ -143,7 +143,7 @@ class MyShop_Solr extends Apache_Solr_Service
             'categorieId' => $produs['categorie_id'],
             'greutate' => $produs['greutate'],
             'pret' => $produs['pret'],
-            'rating' => $produs['rating'],
+            'rating' => intval($produs['rating']),
             'nou' => $produs['noutati'],
             'recomandat' => $produs['recomandari'],
             'dataAdaugarii' => $produs['data_adaugare'] . 'T00:00:00Z',

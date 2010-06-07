@@ -73,27 +73,27 @@ abstract class BaseProduse extends Doctrine_Record
              'notnull' => false,
              'autoincrement' => false,
              ));
-        $this->hasColumn('marca', 'string', 50, array(
+        $this->hasColumn('marca', 'string', 100, array(
              'type' => 'string',
-             'length' => 50,
+             'length' => 100,
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
              'notnull' => true,
              'autoincrement' => false,
              ));
-        $this->hasColumn('cod_produs', 'string', 50, array(
+        $this->hasColumn('cod_produs', 'string', 100, array(
              'type' => 'string',
-             'length' => 50,
+             'length' => 100,
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
              'notnull' => false,
              'autoincrement' => false,
              ));
-        $this->hasColumn('denumire', 'string', 100, array(
+        $this->hasColumn('denumire', 'string', 255, array(
              'type' => 'string',
-             'length' => 100,
+             'length' => 255,
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
