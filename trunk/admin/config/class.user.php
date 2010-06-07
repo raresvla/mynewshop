@@ -93,7 +93,7 @@ class User
     {
         $this->_getPermitedScripts();
         if (array_search(basename($_SERVER['PHP_SELF']), $this->_scriptAccess) === false) {
-            $ip = (getenv(HTTP_X_FORWARDED_FOR) ? getenv(HTTP_X_FORWARDED_FOR) : getenv(REMOTE_ADDR));
+            $ip = (getenv('HTTP_X_FORWARDED_FOR') ? getenv('HTTP_X_FORWARDED_FOR') : getenv('REMOTE_ADDR'));
             $sql = "INSERT INTO `_log` (`date`, `activity`, `info`) VALUES ('$date', 'admin_access_not_granted', 'user={$this->_username};IP={$ip};script=" . basename($_SERVER['PHP_SELF']) . "')";
             mysql_query($sql, db_c());
             
@@ -140,7 +140,7 @@ class User
         $sql = "UPDATE `admin` SET `last_login` = '$date', `number_logins` = `number_logins` + 1 WHERE `username` = '{$this->_username}'";
         mysql_query($sql, db_c());
         
-        $ip = (getenv(HTTP_X_FORWARDED_FOR) ? getenv(HTTP_X_FORWARDED_FOR) : getenv(REMOTE_ADDR));
+        $ip = (getenv('HTTP_X_FORWARDED_FOR') ? getenv('HTTP_X_FORWARDED_FOR') : getenv('REMOTE_ADDR'));
         $sql = "INSERT INTO `_log` (`date`, `activity`, `info`) VALUES ('$date', 'admin_login', 'user={$this->_username};IP={$ip}')";
         mysql_query($sql, db_c());
     }

@@ -1,12 +1,15 @@
 <?php
 class AjaxActionProduse
 {
-    private  $_user;
+    private $_user;
+    private $_solr;
+
     function __construct ($details, User $user)
     {
         $method = $details['sectiune'] . "_" . $details['actiune'];
         if (method_exists($this, $method)) {
             $this->_user = $user;
+            $this->_solr = new MyShop_Solr();
             $this->$method($details);
         } else {
             throw new Exception('Metoda asociata nu este definita (' + $method + ')!');
@@ -146,7 +149,9 @@ class AjaxActionProduse
         $ids = json_decode(stripslashes($_POST['ids']), true);
         $sql = "DELETE FROM `produse` WHERE `id` IN (" . implode(', ', $ids) . ")";
         mysql_query($sql, db_c());
-        
+
+        $this->_solr->deleteByQuery('id: ' . implode(' OR id:', $ids));
+        $this->_solr->commit(true);
         $this->produse_getProduse();
     }
     
@@ -244,7 +249,7 @@ class AjaxActionProduse
     }
     
     public function produse_getImagini() {
-        if($_GET['firstRun']) {
+        if(!empty($_GET['firstRun'])) {
             if(isset($_SESSION['_uploadImagini'])) {
                 $_SESSION['_imagini'][] = $_SESSION['_uploadImagini'];
             }
@@ -280,7 +285,7 @@ class AjaxActionProduse
                 
                 $buffer .= "<tr id=\"row_imagini_{$i}\" onmouseover=\"showHide('imagini', {$i}, 'on')\" onmouseout=\"showHide('imagini', {$i}, 'off')\">";
                 $buffer .= "<td align=\"center\"><span id=\"span_imagini_{$i}\" style=\"display: block; padding:3.25px 0px;\">" . ($i+1) . ".</span><input type=\"checkbox\" name=\"imagini[]\" id=\"check_imagini_{$i}\" value=\"{$i}\" style=\"display: none\" onclick=\"selectDeselect(this, 'imagini', {$i});\" /></td>";
-                $buffer .= "<td align=\"left\"><img src=\"{$_thumb['thumb']}\" {$_thumb['details'][3]} class=\"valignMiddle\" id=\"img_{$i}\" style=\"border: 1px solid #FFFFFF\" /> {$img['foto']}</td><td align=\"center\">" . ($img['main'] ? '<img src="images/icons/ok.png" width="16" height="16" alt="" />' : '&nbsp;') . "</td></tr>";
+                $buffer .= "<td align=\"left\"><img src=\"{$_thumb['thumb']}\" {$_thumb['details'][3]} class=\"valignMiddle\" id=\"img_{$i}\" style=\"border: 1px solid #FFFFFF\" /> {$img['foto']}</td><td align=\"center\">" . (!empty($img['main']) ? '<img src="images/icons/ok.png" width="16" height="16" alt="" />' : '&nbsp;') . "</td></tr>";
                 
                 $i++;
             }
@@ -291,13 +296,13 @@ class AjaxActionProduse
     }
     
     public function produse_uploadImagine() {
-        if ($imagine = $_FILES['imagine']) {
+        if (($imagine = $_FILES['imagine'])) {
             if(isset($_SESSION['_uploadImagini'])) {
                 //delete image already uploaded
                 @unlink('../public/imagini/produse/' . $_SESSION['_uploadImagini']['foto']);
-                @unlink('../public/thumbs/50/' . $_SESSION['_uploadImagini']['foto']);
-                @unlink('../public/thumbs/100/' . $_SESSION['_uploadImagini']['foto']);
-                @unlink('../public/thumbs/200/' . $_SESSION['_uploadImagini']['foto']);
+                @unlink('../public/thumbs/small/' . $_SESSION['_uploadImagini']['foto']);
+                @unlink('../public/thumbs/medium/' . $_SESSION['_uploadImagini']['foto']);
+                @unlink('../public/thumbs/big/' . $_SESSION['_uploadImagini']['foto']);
             }
             
             $newImage = 'tmp' . (sizeof($_SESSION['_imagini'])) . "-{$imagine['name']}";
@@ -311,7 +316,8 @@ class AjaxActionProduse
                 
             move_uploaded_file($imagine['tmp_name'], $file);
             chmod($file, 0777);
-            
+
+            verificaThumb('../public/imagini/produse/', $newImage, 100);
             $_thumb = verificaThumb('../public/imagini/produse/', $newImage, 200);
             echo "<html><head><script type=\"text/javascript\">parent.showImage('" . $_thumb['thumb'] . "')</script></head><body></body></html>";
         }
@@ -344,7 +350,7 @@ class AjaxActionProduse
     
     public function produse_setDefaultImage() {
         foreach ($_SESSION['_imagini'] as $key => $img) {
-            if($img['main']) {
+            if(!empty($img['main'])) {
                 $_SESSION['_imagini'][$key]['main'] = false;
                 $_SESSION['_imagini'][$key]['modified'] = true;
             }

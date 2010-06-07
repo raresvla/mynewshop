@@ -3,15 +3,15 @@ include("config/check_login.php");
 
 function deleteImage($src) {
     @unlink('../public/imagini/produse/' . $src);
-    @unlink('../public/thumbs/50/' . $src);
-    @unlink('../public/thumbs/100/' . $src);
-    @unlink('../public/thumbs/200/' . $src);
+    @unlink('../public/thumbs/small/' . $src);
+    @unlink('../public/thumbs/medium/' . $src);
+    @unlink('../public/thumbs/big/' . $src);
 }
 function renameImage($old, $new) {
     @rename('../public/imagini/produse/' . $old, '../public/imagini/produse/' . $new);
-    @rename('../public/thumbs/50/' . $old, '../public/thumbs/50/' . $new);
-    @rename('../public/thumbs/100/' . $old, '../public/thumbs/100/' . $new);
-    @rename('../public/thumbs/200/' . $old, '../public/thumbs/200/' . $new);
+    @rename('../public/thumbs/small/' . $old, '../public/thumbs/small/' . $new);
+    @rename('../public/thumbs/medium/' . $old, '../public/thumbs/medium/' . $new);
+    @rename('../public/thumbs/big/' . $old, '../public/thumbs/big/' . $new);
 }
 
 switch ($_GET['action']) {
@@ -29,8 +29,11 @@ switch ($_GET['action']) {
         }
         else {
             foreach ($_POST as $key => $value) {
-                if(strpos($key, 'descriere') === false) {
+                if($key == 'descriere') {
                     ${$key} = addslashes($value);
+                }
+                elseif($key == 'pret') {
+                    ${$key} = str_replace(',', '.', $value);
                 }
                 else {
                     ${$key} = addslashes(str_replace(array("\r\n", "\r", "\n"), "|", $value));
@@ -38,12 +41,12 @@ switch ($_GET['action']) {
             }
                         
             if ($_GET['source'] == 'db') {
-                $sql = "UPDATE `produse` SET `marca` = '{$marca}', `cod_produs` = '{$cod_produs}', `denumire` = '{$denumire}', `descriere` = '{$descriere}', `pret` = '{$pret}', `greutate` = '{$greutate}', `stoc_disponibil` = {$stoc_disponibil}, `ultima_modificare` = NOW(), `afisat` = " . intval($afisat) . ", `noutati` = " . intval($noutati) . ", `recomandari` = " . intval($recomandari) . " WHERE `id` = {$_GET['id']}";
+                $sql = "UPDATE `produse` SET `marca` = '{$marca}', `cod_produs` = '{$cod_produs}', `denumire` = '{$denumire}', `descriere` = '{$descriere}', `pret` = '{$pret}', `greutate` = '{$greutate}', `stoc_disponibil` = {$stoc_disponibil}, `ultima_modificare` = NOW(), `afisat` = " . @intval($afisat) . ", `noutati` = " . @intval($noutati) . ", `recomandari` = " . @intval($recomandari) . " WHERE `id` = {$_GET['id']}";
                 mysql_query($sql, db_c()) or die(mysql_error());
                 $id = $_GET['id'];
             }
             else {
-                $sql = "INSERT INTO `produse` (`categorie_id`, `marca`, `cod_produs`, `denumire`, `descriere`, `pret`, `greutate`, `stoc_disponibil`, `data_adaugare`, `afisat`, `noutati`, `recomandari`) VALUES ('{$_categorieId}', '{$marca}', '$cod_produs', '{$denumire}', '{$descriere}', '$pret', '$greutate', '$stoc_disponibil', DATE(NOW()), " . intval($afisat) . ", " . intval($noutati) . ", " . intval($recomandari) . ")";
+                $sql = "INSERT INTO `produse` (`categorie_id`, `marca`, `cod_produs`, `denumire`, `descriere`, `pret`, `greutate`, `stoc_disponibil`, `data_adaugare`, `afisat`, `noutati`, `recomandari`) VALUES ('{$_categorieId}', '{$marca}', '$cod_produs', '{$denumire}', '{$descriere}', '$pret', '$greutate', '$stoc_disponibil', DATE(NOW()), " . @intval($afisat) . ", " . @intval($noutati) . ", " . @intval($recomandari) . ")";
                 mysql_query($sql, db_c()) or die(mysql_error());
                 $id = mysql_insert_id();
             }
@@ -57,7 +60,7 @@ switch ($_GET['action']) {
                     $new[] = $c;
                     unset($_SESSION['_caracteristici'][$key]);
                 }
-                elseif($c['source'] == 'db' && $c['modified']) {
+                elseif($c['source'] == 'db' && !empty($c['modified'])) {
                     $modified[] = $c;
                     $doNotDelete[] = $c['caracteristica']['id'];
                     unset($_SESSION['_caracteristici'][$key]);
@@ -98,7 +101,7 @@ switch ($_GET['action']) {
                     $new[] = $img;
                     unset($_SESSION['_imagini'][$key]);
                 }
-                elseif($img['source'] == 'db' && $img['modified']) {
+                elseif($img['source'] == 'db' && !empty($img['modified'])) {
                     $modified[] = $img;
                     $doNotDelete[] = $img['id'];
                     unset($_SESSION['_imagini'][$key]);
@@ -121,7 +124,7 @@ switch ($_GET['action']) {
             //save changed pictures
             if(sizeof($modified)) {
                 foreach ($modified as $img) {
-                    if($img['old']) {
+                    if(!empty($img['old'])) {
                         $newImg = substr($img['foto'], strpos($img['foto'], '-') + 1);
                         deleteImage($img['old']);
                         renameImage($img['foto'], $newImg);
@@ -141,12 +144,15 @@ switch ($_GET['action']) {
                 foreach ($new as $img) {
                     $newImg = substr($img['foto'], strpos($img['foto'], '-') + 1);
                     renameImage($img['foto'], $newImg);
-                    $sql .= ($sql ? ', ' : '') . "({$id}, '{$newImg}', '" . intval($img['main']) . "')";
+                    $sql .= ($sql ? ', ' : '') . "({$id}, '{$newImg}', '" . @intval($img['main']) . "')";
                 }
                 $sql = "INSERT INTO `galerie_foto` (`produs_id`, `foto`, `main`) VALUES {$sql}";
                 mysql_query($sql, db_c()) or die(mysql_error());
             }
-            
+
+            //reindex in search
+            $solr = new MyShop_Solr();
+            $solr->index($id);
             $done = true;
         }
     } break;
