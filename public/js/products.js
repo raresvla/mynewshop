@@ -49,12 +49,12 @@ var Products = {
     ratingClass: function(number) {
         var rating = null;
         switch(number) {
-            case 1:rating = 'one';break;
-            case 2:rating = 'two';break;
-            case 3:rating = 'three';break;
-            case 4:rating = 'four';break;
-            case 5:rating = 'five';break;
-            default:throw('It must be between 1 and 5!');
+            case 1:rating = 'one'; break;
+            case 2:rating = 'two'; break;
+            case 3:rating = 'three'; break;
+            case 4:rating = 'four'; break;
+            case 5:rating = 'five'; break;
+            default: rating = 'no'; break;
         }
 
         return rating + 'star';

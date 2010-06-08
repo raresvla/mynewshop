@@ -389,7 +389,7 @@ function showImage(src) {
 	var container = $('imgContainer');
 	container.firstDescendant().remove();
 	container.appendChild(newImage);
-	container.up().style.height = '200px';
+	container.up().style.height = '300px';
 	Windows.getFocusedWindow().updateHeight();
 	Windows.getFocusedWindow().showCenter();
 }
