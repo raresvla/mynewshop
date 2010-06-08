@@ -329,7 +329,7 @@ class ProduseController extends Zend_Controller_Action
             $newRating = array_sum($ratings) / sizeof($ratings);
 
             //save rating
-            $oldRating = $product['rating'];
+            $oldRating = intval($product['rating']);
             $product['rating'] = $newRating;
             $product->ProduseRating[] = $vote;
             $product->save();

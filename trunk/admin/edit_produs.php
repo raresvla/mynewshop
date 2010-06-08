@@ -22,6 +22,7 @@ switch ($_GET['action']) {
     
     case 'save': {
         //verifica valori trimise
+        $message = 'Următoarele câmpuri trebuie completate:\n';
         $toVerify = array("denumire", "cod_produs", "pret", "stoc_disponibil");
         if(notBlank($toVerify, "_POST", $message)) {
             $error = true;
@@ -41,12 +42,12 @@ switch ($_GET['action']) {
             }
                         
             if ($_GET['source'] == 'db') {
-                $sql = "UPDATE `produse` SET `marca` = '{$marca}', `cod_produs` = '{$cod_produs}', `denumire` = '{$denumire}', `descriere` = '{$descriere}', `pret` = '{$pret}', `greutate` = '{$greutate}', `stoc_disponibil` = {$stoc_disponibil}, `ultima_modificare` = NOW(), `afisat` = " . @intval($afisat) . ", `noutati` = " . @intval($noutati) . ", `recomandari` = " . @intval($recomandari) . " WHERE `id` = {$_GET['id']}";
+                $sql = "UPDATE `produse` SET `marca` = '{$marca}', `cod_produs` = '{$cod_produs}', `denumire` = '{$denumire}', `descriere` = '{$descriere}', `pret` = '{$pret}', `greutate` = '" . floatval($greutate) ."', `stoc_disponibil` = {$stoc_disponibil}, `ultima_modificare` = NOW(), `afisat` = " . @intval($afisat) . ", `noutati` = " . @intval($noutati) . ", `recomandari` = " . @intval($recomandari) . " WHERE `id` = {$_GET['id']}";
                 mysql_query($sql, db_c()) or die(mysql_error());
                 $id = $_GET['id'];
             }
             else {
-                $sql = "INSERT INTO `produse` (`categorie_id`, `marca`, `cod_produs`, `denumire`, `descriere`, `pret`, `greutate`, `stoc_disponibil`, `data_adaugare`, `afisat`, `noutati`, `recomandari`) VALUES ('{$_categorieId}', '{$marca}', '$cod_produs', '{$denumire}', '{$descriere}', '$pret', '$greutate', '$stoc_disponibil', DATE(NOW()), " . @intval($afisat) . ", " . @intval($noutati) . ", " . @intval($recomandari) . ")";
+                $sql = "INSERT INTO `produse` (`categorie_id`, `marca`, `cod_produs`, `denumire`, `descriere`, `pret`, `greutate`, `stoc_disponibil`, `data_adaugare`, `afisat`, `noutati`, `recomandari`) VALUES ('{$_categorieId}', '{$marca}', '$cod_produs', '{$denumire}', '{$descriere}', '$pret', '" . floatval($greutate) ."', '$stoc_disponibil', DATE(NOW()), " . @intval($afisat) . ", " . @intval($noutati) . ", " . @intval($recomandari) . ")";
                 mysql_query($sql, db_c()) or die(mysql_error());
                 $id = mysql_insert_id();
             }
@@ -151,8 +152,13 @@ switch ($_GET['action']) {
             }
 
             //reindex in search
-            $solr = new MyShop_Solr();
-            $solr->index($id);
+            try {
+                $solr = new MyShop_Solr();
+                $solr->index($id);
+            }
+            catch(Exception $e) {
+                //do nothing
+            }
             $done = true;
         }
     } break;
@@ -250,7 +256,7 @@ window.close(); window.opener.goTo();
                 <td align="left"><input name="greutate" type="text" class="inputcol right" id="greutate" size="10" value="<?php if(!empty($data)) echo $data['greutate'];?>" /> Kg</td>
               </tr>
               <tr>
-                <td colspan="4" align="center" style="padding:0px;"><img src="images/spacer.gif" alt="" width="1" height="18" /><input type="hidden" id="_categorieId" name="_categorieId" value="<?php echo (isset($data['categorie_id']) ? $data['categorie_id'] : $_GET['categorieId']);?>" /><input type="hidden" id="_produsId" name="_produsId" value="<?php if(!empty($_GET['id'])) echo $_GET['id'];?>" /></td>
+                <td colspan="4" align="center" style="padding:0px;"><img src="images/spacer.gif" alt="" width="1" height="18" /><input type="hidden" id="_categorieId" name="_categorieId" value="<?php echo (isset($data['categorie_id']) ? $data['categorie_id'] : (isset($_GET['categorieId']) ? $_GET['categorieId'] : 0));?>" /><input type="hidden" id="_produsId" name="_produsId" value="<?php if(!empty($_GET['id'])) echo $_GET['id'];?>" /></td>
               </tr>
               <tr>
                 <td colspan="4" align="center" style="padding:0px">Descriere: </td>
@@ -278,9 +284,9 @@ window.close(); window.opener.goTo();
                 <td align="left"><label for="afisat">Afişat:</label></td>
                 <td align="left"><?php if(!isset($data['afisat']) || $data['afisat']) { ?><input name="afisat" type="checkbox" id="afisat" value="1" checked="checked" /><?php } else { ?><input name="afisat" type="checkbox" id="afisat" value="1" /><?php } ?></td>
                 <td align="left"><label for="noutati">Noutăţi:</label></td>
-                <td align="left"><?php if(!empty($data) && $data['noutati']) { ?><input name="noutati" type="checkbox" id="noutati" value="1" checked="checked" /><?php } else { ?><input name="noutati" type="checkbox" id="noutati" value="1" /><?php } ?></td>
+                <td align="left"><?php if(!empty($data['noutati'])) { ?><input name="noutati" type="checkbox" id="noutati" value="1" checked="checked" /><?php } else { ?><input name="noutati" type="checkbox" id="noutati" value="1" /><?php } ?></td>
                 <td align="left" colspan="2"><label for="recomandari">Recomandări:</label></td>
-                <td align="left"><?php if(!empty($data) && $data['recomandari']) { ?><input name="recomandari" type="checkbox" id="recomandari" value="1" checked="checked" /><?php } else { ?><input name="recomandari" type="checkbox" id="recomandari" value="1" /><?php } ?></td>
+                <td align="left"><?php if(!empty($data['recomandari'])) { ?><input name="recomandari" type="checkbox" id="recomandari" value="1" checked="checked" /><?php } else { ?><input name="recomandari" type="checkbox" id="recomandari" value="1" /><?php } ?></td>
               </tr>
               <tr>
                 <td colspan="7" style="padding: 0px"><hr /></td>
@@ -365,7 +371,7 @@ window.close(); window.opener.goTo();
   </tr>
  </tbody>
 </table>
-<?php if(!empty($error)) { $keys = array_keys($err); ?><script type="text/javascript">alert('<?php echo (str_replace("'", "\'", $message));?>'); document.forms['edit'].<?php echo $err[$keys[0]];?>.focus();</script><?php } ?>
+<?php if(!empty($error)) { ?><script type="text/javascript">alert('<?php echo (str_replace("'", "\'", $message));?>'); </script><?php } ?>
 <div class="hidden" id="_winCaracteristici">
   <img src="images/spacer.gif" height="20" width="100%" alt="" />
   <div class="marginBottom"><select name="sectiune" id="sectiune" class="fRight inputcol" style="width:339px" onchange="_filterCaracteristici(this)"></select><span class="fRight">Secţiune:&nbsp;</span></div>

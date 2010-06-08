@@ -50,9 +50,9 @@ abstract class BaseCaracteristici extends Doctrine_Record
              'notnull' => true,
              'autoincrement' => false,
              ));
-        $this->hasColumn('caracteristica', 'string', 50, array(
+        $this->hasColumn('caracteristica', 'string', 100, array(
              'type' => 'string',
-             'length' => 50,
+             'length' => 100,
              'fixed' => false,
              'unsigned' => false,
              'primary' => false,
