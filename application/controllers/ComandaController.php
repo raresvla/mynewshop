@@ -24,7 +24,7 @@ class ComandaController extends Zend_Controller_Action
     public function postDispatch()
     {
         if($this->getRequest()->isDispatched() && $this->_hasParam('add-basket-breadcrumb')) {
-            $this->_helper->Layout->addBreadCrumb(
+            $this->_helper->Seo->addBreadCrumb(
                 'Coş de cumpărături',
                 '/cos-cumparaturi',
                 'unshift'
