@@ -47,7 +47,9 @@ require 'config/check_login.php';
 	  <fieldset style="border:1px solid #777777"<?php echo (stripos($_SERVER['HTTP_USER_AGENT'], "msie") !== false ? ' style="padding:7px;"' : '');?>>
       <legend style="font-size:14px; color:#333333"><img src="images/icons/clienti.png" width="40" height="40" class="valignMiddle" />Clienţi&nbsp;</legend>
 	  <div style="margin-top:10px">
+          <!--
 	    <a href="javascript:veziComenzi()" class="blueButton fLeft"><img src="images/icons/comenzi.png" alt="" width="16" height="16" /> Vizualizează comenzi</a>
+          -->
 	    <?php if($user->hasRight('clienti', 'delete')) { ?>
 		<a href="javascript:stergeClienti()" class="blueButton fRight"><img src="images/icons/delete.png" alt="" width="16" height="16" /> Şterge</a>
 		<?php } if($user->hasRight('clienti', 'edit')) { ?>

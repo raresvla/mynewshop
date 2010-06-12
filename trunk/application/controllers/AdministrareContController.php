@@ -35,8 +35,7 @@ class AdministrareContController extends Zend_Controller_Action
         if(!$this->getRequest()->isDispatched()) {
             return;
         }
-        $this->_helper->Layout->addBreadcrumb('Administrare cont');
-        $this->view->assign('title', 'Administrare cont');
+        $this->_helper->Seo->addBreadcrumb('Administrare cont');
     }
 
     /**

@@ -54,7 +54,7 @@ class ProduseController extends Zend_Controller_Action
 
         //unshift categories breadcrumbs
         end($breadCrumbs);
-        $this->_helper->Layout->addBreadcrumb(
+        $this->_helper->Seo->addBreadcrumb(
             current($breadCrumbs),
             key($breadCrumbs),
             'unshift'
@@ -64,7 +64,7 @@ class ProduseController extends Zend_Controller_Action
             'href' => key($breadCrumbs)
             ));
         while(prev($breadCrumbs)) {
-            $this->_helper->Layout->addBreadcrumb(
+            $this->_helper->Seo->addBreadcrumb(
                 current($breadCrumbs),
                 key($breadCrumbs),
                 'unshift'
@@ -138,6 +138,7 @@ class ProduseController extends Zend_Controller_Action
         $solr->setReturnFields('*,score');
         //print_r($solr->fetchArray()); die();
 
+        $this->_helper->Seo->addBreadCrumb("Rezultatele căutării pentru \"{$q}\"");
         $this->view->assign('search', true);
         $this->_setParam('source', $solr);
         $this->_setParam('render', 'cauta');
@@ -178,7 +179,7 @@ class ProduseController extends Zend_Controller_Action
      */
     public function noiAction()
     {
-        $this->_helper->Layout->addBreadcrumb('Produse noi');
+        $this->_helper->Seo->addBreadcrumb('Produse noi');
         $this->view->assign('title', 'Produse noi');
         $this->view->assign('noProductFound', 'Nu au fost găsite produse.');
         $this->view->assign('section', 'new-products');
@@ -197,7 +198,7 @@ class ProduseController extends Zend_Controller_Action
      */
     public function recomandateAction()
     {
-        $this->_helper->Layout->addBreadcrumb('Produse recomandate');
+        $this->_helper->Seo->addBreadcrumb('Produse recomandate');
         $this->view->assign('title', 'Produse recomandate');
         $this->view->assign('noProductFound', 'Nu au fost găsite produse.');
         $this->view->assign('section', 'recommended-products');
@@ -220,6 +221,7 @@ class ProduseController extends Zend_Controller_Action
         try {
             $paginator = $this->_helper->Paginator($source);
             $paginator->setTemplate('produse/listeaza-produse-pag.html');
+            $paginator->limit = 5;
         }
         catch(Exception $e) {
             $this->_forward('index');
@@ -284,7 +286,7 @@ class ProduseController extends Zend_Controller_Action
 
         $this->view->assign('ratings', array_fill(0, 5, true));
         $this->view->assign('product', $product);
-        $this->_helper->Layout->addBreadcrumb($product['denumire']);
+        $this->_helper->Seo->addBreadcrumb($product['denumire']);
         $this->_helper->Layout->includeJs('lib/scriptaculous/builder.js');
         $this->_helper->Layout->includeJs('lib/lightbox/lightbox.js');
         $this->_helper->Layout->includeCss('lightbox/lightbox.css');
@@ -379,6 +381,7 @@ class ProduseController extends Zend_Controller_Action
             $backUrl = '/';
         }
         $this->view->assign('backUrl', $backUrl);
+        $this->_helper->Seo->addBreadcrumb('Produse favorite');
     }
 
     /**

@@ -11,7 +11,7 @@ class CosCumparaturiController extends Zend_Controller_Action
      */
     public function init()
     {
-        $this->_helper->Layout->addBreadCrumb('Coş de cumpărături', '/cos-cumparaturi');
+        $this->_helper->Seo->addBreadCrumb('Coş de cumpărături', '/cos-cumparaturi');
         $this->view->assign('title', 'Cos de cumparaturi');
         $basket = MyShop_Basket::getInstance();
         $basket->maxAvaliableReachedMessage = "Cantitatea maximă disponibilă pentru produsul "

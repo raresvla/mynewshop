@@ -18,7 +18,6 @@ class MyShop_Helper_Layout extends Zend_Controller_Action_Helper_Abstract
     protected $_regions = array();
     protected $_scripts = array();
     protected $_styles = array();
-    protected $_breadcrumbs = array();
     protected $_injectedJs;
 
     /**
@@ -147,24 +146,6 @@ class MyShop_Helper_Layout extends Zend_Controller_Action_Helper_Abstract
     }
 
     /**
-     * Add new breadcrumb item
-     *
-     * @param string $pageTitle
-     * @param string $href
-     * @return MyShop_Helper_Layout
-     */
-    public function addBreadcrumb($pageTitle, $href = '/', $mode = 'push')
-    {
-        $item = array(
-            'href' => $href,
-            'title' => $pageTitle
-        );
-        $mode = 'array_' . $mode;
-        call_user_func_array($mode, array(&$this->_breadcrumbs, $item));
-        return $this;
-    }
-
-    /**
      * This method "disables" the Layout Helper -> in fact it prevents content fething at postdispatch time
      *
      * @param boolean $disableViewRenderer
@@ -237,8 +218,6 @@ class MyShop_Helper_Layout extends Zend_Controller_Action_Helper_Abstract
 
         //add injected js and breadcrumbs
         $view->assign('injectedJs', $this->_injectedJs);
-        $view->assign('breadcrumbs', $this->_breadcrumbs);
-
         $response->setBody($view->render($this->_layoutTemplate));
     }
 }

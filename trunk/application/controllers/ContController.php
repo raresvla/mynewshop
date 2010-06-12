@@ -22,7 +22,7 @@ class ContController extends Zend_Controller_Action
     public function autentificareAction()
     {
         $this->view->assign('title', 'Autentificare');
-        $this->_helper->Layout->addBreadcrumb('Autentificare', '/cont/autentificare');
+        $this->_helper->Seo->addBreadcrumb('Autentificare', '/cont/autentificare');
         $aclMessage = $this->_helper->Acl->getLastMessage();
         if($aclMessage) {
             $this->view->assign('message', $aclMessage);
@@ -106,7 +106,7 @@ class ContController extends Zend_Controller_Action
     public function inregistrareAction()
     {
         $this->view->assign('title', 'Inregistrare');
-        $this->_helper->Layout->addBreadcrumb('Creare cont', '/cont/inregistrare');
+        $this->_helper->Seo->addBreadcrumb('Creare cont', '/cont/inregistrare');
         $this->view->assign('regions', Doctrine::getTable('Judete')->fetchAll());
         $this->view->assign('title', 'Creare cont');
         

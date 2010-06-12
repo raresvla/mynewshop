@@ -16,7 +16,7 @@ class IndexController extends Zend_Controller_Action
      */
     public function indexAction()
     {
-        $this->_helper->Layout->addBreadcrumb('Home');
+        $this->_helper->Seo->addBreadcrumb('Home');
         $sql = Doctrine_Query::create();
         $sql->select('p.id, p.denumire, p.pret, c.id, c.denumire, mg.foto as picture');
         $sql->from('Produse p INDEXBY p.id');
