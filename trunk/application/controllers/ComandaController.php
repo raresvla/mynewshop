@@ -45,7 +45,7 @@ class ComandaController extends Zend_Controller_Action
      */
     public function modFacturareAction()
     {
-        $this->_helper->Layout->addBreadCrumb('Mod de facturare');
+        $this->_helper->Seo->addBreadCrumb('Mod de facturare');
         $this->_helper->Layout->includeJs('lib/validate.js');
         $this->_helper->Layout->includeJs('custom-validators.js');
         $this->_helper->Layout->includeJs('order.js');
@@ -74,8 +74,8 @@ class ComandaController extends Zend_Controller_Action
      */
     public function livrareAction()
     {
-        $this->_helper->Layout->addBreadCrumb('Mod de facturare', '/comanda/mod-facturare');
-        $this->_helper->Layout->addBreadCrumb('Modalitate de livrare');
+        $this->_helper->Seo->addBreadCrumb('Mod de facturare', '/comanda/mod-facturare');
+        $this->_helper->Seo->addBreadCrumb('Modalitate de livrare');
         $this->_helper->Layout->includeJs('lib/validate.js');
         $this->_helper->Layout->includeJs('custom-validators.js');
         $this->_helper->Layout->includeJs('order.js');
@@ -124,9 +124,9 @@ class ComandaController extends Zend_Controller_Action
      */
     public function confirmaAction()
     {
-        $this->_helper->Layout->addBreadCrumb('Mod de facturare', '/comanda/mod-facturare');
-        $this->_helper->Layout->addBreadCrumb('Modalitate de livrare', "/comanda/livrare");
-        $this->_helper->Layout->addBreadCrumb('Confirmă comanda');
+        $this->_helper->Seo->addBreadCrumb('Mod de facturare', '/comanda/mod-facturare');
+        $this->_helper->Seo->addBreadCrumb('Modalitate de livrare', "/comanda/livrare");
+        $this->_helper->Seo->addBreadCrumb('Confirmă comanda');
         $this->_helper->Layout->includeJs('lib/validate.js');
         $this->_helper->Layout->includeJs('custom-validators.js');
         $this->_helper->Layout->includeJs('order.js');
@@ -213,7 +213,7 @@ class ComandaController extends Zend_Controller_Action
      */
     public function trimisaAction()
     {
-        $this->_helper->Layout->addBreadCrumb('Trimite comanda');
+        $this->_helper->Seo->addBreadCrumb('Trimite comanda');
     }
 
     /**
@@ -237,7 +237,7 @@ class ComandaController extends Zend_Controller_Action
      */
     public function confirmataAction()
     {
-        $this->_helper->Layout->addBreadCrumb('Confirmă comanda');
+        $this->_helper->Seo->addBreadCrumb('Confirmă comanda');
         if(($req = $this->_getParam('req'))) {
             $this->view->assign('telNumber', base64_decode($req));
         }
@@ -249,7 +249,7 @@ class ComandaController extends Zend_Controller_Action
      */
     public function eroareConfirmareAction()
     {
-        $this->_helper->Layout->addBreadCrumb('Confirmă comanda');
+        $this->_helper->Seo->addBreadCrumb('Confirmă comanda');
         $this->view->assign('cfg', MyShop_Config::getInstance());
     }
 }
