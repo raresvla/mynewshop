@@ -14,8 +14,10 @@ class CautaController extends Zend_Controller_Action
         $solr = new MyShop_Solr();
         //$solr->deleteByQuery('*:*');
         //$solr->commit();
-        //$solr->index(1);
-        //$solr->index(2);
-        $solr->index(4);
+        for($i=1; $i<=9; $i++) {
+            $solr->index($i);
+        }
+        $solr->commit();
+        $solr->optimize();
     }
 }
